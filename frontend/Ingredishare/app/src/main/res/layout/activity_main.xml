@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.andriod.ingredishare.MainActivity"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/email_edit_text"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="200dp"
+        android:layout_gravity="center"
+        android:hint="Email"/>
+
+    <EditText
+        android:id="@+id/password_edit_text"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="32dp"
+        android:layout_gravity="center"
+        android:hint="Password"/>
+
+    <LinearLayout
+        android:id="@+id/sign_in_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="32dp">
+
+        <Button
+            android:id="@+id/sign_up_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="30dp"
+            android:paddingLeft="30dp"
+            android:text="Sign Up" />
+
+        <Button
+            android:id="@+id/log_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="30dp"
+            android:paddingLeft="30dp"
+            android:layout_marginLeft="80dp"
+            android:text="Log In" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/google_auth"
+        android:background="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingRight="64dp"
+        android:paddingLeft="64dp"
+        android:text="GOOGLE"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/fb_auth"
+        android:background="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingRight="64dp"
+        android:paddingLeft="64dp"
+        android:text="FACEBOOK"
+        android:textStyle="bold"/>
+
+
+
+</LinearLayout>
