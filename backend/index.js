@@ -1,26 +1,35 @@
 const http = require('http');
+const url = require('url');
 
-const server = http.createServer((request, response, next) => {
-    try {
-        const listingUrl = "https://www.airbnb.com/rooms/10006546";
-    getData(listingUrl).then((result) => {
-        response.writeHead(200, {"Content-Type": "text/plain"});
-        response.end("Hello World! The Airbnb description for the listing " + listingUrl + " is " + result.summary); 
-    });
-    } catch (err) {
-        next(err)
+const server = http.createServer((request, response) => {
+    const reqUrl = url.parse(request.url,true);
+
+    if(reqUrl.pathname == '/getallrequests' && request.method==='GET'){
+        try {
+            getAllRequests().then((result) => {
+                response.writeHead(200, {"Content-Type": "text/plain"});
+                var str = "";
+                result.forEach(function (item) {
+                    str += JSON.stringify(item);
+                });
+                response.end(str);
+            });
+            } catch (err) {   
+            }
+    }
+    else {
+        response.end("add /getallrequests to view list of requests")
     }
     
-    // response.writeHead(200, {"Content-Type": "text/plain"});
-    // response.end("Hello World!");
 });
 
-async function getData(listingUrl) {
+async function getAllRequests() {
     const MongoClient = require('mongodb').MongoClient;
     const uri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
     const db = await MongoClient.connect(uri);
-    const dbo = db.db("sample_airbnb");
-    const result = await dbo.collection("listingsAndReviews").findOne({ listing_url: listingUrl });
+    const dbo = db.db("ingrediShare");
+    const result = await dbo.collection("requests").find({}).toArray();
+    db.close();
     return result;
 }
 
