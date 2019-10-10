@@ -1,39 +1,65 @@
-const http = require('http');
-const url = require('url');
+var express = require('express');
+var app     = express();
+var mongo   = require('mongodb');
 
-const server = http.createServer((request, response) => {
-    const reqUrl = url.parse(request.url,true);
+/**
+ * Setup DB
+ **/
+var mongoClient = mongo.MongoClient;
+const mongoLocalUri = "mongodb://localhost:27017/";
+const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
 
-    if(reqUrl.pathname == '/getallrequests' && request.method==='GET'){
-        try {
-            getAllRequests().then((result) => {
-                response.writeHead(200, {"Content-Type": "text/plain"});
-                var str = "";
-                result.forEach(function (item) {
-                    str += JSON.stringify(item);
-                });
-                response.end(str);
+/* TODO: how to either connect to local DB or cloud DB? */
+mongoClient.connect((mongoProdUri), function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("mydb");
+    dbo.createCollection("customers", function(err, res) {
+        if (err) throw err;
+        console.log("Collection created!");
+        db.close();
+    });
+});
+
+/**
+ * Setup server
+ */
+const port = process.env.PORT || 1337;
+var server = app.listen(port, function() {
+    var host = server.address().address;
+    var port = server.address().port;
+    console.log("Example app listening at http://%s:%s", host, port);
+});
+
+/**
+ * RESTful services
+ **/
+app.get('/getAllRequests', function(req, res) {
+    console.log("Test");
+    try {
+        getAllRequests().then((result) => {
+            res.writeHead(200, {"Content-Type": "text/plain"});
+            var str = "";
+            result.forEach(function (item) {
+                str += JSON.stringify(item);
             });
-            } catch (err) {   
-            }
+            res.end(str);
+        });
+    } catch (err) {
     }
-    else {
-        response.end("add /getallrequests to view list of requests")
-    }
-    
+});
+
+app.get('/', function(req, res) {
+    res.send("Hello world!");
+});
+
+app.post('/login', function(req, res) {
+
 });
 
 async function getAllRequests() {
-    const MongoClient = require('mongodb').MongoClient;
-    const uri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
-    const db = await MongoClient.connect(uri);
+    const db = await mongoClient.connect(mongoProdUri);
     const dbo = db.db("ingrediShare");
     const result = await dbo.collection("requests").find({}).toArray();
-    db.close();
+
     return result;
 }
-
-const port = process.env.PORT || 1337;
-server.listen(port);
-
-console.log("Server running at http://localhost:%d", port);
