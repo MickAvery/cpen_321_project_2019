@@ -114,23 +114,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-
-
     @Override
     protected void onStart() {
         super.onStart();
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        GoogleSignIn.
-//        GoogleSignIn.silentSignIn()
-//                .addOnCompleteListener(
-//                        this,
-//                        new OnCompleteListener<GoogleSignInAccount>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-//                                handleSignInResult(task);
-//                            }
-//                        });
+
+        if(account != null) {
+            Intent intent = new Intent(mContext, IngredientListActivity.class);
+            startActivity(intent);
+        }
+
         Log.println(Log.DEBUG, "tag", ",msg");
     }
 

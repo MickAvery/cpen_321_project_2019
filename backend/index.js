@@ -10,7 +10,7 @@ const mongoLocalUri = "mongodb://localhost:27017/";
 const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
 
 /* TODO: how to either connect to local DB or cloud DB? */
-mongoClient.connect((mongoProdUri), function(err, db) {
+mongoClient.connect((mongoLocalUri), function(err, db) {
     if (err) throw err;
     var dbo = db.db("mydb");
     dbo.createCollection("customers", function(err, res) {
@@ -57,7 +57,7 @@ app.post('/tokensignin', function(req, res) {
 });
 
 async function getAllRequests() {
-    const db = await mongoClient.connect(mongoProdUri);
+    const db = await mongoClient.connect(mongoLocalUri);
     const dbo = db.db("ingrediShare");
     const result = await dbo.collection("requests").find({}).toArray();
 
