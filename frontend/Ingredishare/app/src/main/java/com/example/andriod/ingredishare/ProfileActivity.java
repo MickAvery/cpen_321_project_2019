@@ -1,5 +1,7 @@
 package com.example.andriod.ingredishare;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,6 +19,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mPrefEditText;
     private View mSaveButton;
     private View mBackButton;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -39,7 +42,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
         mSaveButton.setOnClickListener(view -> {
             Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-            finish();
+            mContext = this;
+            Intent intent = new Intent(mContext, IngredientListActivity.class);
+            startActivity(intent);
         });
     }
 }

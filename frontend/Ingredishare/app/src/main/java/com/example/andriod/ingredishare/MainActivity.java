@@ -12,6 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -34,6 +41,13 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -49,6 +63,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private ImageView displayImage;
+    private RequestQueue requestQueue;
+
+    /*
+    Create a getRequestQueue() method to return the instance of
+    RequestQueue.This kind of implementation ensures that
+    the variable is instatiated only once and the same
+    instance is used throughout the application
+    */
+    public RequestQueue getRequestQueue() {
+        if (requestQueue == null)
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
+        return requestQueue;
+    }
+    /*
+    public method to add the Request to the the single
+    instance of RequestQueue created above.Setting a tag to every
+    request helps in grouping them. Tags act as identifier
+    for requests and can be used while cancelling them
+    */
+    public void addToRequestQueue(Request request, String tag) {
+        request.setTag(tag);
+        getRequestQueue().add(request);
+    }
+    /*
+    Cancel all the requests matching with the given tag
+    */
+    public void cancelAllRequests(String tag) {
+        getRequestQueue().cancelAll(tag);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,23 +157,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-
-
     @Override
     protected void onStart() {
         super.onStart();
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-//        GoogleSignIn.
-//        GoogleSignIn.silentSignIn()
-//                .addOnCompleteListener(
-//                        this,
-//                        new OnCompleteListener<GoogleSignInAccount>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-//                                handleSignInResult(task);
-//                            }
-//                        });
+
+        if(account == null) { /* TODO set back to != after debugging */
+            Intent intent = new Intent(mContext, IngredientListActivity.class);
+            startActivity(intent);
+        }
+
         Log.println(Log.DEBUG, "tag", ",msg");
     }
 
@@ -158,14 +195,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
+            String email = account.getEmail();
             Log.w("TAG", idToken);
 
             // TODO(developer): send ID Token to server and validate
+            String url = "http://10.0.2.2:1337/tokensignin/";
 
-//            updateUI(account);
+            JSONObject postparams = new JSONObject();
+
+            try {
+                postparams.put("idToken", idToken);
+
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                        (JSONObject response) -> {
+                            try {
+                                boolean pre_existing_user = response.getBoolean("pre_existing_user");
+
+                                if(pre_existing_user) {
+                                    /* TODO: proceed to live feed */
+                                    Log.println(Log.DEBUG, "resp", "Go to livefeed");
+                                    mContext = this;
+                                    Intent intent = new Intent(mContext, IngredientListActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    /* TODO: new user activity */
+                                    Log.println(Log.DEBUG, "resp", "Create new user");
+                                    mContext = this;
+                                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                                    intent.putExtra("email", email);
+                                    startActivity(intent);
+                                }
+
+                            } catch (JSONException jsonEx) {
+
+                            }
+                        },
+                        (VolleyError error) -> {
+                            Log.println(Log.DEBUG, "resp", "error");
+                        }
+                );
+
+                addToRequestQueue(jsonObjReq, "post");
+            } catch(JSONException jsonEx) {
+
+            }
+
         } catch (ApiException e) {
-//            Log.w(TAG, "handleSignInResult:error", e);
-//            updateUI(null);
+            Log.e("Auth", "handleSignInResult:error", e);
         }
     }
 
