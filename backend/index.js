@@ -17,15 +17,16 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 var mongoClient = mongo.MongoClient;
 const mongoLocalUri = "mongodb://localhost:27017/";
 const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
+var dbObj;
 
 /* TODO: how to either connect to local DB or cloud DB? */
 mongoClient.connect((mongoLocalUri), function(err, db) {
     if (err) throw err;
-    var dbo = db.db("mydb");
-    dbo.createCollection("customers", function(err, res) {
+    dbObj = db.db("mydb");
+    dbObj.createCollection("customers", function(err, res) {
         if (err) throw err;
         console.log("Collection created!");
-        db.close();
+        // db.close();
     });
 });
 
@@ -68,9 +69,24 @@ app.post('/tokensignin', function(req, res) {
     /* TODO: token error checking */
 
     try {
-        verifyToken(token).then((result) => {
-            // console.log(result);
-            res.json({"user_exists" : false});
+        verifyToken(token).then((user_email) => {
+            var query = dbObj.collection("users").find({email:user_email}).toArray(function(err, result) {
+                if(err) throw err;
+
+                if(typeof result !== 'undefined' && result.length > 0) {
+                    res.json({"pre_existing_user" : true});
+                } else {
+                    res.json({"pre_existing_user" : false});
+
+                    /* TODO: save to db */
+                    var newUser = {email : user_email};
+                    dbObj.collection("users").insertOne(newUser, function(err, res) {
+                        if(err) throw err;
+
+                        console.log("Created new user!");
+                    });
+                }
+            });
         });
     } catch(err) {
 
@@ -96,8 +112,8 @@ async function verifyToken(token) {
 
 async function getAllRequests() {
     const db = await mongoClient.connect(mongoLocalUri);
-    const dbo = db.db("ingrediShare");
-    const result = await dbo.collection("requests").find({}).toArray();
+    const dbObj = db.db("ingrediShare");
+    const result = await dbObj.collection("requests").find({}).toArray();
 
     return result;
 }
