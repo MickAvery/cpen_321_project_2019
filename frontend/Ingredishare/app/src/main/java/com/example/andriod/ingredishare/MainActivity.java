@@ -12,6 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -56,6 +63,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private ImageView displayImage;
+    private RequestQueue requestQueue;
+
+    /*
+    Create a getRequestQueue() method to return the instance of
+    RequestQueue.This kind of implementation ensures that
+    the variable is instatiated only once and the same
+    instance is used throughout the application
+    */
+    public RequestQueue getRequestQueue() {
+        if (requestQueue == null)
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
+        return requestQueue;
+    }
+    /*
+    public method to add the Request to the the single
+    instance of RequestQueue created above.Setting a tag to every
+    request helps in grouping them. Tags act as identifier
+    for requests and can be used while cancelling them
+    */
+    public void addToRequestQueue(Request request, String tag) {
+        request.setTag(tag);
+        getRequestQueue().add(request);
+    }
+    /*
+    Cancel all the requests matching with the given tag
+    */
+    public void cancelAllRequests(String tag) {
+        getRequestQueue().cancelAll(tag);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,6 +191,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void sendPost() {
+        String url = "http://10.0.2.2:1337/yada/";
+
+//        JSONObject postparams = new JSONObject();
+
+        try {
+//            postparams.put("idToken", "123344");
+            requestQueue = Volley.newRequestQueue(this);
+
+            StringRequest stringRequest = new StringRequest(url,
+                    (String response) -> {
+                        Log.println(Log.DEBUG, "resp", response);
+                    },
+                    (VolleyError error) -> {
+                        Log.println(Log.DEBUG, "resp", "something happened");
+                    }
+//                    new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            Log.println(Log.DEBUG, "resp", response);
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            Log.println(Log.DEBUG, "resp", "something happened");
+//                        }
+                    );
+
+//            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+//                    new Response.Listener<JSONObject>() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//                            /* success callback */
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            /* failure callback */
+//                        }
+//                    });
+
+            requestQueue.add(stringRequest);
+//            addToRequestQueue(jsonObjReq, "post");
+        } finally {
+
+        }
+    }
+
     private void handleSignInResult(@NonNull Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -162,26 +248,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.w("TAG", idToken);
 
             // TODO(developer): send ID Token to server and validate
-            try
-            {
-                URL url = new URL("http://localhost:1337/tokensignin");
-                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+            String url = "http://localhost:1337/tokensignin";
 
-                try {
+            JSONObject postparams = new JSONObject();
 
-                    urlConnection.setDoOutput(true); /* for POST requests */
-                    urlConnection.setChunkedStreamingMode(0); /* TODO: figure out length of fixed datastream */
+            try {
+                postparams.put("idToken", idToken);
 
-                    OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                /* success callback */
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                /* failure callback */
+                            }
+                        });
 
-
-
-                } finally {
-                    urlConnection.disconnect();
-                }
-            } catch (MalformedURLException mal_url) {
-
-            } catch (IOException io) {
+                addToRequestQueue(jsonObjReq, "post");
+            } catch(JSONException jsonEx) {
 
             }
 
@@ -196,7 +285,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.google_auth:
-                signIn();
+//                signIn();
+                sendPost();
                 break;
         }
     }

@@ -53,7 +53,11 @@ app.get('/', function(req, res) {
 });
 
 app.post('/tokensignin', function(req, res) {
+    console.log("got something");
+});
 
+app.get('/yada', function(req, res) {
+    console.log("got something");
 });
 
 async function getAllRequests() {
