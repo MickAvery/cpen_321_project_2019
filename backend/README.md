@@ -27,7 +27,7 @@ First, make a zip file of the updated project. For example, if you're on Bash th
 
 ```
 $ cd /path/to/backend/proj
-$ zip -r updated_files.zip
+$ zip -r updated_files.zip .
 ```
 
 Next, we'll use the Azure CLI to deploy the zip file into our App Service by running the command:
