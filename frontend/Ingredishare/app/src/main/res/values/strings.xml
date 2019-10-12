@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Ingredishare</string>
+    <string name="facebook_app_id">445659526044700</string>
+    <string name="fb_login_protocol_scheme">fb445659526044700</string>
 </resources>

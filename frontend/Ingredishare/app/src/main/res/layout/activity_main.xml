@@ -63,20 +63,13 @@
         android:text="GOOGLE"
         android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/fb_auth"
-        android:background="@color/colorPrimary"
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingRight="64dp"
-        android:paddingLeft="64dp"
-        android:text="FACEBOOK"
-        android:textStyle="bold"/>
-
-
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp" />
 
 </LinearLayout>

@@ -6,12 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 public class MainActivity extends AppCompatActivity {
 
     private View mSignUp;
     private View mSignIn;
     private Context mContext;
+    private FacebookSdk FacebookSdk;
+    private AppEventsLogger AppEventsLogger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
         mSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
