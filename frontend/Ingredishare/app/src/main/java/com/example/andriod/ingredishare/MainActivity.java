@@ -34,6 +34,13 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -155,6 +162,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.w("TAG", idToken);
 
             // TODO(developer): send ID Token to server and validate
+            try
+            {
+                URL url = new URL("http://localhost:1337/tokensignin");
+                HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+
+                try {
+
+                    urlConnection.setDoOutput(true); /* for POST requests */
+                    urlConnection.setChunkedStreamingMode(0); /* TODO: figure out length of fixed datastream */
+
+                    OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+
+
+
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (MalformedURLException mal_url) {
+
+            } catch (IOException io) {
+
+            }
 
 //            updateUI(account);
         } catch (ApiException e) {
