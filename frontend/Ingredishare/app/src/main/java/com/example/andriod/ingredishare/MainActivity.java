@@ -192,51 +192,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sendPost() {
-        String url = "http://10.0.2.2:1337/yada/";
+        String url = "http://10.0.2.2:1337/tokensignin/";
 
-//        JSONObject postparams = new JSONObject();
+        JSONObject postparams = new JSONObject();
 
         try {
-//            postparams.put("idToken", "123344");
-            requestQueue = Volley.newRequestQueue(this);
+            postparams.put("idToken", "123344");
 
-            StringRequest stringRequest = new StringRequest(url,
-                    (String response) -> {
-                        Log.println(Log.DEBUG, "resp", response);
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                    (JSONObject response) -> {
+                        Log.println(Log.DEBUG, "resp", "got something");
                     },
                     (VolleyError error) -> {
-                        Log.println(Log.DEBUG, "resp", "something happened");
+                        Log.println(Log.DEBUG, "resp", "error");
                     }
-//                    new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            Log.println(Log.DEBUG, "resp", response);
-//                        }
-//                    },
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            Log.println(Log.DEBUG, "resp", "something happened");
-//                        }
-                    );
+            );
 
-//            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-//                    new Response.Listener<JSONObject>() {
-//                        @Override
-//                        public void onResponse(JSONObject response) {
-//                            /* success callback */
-//                        }
-//                    },
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            /* failure callback */
-//                        }
-//                    });
-
-            requestQueue.add(stringRequest);
-//            addToRequestQueue(jsonObjReq, "post");
-        } finally {
+            addToRequestQueue(jsonObjReq, "post");
+        } catch(JSONException jsonEx) {
 
         }
     }
