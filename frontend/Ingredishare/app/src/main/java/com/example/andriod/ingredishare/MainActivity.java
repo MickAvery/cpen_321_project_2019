@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
+            String email = account.getEmail();
             Log.w("TAG", idToken);
 
             // TODO(developer): send ID Token to server and validate
@@ -208,13 +209,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                         (JSONObject response) -> {
                             try {
-                                boolean user_exists = response.getBoolean("user_exists");
+                                boolean pre_existing_user = response.getBoolean("pre_existing_user");
 
-                                if(user_exists) {
+                                if(pre_existing_user) {
+                                    /* TODO: proceed to live feed */
                                     Log.println(Log.DEBUG, "resp", "Go to livefeed");
+                                    mContext = this;
+                                    Intent intent = new Intent(mContext, IngredientListActivity.class);
+                                    startActivity(intent);
                                 } else {
+                                    /* TODO: new user activity */
                                     Log.println(Log.DEBUG, "resp", "Create new user");
+                                    mContext = this;
+                                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                                    intent.putExtra("email", email);
+                                    startActivity(intent);
                                 }
+
                             } catch (JSONException jsonEx) {
 
                             }
@@ -229,10 +240,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
 
-//            updateUI(account);
         } catch (ApiException e) {
             Log.e("Auth", "handleSignInResult:error", e);
-//            updateUI(null);
         }
     }
 
