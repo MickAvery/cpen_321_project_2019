@@ -2,6 +2,15 @@ var express = require('express');
 var app     = express();
 var mongo   = require('mongodb');
 
+const {OAuth2Client} = require('google-auth-library');
+const SERVER_CLIENT_ID = '127621605968-j54jl9efu5b5jfhoo5bub65vsokohp5r.apps.googleusercontent.com';
+const APP_CLIENT_ID = '127621605968-bco5cfpv64kpjs5jb06pcum78649jese.apps.googleusercontent.com';
+const client = new OAuth2Client(SERVER_CLIENT_ID); /* TODO: set this */
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 /**
  * Setup DB
  **/
@@ -53,12 +62,37 @@ app.get('/', function(req, res) {
 });
 
 app.post('/tokensignin', function(req, res) {
-    console.log("got something");
+    console.log("/tokensignin POST");
+    var token = req.body.idToken;
+
+    /* TODO: token error checking */
+
+    try {
+        verifyToken(token).then((result) => {
+            // console.log(result);
+            res.json({"user_exists" : false});
+        });
+    } catch(err) {
+
+    }
 });
 
 app.get('/yada', function(req, res) {
     console.log("got something");
 });
+
+async function verifyToken(token) {
+    const ticket = await client.verifyIdToken({
+        idToken : token,
+        audience: SERVER_CLIENT_ID
+    });
+    // console.log(ticket);
+    const payload = ticket.getPayload();
+    const userid = payload['sub'];
+    const email = payload['email'];
+    
+    return email;
+}
 
 async function getAllRequests() {
     const db = await mongoClient.connect(mongoLocalUri);

@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(account != null) {
+        if(account == null) { /* TODO set back to != after debugging */
             Intent intent = new Intent(mContext, IngredientListActivity.class);
             startActivity(intent);
         }
@@ -191,29 +191,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    private void sendPost() {
-        String url = "http://10.0.2.2:1337/tokensignin/";
-
-        JSONObject postparams = new JSONObject();
-
-        try {
-            postparams.put("idToken", "123344");
-
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                    (JSONObject response) -> {
-                        Log.println(Log.DEBUG, "resp", "got something");
-                    },
-                    (VolleyError error) -> {
-                        Log.println(Log.DEBUG, "resp", "error");
-                    }
-            );
-
-            addToRequestQueue(jsonObjReq, "post");
-        } catch(JSONException jsonEx) {
-
-        }
-    }
-
     private void handleSignInResult(@NonNull Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -221,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.w("TAG", idToken);
 
             // TODO(developer): send ID Token to server and validate
-            String url = "http://localhost:1337/tokensignin";
+            String url = "http://10.0.2.2:1337/tokensignin/";
 
             JSONObject postparams = new JSONObject();
 
@@ -229,18 +206,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 postparams.put("idToken", idToken);
 
                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                /* success callback */
+                        (JSONObject response) -> {
+                            try {
+                                boolean user_exists = response.getBoolean("user_exists");
+
+                                if(user_exists) {
+                                    Log.println(Log.DEBUG, "resp", "Go to livefeed");
+                                } else {
+                                    Log.println(Log.DEBUG, "resp", "Create new user");
+                                }
+                            } catch (JSONException jsonEx) {
+
                             }
                         },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                /* failure callback */
-                            }
-                        });
+                        (VolleyError error) -> {
+                            Log.println(Log.DEBUG, "resp", "error");
+                        }
+                );
 
                 addToRequestQueue(jsonObjReq, "post");
             } catch(JSONException jsonEx) {
@@ -249,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 //            updateUI(account);
         } catch (ApiException e) {
-//            Log.w(TAG, "handleSignInResult:error", e);
+            Log.e("Auth", "handleSignInResult:error", e);
 //            updateUI(null);
         }
     }
@@ -258,8 +240,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.google_auth:
-//                signIn();
-                sendPost();
+                signIn();
                 break;
         }
     }
