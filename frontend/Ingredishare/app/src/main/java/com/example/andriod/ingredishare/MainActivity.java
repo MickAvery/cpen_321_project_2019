@@ -37,7 +37,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -161,6 +164,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener((@NonNull Task<InstanceIdResult> task) -> {
+                    if (!task.isSuccessful()) {
+//                        Log.w(Log.DEBUG, "getInstanceId failed", task.getException());
+                        Log.d("TAG", "getInstanceId failed", task.getException());
+                        return;
+                    }
+
+                    // Get new Instance ID token
+                    String token = task.getResult().getToken();
+
+                    // Log and toast
+//                    String msg = getString(R.string.msg_token_fmt, token);
+//                    Log.d(TAG, msg);
+                    Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override
