@@ -22,6 +22,7 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
 
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -52,7 +53,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("entering onCreate");
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         mSignUp = findViewById(R.id.sign_up_button);
@@ -72,7 +75,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onSuccess(LoginResult loginResult) {
                 // Retrieving access token using the LoginResult
                 AccessToken accessToken = loginResult.getAccessToken();
-                useLoginInformation(accessToken);
+                useFBLoginInformation(accessToken);
+                Intent intent = new Intent(mContext, IngredientListActivity.class);
+                Toast.makeText(mContext, "sign in", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
             }
             @Override
             public void onCancel() {
@@ -119,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-
+        System.out.println("entering onstart");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 //        GoogleSignIn.
 //        GoogleSignIn.silentSignIn()
@@ -131,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                                handleSignInResult(task);
 //                            }
 //                        });
+
         Log.println(Log.DEBUG, "tag", ",msg");
     }
 
@@ -179,12 +186,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void useLoginInformation(AccessToken accessToken) {
+    private void useFBLoginInformation(AccessToken accessToken) {
         /**
-         Creating the GraphRequest to fetch user details
+         Creating the GraphRequest to fetch user's facebook details
          1st Param - AccessToken
          2nd Param - Callback (which will be invoked once the request is successful)
          **/
+        System.out.println(accessToken.getCurrentAccessToken().getPermissions());
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             //OnCompleted is invoked once the GraphRequest is successful
             @Override
@@ -193,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String name = object.getString("name");
                     String email = object.getString("email");
                     String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
+
                     System.out.println(name);
                     System.out.println(email);
                 } catch (JSONException e) {
