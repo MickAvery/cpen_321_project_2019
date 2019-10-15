@@ -37,18 +37,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -64,35 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private ImageView displayImage;
-    private RequestQueue requestQueue;
-
-    /*
-    Create a getRequestQueue() method to return the instance of
-    RequestQueue.This kind of implementation ensures that
-    the variable is instatiated only once and the same
-    instance is used throughout the application
-    */
-    public RequestQueue getRequestQueue() {
-        if (requestQueue == null)
-            requestQueue = Volley.newRequestQueue(getApplicationContext());
-        return requestQueue;
-    }
-    /*
-    public method to add the Request to the the single
-    instance of RequestQueue created above.Setting a tag to every
-    request helps in grouping them. Tags act as identifier
-    for requests and can be used while cancelling them
-    */
-    public void addToRequestQueue(Request request, String tag) {
-        request.setTag(tag);
-        getRequestQueue().add(request);
-    }
-    /*
-    Cancel all the requests matching with the given tag
-    */
-    public void cancelAllRequests(String tag) {
-        getRequestQueue().cancelAll(tag);
-    }
+    private GlobalRequestQueue mReqQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        mReqQueue = GlobalRequestQueue.getInstance();
 
         mSignUp = findViewById(R.id.sign_up_button);
         mSignIn = findViewById(R.id.log_in_button);
@@ -169,9 +139,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         System.out.println("entering onstart");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(account == null) { /* TODO set back to != after debugging */
-            Intent intent = new Intent(mContext, IngredientListActivity.class);
-            startActivity(intent);
+        if(account != null) { /* TODO set back to != after debugging */
+            /* check if user exists in backend */
+            String url = getString(R.string.server_url) + getString(R.string.is_existing_user_get);
+
+            JSONObject getparams = new JSONObject();
+            String email = account.getEmail();
+
+            MyApplication.setUserEmail(email);
+
+            try {
+                getparams.put("email", email);
+
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, getparams,
+                        (JSONObject response) -> {
+                            try {
+                                boolean pre_existing_user = response.getBoolean("pre_existing_user");
+
+                                if(pre_existing_user) {
+                                    /* TODO: proceed to live feed */
+                                    Log.println(Log.DEBUG, "resp", "Go to livefeed");
+                                    mContext = this;
+                                    Intent intent = new Intent(mContext, IngredientListActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    /* TODO: new user activity */
+                                    Log.println(Log.DEBUG, "resp", "Create new user");
+                                    mContext = this;
+                                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                                    startActivity(intent);
+                                }
+
+                            } catch (JSONException jsonEx) {
+
+                            }
+                        },
+
+                        (VolleyError error) -> {
+                            Log.println(Log.DEBUG, "resp", "error");
+                        }
+                );
+
+                mReqQueue.addToRequestQueue(jsonObjReq, "post");
+            } catch(JSONException jsonEx) {
+
+            }
         }
         Log.println(Log.DEBUG, "tag", ",msg");
     }
@@ -203,8 +215,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String email = account.getEmail();
             Log.w("TAG", idToken);
 
-            // TODO(developer): send ID Token to server and validate
-            String url = "http://10.0.2.2:1337/tokensignin/";
+            // Save user email for access across app
+            MyApplication.setUserEmail(email);
+
+            // Send ID Token to server and validate
+            String url = getString(R.string.server_url) + getString(R.string.tok_signin_put);
 
             JSONObject postparams = new JSONObject();
 
@@ -227,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     Log.println(Log.DEBUG, "resp", "Create new user");
                                     mContext = this;
                                     Intent intent = new Intent(mContext, ProfileActivity.class);
-                                    intent.putExtra("email", email);
                                     startActivity(intent);
                                 }
 
@@ -235,12 +249,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         },
+
                         (VolleyError error) -> {
                             Log.println(Log.DEBUG, "resp", "error");
                         }
                 );
 
-                addToRequestQueue(jsonObjReq, "post");
+                mReqQueue.addToRequestQueue(jsonObjReq, "post");
             } catch(JSONException jsonEx) {
 
             }

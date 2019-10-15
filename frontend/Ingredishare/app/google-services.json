@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "127621605968",
+    "firebase_url": "https://gifted-runner-129722.firebaseio.com",
+    "project_id": "gifted-runner-129722",
+    "storage_bucket": "gifted-runner-129722.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127621605968:android:eb863a9fdd6e4b9d2eff55",
+        "android_client_info": {
+          "package_name": "com.example.andriod.ingredishare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127621605968-rqo9n2d4urdfhiq4v08bnc3puc636hjq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.andriod.ingredishare",
+            "certificate_hash": "5eb75396c3197fb74a3267c114a4bfa5f34d440d"
+          }
+        },
+        {
+          "client_id": "127621605968-bco5cfpv64kpjs5jb06pcum78649jese.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.andriod.ingredishare",
+            "certificate_hash": "5bff18978f214452eec598aed56a2784c4443eb7"
+          }
+        },
+        {
+          "client_id": "127621605968-oapshe970ikf09da079hmkh8uqdmd1ln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZZ_aGar98-8KuAgGvkOgMiuNMA9MpvOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127621605968-oapshe970ikf09da079hmkh8uqdmd1ln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
