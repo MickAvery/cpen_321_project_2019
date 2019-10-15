@@ -3,24 +3,47 @@ package com.example.andriod.ingredishare;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-/**
- * Created by Brandon on 2019-10-08.
- */
+import java.util.ArrayList;
+import java.util.List;
 
 public class IngredientListActivity  extends AppCompatActivity {
+
+    private RecyclerView.LayoutManager lManager;
+    private EventAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ingredient_list_layout);
+        setContentView(R.layout.newsfeed);
 
-        Toolbar myToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
+        // Get the RecyclerView
+        RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler_view);
+
+       // Toolbar myToolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(myToolbar);
+
+        lManager = new LinearLayoutManager(this);
+        recycler.setLayoutManager(lManager);
+
+        // Set the custom adapter
+        List<Event> eventList = new ArrayList<>();
+        adapter = new EventAdapter(eventList);
+        recycler.setAdapter(adapter);
+
+        for(int i = 0; i < 10; i++){
+            Event event = new Event("Sarah", ("egg" + i), "info", "photo");
+            adapter.addEvent(event);
+        }
+        ((LinearLayoutManager)lManager).scrollToPositionWithOffset(0, 0);
+
+
     }
 
     @Override
