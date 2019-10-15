@@ -271,6 +271,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
                     System.out.println(name);
                     System.out.println(email);
+
+                    // TO DO : Send name, photo, and email to backend for storage
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
