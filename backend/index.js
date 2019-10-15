@@ -1,18 +1,35 @@
 var express = require('express');
 var app     = express();
 var mongo   = require('mongodb');
+var gcm     = require('node-gcm');
 
+/*********************************************************************
+ * MODULE SETUP
+ *********************************************************************/
+
+/**
+ * Google oath2.0
+ **/
 const {OAuth2Client} = require('google-auth-library');
 const SERVER_CLIENT_ID = '127621605968-j54jl9efu5b5jfhoo5bub65vsokohp5r.apps.googleusercontent.com';
 const APP_CLIENT_ID = '127621605968-bco5cfpv64kpjs5jb06pcum78649jese.apps.googleusercontent.com';
-const client = new OAuth2Client(SERVER_CLIENT_ID); /* TODO: set this */
+const client = new OAuth2Client(SERVER_CLIENT_ID);
 
+/**
+ * Firebase Cloud Messaging
+ **/
+const FCM_API_KEY = 'AAAAHbbXKlA:APA91bFeV7nuPtdUEYgQipthO5o1nCvK-hh8Tuaaz6X_ygYiH7GDxkxP5DCE_p5dfTz1o-IRFiAomjdk1OEGoQofaW5WgOV2XoxEwN7F7zOGqangZ7y5a6-YR30Qw-3VK_fSUgTlJwbP';
+var sender = new gcm.Sender(FCM_API_KEY);
+
+/**
+ * Express JSON parser
+ **/
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 /**
- * Setup DB
+ * Setup MongoDB
  **/
 var mongoClient = mongo.MongoClient;
 const mongoLocalUri = "mongodb://localhost:27017/";
@@ -40,9 +57,10 @@ var server = app.listen(port, function() {
     console.log("Example app listening at http://%s:%s", host, port);
 });
 
-/**
- * RESTful services
- **/
+/*********************************************************************
+ * RESTFUL SERVICES
+ *********************************************************************/
+
 app.get('/getAllRequests', function(req, res) {
     console.log("Test");
     try {
@@ -60,6 +78,30 @@ app.get('/getAllRequests', function(req, res) {
 
 app.get('/', function(req, res) {
     res.send("Hello world!");
+});
+
+app.get('/isExistingUser', function(req, res) {
+    console.log("/isExistingUser GET");
+
+    var email = req.body.email;
+
+    var query = dbObj.collection("users").find({email:user_email}).toArray(function(err, result) {
+        if(err) throw err;
+
+        if(typeof result !== 'undefined' && result.length > 0) {
+            res.json({"pre_existing_user" : true});
+        } else {
+            res.json({"pre_existing_user" : false});
+
+            /* TODO: save to db */
+            var newUser = {email : user_email};
+            dbObj.collection("users").insertOne(newUser, function(err, res) {
+                if(err) throw err;
+
+                console.log("Created new user!");
+            });
+        }
+    });
 });
 
 app.post('/tokensignin', function(req, res) {
@@ -93,9 +135,60 @@ app.post('/tokensignin', function(req, res) {
     }
 });
 
-app.get('/yada', function(req, res) {
-    console.log("got something");
+app.put('/saveFcmToken', function(req, res) {
+    console.log("/saveFcmToken PUT");
+
+    var email = req.body.email;
+    var tok = req.body.token;
+
+    var query = {email : email};
+    var obj = {fcm_tok : tok};
+    var newVals = { $set : obj };
+
+    var query = dbObj.collection("users").updateOne(query, newVals, function(err, res) {
+        if(err) throw err;
+        console.log("update success");
+    });
+
+    res.json({"dummy": "dummy"}); /* TODO: figure out how Volley on frontend can accept empty responses */
 });
+
+app.get('/notif_test', function(req, res) {
+    console.log("/notif_test GET");
+
+    /* prepare message */
+    var message = new gcm.Message({
+        data : {key1 : 'mgs1'},
+        notification: {
+            title: "Hello, World",
+            icon: "ic_launcher",
+            body: "This is a notification that will be displayed if your app is in the background."
+        }
+    });
+
+    /* notify all users */
+    var query = dbObj.collection("users").find().toArray(function(err, result) {
+        if(err) throw err;
+
+        /* append user reg tokens here */
+        var regTokens = [];
+
+        result.forEach(function(item, index) {
+            regTokens.push(item['fcm_tok']);
+        });
+
+        sender.send(message, {registrationTokens : regTokens}, function(err, resp) {
+            if(err)
+                console.error(err);
+            else
+                console.log(resp);
+        });
+    });
+});
+
+/*********************************************************************
+ * HELPER FUNCTIONS
+ *********************************************************************/
 
 async function verifyToken(token) {
     const ticket = await client.verifyIdToken({
