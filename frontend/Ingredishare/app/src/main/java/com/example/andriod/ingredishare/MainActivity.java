@@ -278,6 +278,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     System.out.println(name);
                     System.out.println(email);
+
+                    // TO DO : Send name, photo, and email to backend for storage
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

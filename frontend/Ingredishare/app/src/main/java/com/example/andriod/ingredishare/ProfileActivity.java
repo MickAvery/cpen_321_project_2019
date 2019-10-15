@@ -32,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
         mBackButton = findViewById(R.id.back_button);
         mSaveButton = findViewById(R.id.save_button);
 
+        // TO DO: Grab data from the backend
         mNameEditText.setText("Brandon Holmes");
         mBioEditText.setText("UBC student");
         mPrefEditText.setText("I like baking cookies!");
