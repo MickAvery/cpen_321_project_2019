@@ -14,7 +14,7 @@ public class IngrediPostActivity extends AppCompatActivity implements View.OnCli
     private Context mContext;
     private Button offerButton;
     private Button requestButton;
-
+    private Button backbutton;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +24,7 @@ public class IngrediPostActivity extends AppCompatActivity implements View.OnCli
 
         offerButton = findViewById(R.id.offer);
         requestButton = findViewById(R.id.request);
+        backbutton = findViewById(R.id.back_button);
 
         offerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +38,14 @@ public class IngrediPostActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, RequestIngredientActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        backbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, IngredientListActivity.class);
                 startActivity(intent);
             }
         });
