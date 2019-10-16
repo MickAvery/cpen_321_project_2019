@@ -1,5 +1,6 @@
 package com.example.andriod.ingredishare;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,6 +20,8 @@ public class IngredientListActivity  extends AppCompatActivity {
 
     private RecyclerView.LayoutManager lManager;
     private EventAdapter adapter;
+    private Button postButton;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,17 @@ public class IngredientListActivity  extends AppCompatActivity {
         }
         ((LinearLayoutManager)lManager).scrollToPositionWithOffset(0, 0);
 
+        postButton = findViewById(R.id.post_ingredient_button);
+
+        postButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("creating post activity");
+                Intent intent = new Intent(mContext, IngrediPostActivity.class);
+                Toast.makeText(mContext, "Loading New Post Page", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+            }
+        });
 
     }
 
