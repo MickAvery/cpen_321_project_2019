@@ -64,13 +64,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("entering onCreate");
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         mReqQueue = GlobalRequestQueue.getInstance();
-
         mSignUp = findViewById(R.id.sign_up_button);
         mSignIn = findViewById(R.id.log_in_button);
         mGoogleSignIn = findViewById(R.id.google_auth);
@@ -90,24 +87,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 AccessToken accessToken = loginResult.getAccessToken();
                 useFBLoginInformation(accessToken);
                 Intent intent = new Intent(mContext, IngredientListActivity.class);
-                Toast.makeText(mContext, "sign in", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "fb sign in", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             }
             @Override
             public void onCancel() {
+                Log.e(this.getClass().toString(), "facebook signin cancel");
             }
             @Override
             public void onError(FacebookException error) {
+                Log.e(this.getClass().toString(), "facebook signin error ", error);
             }
         });
 
-        mSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, IngredientListActivity.class);
-                Toast.makeText(mContext, "sign in", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-            }
+        mSignIn.setOnClickListener(view -> {
+            Intent intent = new Intent(mContext, IngredientListActivity.class);
+            Toast.makeText(mContext, "sign in", Toast.LENGTH_SHORT).show();
+            startActivity(intent);
         });
 
 
@@ -136,48 +132,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        System.out.println("entering onstart");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
 
-        if(account != null) { /* TODO set back to != after debugging */
+        if(account != null) {
             /* check if user exists in backend */
             String url = getString(R.string.server_url) + getString(R.string.is_existing_user_get);
 
-            JSONObject getparams = new JSONObject();
+            JSONObject getParams = new JSONObject();
             String email = account.getEmail();
 
             MyApplication.setUserEmail(email);
 
             try {
-                getparams.put("email", email);
+                getParams.put("email", email);
 
-                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, getparams,
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, getParams,
                         (JSONObject response) -> {
                             try {
                                 boolean pre_existing_user = response.getBoolean("pre_existing_user");
 
                                 if(pre_existing_user) {
-                                    /* TODO: proceed to live feed */
-                                    Log.println(Log.DEBUG, "resp", "Go to livefeed");
-                                    mContext = this;
-                                    Intent intent = new Intent(mContext, IngredientListActivity.class);
+                                    /* TODO: proceed to live feed. Get rid of "go to" log after done*/
+                                    Log.d("resp", "Go to livefeed");
+                                    Intent intent = new Intent(this, IngredientListActivity.class);
                                     startActivity(intent);
                                 } else {
-                                    /* TODO: new user activity */
-                                    Log.println(Log.DEBUG, "resp", "Create new user");
-                                    mContext = this;
-                                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                                    /* TODO: new user activity. Get rid of "go to" log after done */
+                                    Log.d("resp", "Create new user");
+                                    Intent intent = new Intent(this, ProfileActivity.class);
                                     startActivity(intent);
                                 }
 
                             } catch (JSONException jsonEx) {
-
+                                Log.e(this.getClass().toString(), jsonEx.toString());
                             }
                         },
 
-                        (VolleyError error) -> {
-                            Log.println(Log.DEBUG, "resp", "error");
-                        }
+                        (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
                 );
 
                 mReqQueue.addToRequestQueue(jsonObjReq, "post");
@@ -185,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         }
-        Log.println(Log.DEBUG, "tag", ",msg");
     }
 
     @Override
@@ -257,11 +247,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 mReqQueue.addToRequestQueue(jsonObjReq, "post");
             } catch(JSONException jsonEx) {
-
+                Log.e(this.getClass().toString(), "handleSignInResult:error", jsonEx);
             }
 
         } catch (ApiException e) {
-            Log.e("Auth", "handleSignInResult:error", e);
+            Log.e(this.getClass().toString(), "handleSignInResult:error", e);
         }
     }
 
@@ -291,10 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String email = object.getString("email");
                     String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
 
-                    System.out.println(name);
-                    System.out.println(email);
-
-                    // TO DO : Send name, photo, and email to backend for storage
+                    // TODO : Send name, photo, and email to backend for storage
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
