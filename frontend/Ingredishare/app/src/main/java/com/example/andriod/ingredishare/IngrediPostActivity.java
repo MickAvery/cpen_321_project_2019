@@ -7,27 +7,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 public class IngrediPostActivity extends AppCompatActivity implements View.OnClickListener{
     private View mPost;
     private Context mContext;
-    private Button postButton;
+    private Button offerButton;
+    private Button requestButton;
 
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.requestofferswitch_layout);
+        mContext = this;
 
-        postButton = findViewById(R.id.offer);
+        offerButton = findViewById(R.id.offer);
+        requestButton = findViewById(R.id.request);
 
-        postButton.setOnClickListener(new View.OnClickListener() {
+        offerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContentView(R.layout.ingredipost_layout);
-               // Intent intent = new Intent(mContext, IngredientListActivity.class);
-            //    Toast.makeText(mContext, "posted!", Toast.LENGTH_SHORT).show();
-              //  startActivity(intent);
+                Intent intent = new Intent(mContext, OfferIngredientActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        requestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, RequestIngredientActivity.class);
+                startActivity(intent);
             }
         });
     }

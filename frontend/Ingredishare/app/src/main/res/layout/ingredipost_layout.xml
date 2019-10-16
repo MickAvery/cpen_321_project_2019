@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/lightGrey">
 
-        <android.support.v7.widget.Toolbar
+        <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -53,6 +53,18 @@
             android:layout_marginEnd="33dp"
             android:layout_marginBottom="34dp"
             android:text="POST" />
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="33dp"
+            android:layout_marginEnd="296dp"
+            android:layout_marginBottom="34dp"
+            android:text="BACK" />
 
     </RelativeLayout>
 </LinearLayout>
