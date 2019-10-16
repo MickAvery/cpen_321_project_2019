@@ -27,7 +27,7 @@ public class IngredientListActivity  extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newsfeed);
-
+        mContext = this;
         // Get the RecyclerView
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -53,7 +53,6 @@ public class IngredientListActivity  extends AppCompatActivity {
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("creating post activity");
                 Intent intent = new Intent(mContext, IngrediPostActivity.class);
                 Toast.makeText(mContext, "Loading New Post Page", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
