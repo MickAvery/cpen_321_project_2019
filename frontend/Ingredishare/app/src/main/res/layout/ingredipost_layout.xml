@@ -19,7 +19,6 @@
             app:title="New Post"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
-
         <TextView
             android:id="@+id/Item"
             android:layout_width="wrap_content"
