@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -61,6 +62,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int RC_SIGN_IN = 9001;
     private ImageView displayImage;
     private GlobalRequestQueue mReqQueue;
+    private RequestQueue requestQueue;
+
+
+    /*
+    Create a getRequestQueue() method to return the instance of
+    RequestQueue.This kind of implementation ensures that
+    the variable is instatiated only once and the same
+    instance is used throughout the application
+    */
+    public RequestQueue getRequestQueue() {
+        if (requestQueue == null)
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
+        return requestQueue;
+    }
+    /*
+    public method to add the Request to the the single
+    instance of RequestQueue created above.Setting a tag to every
+    request helps in grouping them. Tags act as identifier
+    for requests and can be used while cancelling them
+    */
+    public void addToRequestQueue(Request request, String tag) {
+        request.setTag(tag);
+        getRequestQueue().add(request);
+    }
+    /*
+    Cancel all the requests matching with the given tag
+    */
+    public void cancelAllRequests(String tag) {
+        getRequestQueue().cancelAll(tag);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
