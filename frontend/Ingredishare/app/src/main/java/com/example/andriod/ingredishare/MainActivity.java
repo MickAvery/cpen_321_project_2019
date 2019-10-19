@@ -199,7 +199,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.w("TAG", idToken);
 
             // TODO(developer): send ID Token to server and validate
-            String url = "http://10.0.2.2:1337/tokensignin/";
+       //     String url = "http://10.0.2.2:1337/tokensignin/";
+            String url = getString(R.string.server_url);
 
             JSONObject postparams = new JSONObject();
 
