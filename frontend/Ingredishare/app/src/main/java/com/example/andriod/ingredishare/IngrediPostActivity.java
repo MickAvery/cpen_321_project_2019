@@ -55,4 +55,5 @@ public class IngrediPostActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         Toast.makeText(mContext, "hello!", Toast.LENGTH_SHORT).show();
     }
+
 }
