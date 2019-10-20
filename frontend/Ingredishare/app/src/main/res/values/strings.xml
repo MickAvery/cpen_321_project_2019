@@ -21,4 +21,6 @@
     <string name="invalid_email">Invalid email</string>
     <string name="fail_log_in">Email or password incorrect</string>
     <string name="fail_sign_up">Email is taken</string>
+
+    <string name="createRequest"></string>
 </resources>

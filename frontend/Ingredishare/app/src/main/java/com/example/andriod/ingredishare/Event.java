@@ -4,13 +4,13 @@ public class Event {
 
     private String name;
     private String id;
-    private String data;
+    private String description;
     private String photo;
 
-    public Event(String name, String eventId, String data, String photo) {
+    public Event(String name, String eventId, String description, String photo) {
         this.name = name;
         this.id = eventId;
-        this.data = data;
+        this.description = description;
         this.photo = photo;
     }
 
@@ -27,7 +27,7 @@ public class Event {
         return id;
     }
 
-    public String getData() {
-        return data;
+    public String getDescription() {
+        return description;
     }
 }

@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
+import com.android.volley.Response;
+import com.android.volley.Request;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -23,6 +25,8 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
     private Button backbutton;
     private Button postButton;
     private EditText description;
+    private EditText name;
+    private GlobalRequestQueue mReqQueue;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,31 +69,49 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
 
     public void savePost(){
         description = findViewById(R.id.description);
+        name = findViewById(R.id.name);
+
         Event newPostEvent = new Event("Sarah", "123", description.toString(), "123");
 
         // TODO(developer): send ID Token to server and validate
         //     String url = "http://10.0.2.2:1337/tokensignin/";
-        String url = getString(R.string.server_url) + getString(R.string.tok_signin_put);
+        String url = getString(R.string.server_url) + getString(R.string.createRequest);
 
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put(getString(R.string.full_name), newPostEvent.getName());
+            postparams.put("name", newPostEvent.getName());
+            postparams.put("decription", newPostEvent.getDescription());
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
-                        mContext = this;
-                        Intent intent = new Intent(mContext, IngredientListActivity.class);
-                        startActivity(intent);
+                        try {
+                            Boolean success_response = response.getBoolean("createRequestResponse");
+
+                            if (success_response) {
+                                Log.d("resp", "Go to livefeed");
+                                Intent intent = new Intent(this, IngredientListActivity.class);
+                                startActivity(intent);
+                            } else {
+                                /* TODO: new user activity. Get rid of "go to" log after done */
+                                Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(this, IngredientListActivity.class);
+                                startActivity(intent);
+                            }
+
+                        } catch (JSONException jsonEx) {
+                            Log.e(this.getClass().toString(), jsonEx.toString());
+                        }
+
                     },
-                    (VolleyError error) -> {
-                        Log.println(Log.DEBUG, "resp", "error");
-                    }
-            );
 
-        //    addToRequestQueue(jsonObjReq, "post");
-        } catch(JSONException jsonEx) {
+                        (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
+                );
 
-        }
+                mReqQueue = GlobalRequestQueue.getInstance();
+                mReqQueue.addToRequestQueue(jsonObjReq, "post");
+            } catch(JSONException jsonEx) {
+
+            }
     }
 }
