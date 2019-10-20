@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private View mSignUp;
     private View mSignIn;
     private View mGoogleSignIn;
+    private TextView mInvalidEmailView;
+    private EditText mEmail;
+    private EditText mPassword;
+
     private Context mContext;
     private FacebookSdk FacebookSdk;
     private AppEventsLogger AppEventsLogger;
@@ -102,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSignUp = findViewById(R.id.sign_up_button);
         mSignIn = findViewById(R.id.log_in_button);
         mGoogleSignIn = findViewById(R.id.google_auth);
+        mEmail = findViewById(R.id.email_edit_text);
+        mPassword = findViewById(R.id.password_edit_text);
+        mInvalidEmailView = findViewById(R.id.invalid_email);
         mContext = this;
 
         mGoogleSignIn.setOnClickListener(this);
@@ -117,9 +125,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Retrieving access token using the LoginResult
                 AccessToken accessToken = loginResult.getAccessToken();
                 useFBLoginInformation(accessToken);
-                Intent intent = new Intent(mContext, IngredientListActivity.class);
-                Toast.makeText(mContext, "fb sign in", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
             }
             @Override
             public void onCancel() {
@@ -132,19 +137,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         mSignIn.setOnClickListener(view -> {
-            Intent intent = new Intent(mContext, IngredientListActivity.class);
-            Toast.makeText(mContext, "sign in", Toast.LENGTH_SHORT).show();
-            startActivity(intent);
+            attemptLogIn(mEmail.getText().toString(), mPassword.getText().toString());
         });
 
 
-        mSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, IngredientListActivity.class);
-                Toast.makeText(mContext, "sign up", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-            }
+        mSignUp.setOnClickListener(view -> {
+            attemptSignUp(mEmail.getText().toString(), mPassword.getText().toString());
         });
 
         // Request only the user's ID token, which can be used to identify the
@@ -245,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             JSONObject postparams = new JSONObject();
 
             try {
-                postparams.put("idToken", idToken);
+                postparams.put(getString(R.string.id_token), idToken);
 
                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                         (JSONObject response) -> {
@@ -255,14 +253,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 if(pre_existing_user) {
                                     /* TODO: proceed to live feed */
                                     Log.println(Log.DEBUG, "resp", "Go to livefeed");
-                                    mContext = this;
-                                    Intent intent = new Intent(mContext, IngredientListActivity.class);
+                                    Intent intent = new Intent(this, IngredientListActivity.class);
                                     startActivity(intent);
                                 } else {
                                     /* TODO: new user activity */
                                     Log.println(Log.DEBUG, "resp", "Create new user");
-                                    mContext = this;
-                                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                                    Intent intent = new Intent(this, ProfileActivity.class);
                                     startActivity(intent);
                                 }
 
@@ -295,6 +291,98 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void attemptSignUp(String email, String password) {
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+
+            mInvalidEmailView.setVisibility(View.INVISIBLE);
+            String url = getString(R.string.server_url) + getString(R.string.user_pass_sign_up);
+            JSONObject postparams = new JSONObject();
+
+            try {
+                postparams.put(getString(R.string.email), email);
+                postparams.put(getString(R.string.password), password);
+
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                        (JSONObject response) -> {
+                            try {
+                                boolean success = response.getBoolean(getString(R.string.success));
+
+                                if (success) {
+                                    MyApplication.setUserEmail(email);
+                                    Log.println(Log.DEBUG, "resp", "Go to new profile");
+                                    Intent intent = new Intent(this, ProfileActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    mInvalidEmailView.setText(getString(R.string.fail_log_in));
+                                    mInvalidEmailView.setVisibility(View.VISIBLE);
+                                }
+
+                            } catch (JSONException jsonEx) {
+
+                            }
+                        },
+
+                        (VolleyError error) -> {
+                            Log.println(Log.DEBUG, "resp", "error");
+                        }
+                );
+
+                mReqQueue.addToRequestQueue(jsonObjReq, "post");
+            } catch (JSONException jsonEx) {
+                Log.e(this.getClass().toString(), "attemptLogIn:error", jsonEx);
+            }
+        } else {
+            mInvalidEmailView.setText(R.string.invalid_email);
+            mInvalidEmailView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void attemptLogIn(String email, String password) {
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+
+            mInvalidEmailView.setVisibility(View.INVISIBLE);
+            String url = getString(R.string.server_url) + getString(R.string.user_pass_log_in);
+            JSONObject postparams = new JSONObject();
+
+            try {
+                postparams.put(getString(R.string.email), email);
+                postparams.put(getString(R.string.password), password);
+
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                        (JSONObject response) -> {
+                            try {
+                                boolean success = response.getBoolean(getString(R.string.success));
+
+                                if (success) {
+                                    MyApplication.setUserEmail(email);
+                                    Log.println(Log.DEBUG, "resp", "Go to livefeed log in");
+                                    Intent intent = new Intent(this, IngredientListActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    mInvalidEmailView.setText(getString(R.string.fail_sign_up));
+                                    mInvalidEmailView.setVisibility(View.VISIBLE);
+                                }
+
+                            } catch (JSONException jsonEx) {
+
+                            }
+                        },
+
+                        (VolleyError error) -> {
+                            Log.println(Log.DEBUG, "resp", "error");
+                        }
+                );
+
+                mReqQueue.addToRequestQueue(jsonObjReq, "post");
+            } catch (JSONException jsonEx) {
+                Log.e(this.getClass().toString(), "attemptLogIn:error", jsonEx);
+            }
+        } else {
+            mInvalidEmailView.setText(R.string.invalid_email);
+            mInvalidEmailView.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     private void useFBLoginInformation(AccessToken accessToken) {
         /**
@@ -311,13 +399,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String name = object.getString("name");
                     String email = object.getString("email");
                     String image = object.getJSONObject("picture").getJSONObject("data").getString("url");
+                    String url = getString(R.string.server_url) + getString(R.string.fb_user_info_put);
 
-                    // TODO : Send name, photo, and email to backend for storage
+                    MyApplication.setUserEmail(email);
+                    JSONObject postparams = new JSONObject();
+
+                    try {
+                        postparams.put(getString(R.string.email), email);
+                        postparams.put(getString(R.string.full_name), name);
+                        postparams.put(getString(R.string.fb_profile_photo), image);
+
+
+                        JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                                (JSONObject jsonResponse) -> {
+                                    try {
+                                        boolean pre_existing_user = jsonResponse.getBoolean("pre_existing_user");
+
+                                        if (pre_existing_user) {
+                                            /* TODO: proceed to live feed */
+                                            Log.println(Log.DEBUG, "resp", "Go to livefeed");
+                                            Intent intent = new Intent(mContext, IngredientListActivity.class);
+                                            startActivity(intent);
+                                        } else {
+                                            /* TODO: new user activity */
+                                            Log.println(Log.DEBUG, "resp", "Create new user");
+                                            Intent intent = new Intent(mContext, ProfileActivity.class);
+                                            startActivity(intent);
+                                        }
+
+                                    } catch (JSONException jsonEx) {
+
+                                    }
+                                },
+
+                                (VolleyError error) -> {
+                                    Log.println(Log.DEBUG, "resp", "error");
+                                }
+                        );
+
+                        mReqQueue.addToRequestQueue(jsonObjReq, "post");
+
+                        // TODO : Send name, photo, and email to backend for storage
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+
         // We set parameters to the GraphRequest using a Bundle.
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,email,picture.width(200)");
@@ -325,5 +456,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Initiate the GraphRequest
         request.executeAsync();
     }
-
 }

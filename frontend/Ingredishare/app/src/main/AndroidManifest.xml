@@ -21,7 +21,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,8 +36,6 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".IngredientListActivity"/>
-        <activity android:name=".ProfileActivity"/>
         <activity android:name=".IngrediPostActivity"/>
         <activity android:name=".RequestIngredientActivity"/>
         <activity android:name=".OfferIngredientActivity"/>
