@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/48f66665-375e-4852-9e9b-679b5d6dad7f/resourceGroups/cpen_321_group/providers/Microsoft.Web/sites/ingredishare-backend",
+    "appService.deploySubpath": ""
+}

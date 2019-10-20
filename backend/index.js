@@ -36,16 +36,25 @@ const mongoLocalUri = "mongodb://localhost:27017/";
 const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
 var dbObj;
 
-/* TODO: how to either connect to local DB or cloud DB? */
-mongoClient.connect((mongoLocalUri), function(err, db) {
-    if (err) throw err;
-    dbObj = db.db("mydb");
-    dbObj.createCollection("customers", function(err, res) {
-        if (err) throw err;
-        console.log("Collection created!");
-        // db.close();
-    });
+/* <-- Connection for PROD. COMMENT THIS SECTION IF CONNECTING TO LOCAL [START HERE]*/
+mongoClient.connect((mongoProdUri), function(err, db) {
+    if(err) throw err;
+    dbIngrediShare = db.db("ingrediShare");
 });
+/*Connection for PROD [END HERE] --> */
+
+/* <-- Connection for LOCAL [START HERE] */
+// mongoClient.connect((mongoLocalUri), function(err, db) {
+//     if (err) throw err;
+//     dbObj = db.db("mydb");
+//     dbObj.createCollection("customers", function(err, res) {
+//         if (err) throw err;
+//         console.log("Collection created!");
+//         // db.close();
+//     });
+//     dbIngrediShare = db.db("ingrediShare");
+// });
+/*Connection for LOCAL [END HERE] --> */
 
 /**
  * Setup server
@@ -61,48 +70,8 @@ var server = app.listen(port, function() {
  * RESTFUL SERVICES
  *********************************************************************/
 
-app.get('/getAllRequests', function(req, res) {
-    console.log("Test");
-    try {
-        getAllRequests().then((result) => {
-            res.writeHead(200, {"Content-Type": "text/plain"});
-            var str = "";
-            result.forEach(function (item) {
-                str += JSON.stringify(item);
-            });
-            res.end(str);
-        });
-    } catch (err) {
-    }
-});
-
-app.get('/', function(req, res) {
-    res.send("Hello world!");
-});
-
-app.get('/isExistingUser', function(req, res) {
-    console.log("/isExistingUser GET");
-
-    var email = req.body.email;
-
-    var query = dbObj.collection("users").find({email:user_email}).toArray(function(err, result) {
-        if(err) throw err;
-
-        if(typeof result !== 'undefined' && result.length > 0) {
-            res.json({"pre_existing_user" : true});
-        } else {
-            res.json({"pre_existing_user" : false});
-
-            /* TODO: save to db */
-            var newUser = {email : user_email};
-            dbObj.collection("users").insertOne(newUser, function(err, res) {
-                if(err) throw err;
-
-                console.log("Created new user!");
-            });
-        }
-    });
-});
+const router = require('./routes/get')
+app.use(router)
 
 app.post('/tokensignin', function(req, res) {
     console.log("/tokensignin POST");
@@ -201,12 +170,4 @@ async function verifyToken(token) {
     const email = payload['email'];
     
     return email;
-}
-
-async function getAllRequests() {
-    const db = await mongoClient.connect(mongoLocalUri);
-    const dbObj = db.db("ingrediShare");
-    const result = await dbObj.collection("requests").find({}).toArray();
-
-    return result;
 }
