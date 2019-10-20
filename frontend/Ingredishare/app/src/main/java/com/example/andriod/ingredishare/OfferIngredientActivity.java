@@ -81,7 +81,7 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
 
         try {
             postparams.put("name", newPostEvent.getName());
-            postparams.put("decription", newPostEvent.getDescription());
+            postparams.put("description", newPostEvent.getDescription());
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {

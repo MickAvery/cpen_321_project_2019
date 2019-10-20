@@ -14,12 +14,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class IngredientListActivity  extends AppCompatActivity {
@@ -28,6 +38,8 @@ public class IngredientListActivity  extends AppCompatActivity {
     private EventAdapter adapter;
     private Button postButton;
     private Context mContext;
+
+    private GlobalRequestQueue mReqQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +60,8 @@ public class IngredientListActivity  extends AppCompatActivity {
         adapter = new EventAdapter(eventList);
         recycler.setAdapter(adapter);
 
-        for(int i = 0; i < 10; i++){
-            Event event = new Event("Sarah", ("egg" + i), "info", "photo");
-            adapter.addEvent(event);
-        }
+        getEventsFromBackend();
+
         ((LinearLayoutManager)lManager).scrollToPositionWithOffset(0, 0);
 
         postButton = findViewById(R.id.post_ingredient_button);
@@ -93,6 +103,47 @@ public class IngredientListActivity  extends AppCompatActivity {
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /*
+      Grabs events from the backend and adds them to the adapter
+     */
+    public void getEventsFromBackend(){
+
+        String url = getString(R.string.server_url) + getString(R.string.getAllRequests);
+
+
+        try {
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET, url, null,
+                    (JSONArray json_events_array) -> {
+                        try {
+                            for (int i = 0; i < json_events_array.length(); i++)
+                            {
+                                JSONObject json_data = json_events_array.getJSONObject(i);
+
+                                String name =json_data.getString("name");
+                                String description = json_data.getString("description");
+
+                                Event event = new Event(name, "egg", description, "photo");
+                                adapter.addEvent(event);
+                            }
+
+
+                        } catch (JSONException jsonEx) {
+                            Log.e(this.getClass().toString(), jsonEx.toString());
+                        }
+
+                    },
+
+                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
+            );
+            // Add JsonArrayRequest to the RequestQueue
+            mReqQueue = GlobalRequestQueue.getInstance();
+            mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
+
+        } catch(Exception e) {
+
         }
     }
 }

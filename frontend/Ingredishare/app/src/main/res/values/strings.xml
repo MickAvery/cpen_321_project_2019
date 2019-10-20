@@ -23,4 +23,5 @@
     <string name="fail_sign_up">Email is taken</string>
 
     <string name="createRequest"></string>
+    <string name="getAllRequests"></string>
 </resources>

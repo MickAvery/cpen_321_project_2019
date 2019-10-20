@@ -37,7 +37,7 @@ public class IngrediPostActivity extends AppCompatActivity implements View.OnCli
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, RequestIngredientActivity.class);
+                Intent intent = new Intent(mContext, OfferIngredientActivity.class);
                 startActivity(intent);
             }
         });
