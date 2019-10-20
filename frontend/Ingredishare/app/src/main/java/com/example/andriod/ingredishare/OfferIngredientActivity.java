@@ -64,7 +64,6 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
     }
 
     public void savePost(){
-
         description = findViewById(R.id.description);
         Event newPostEvent = new Event("Sarah", "123", description.toString(), "123");
 
@@ -75,7 +74,7 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put("offer_ingredient_post_name", newPostEvent.getName());
+            postparams.put(getString(R.string.full_name), newPostEvent.getName());
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {

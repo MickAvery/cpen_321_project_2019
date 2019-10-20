@@ -74,7 +74,7 @@ public class RequestIngredientActivity extends AppCompatActivity implements View
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put("offer_ingredient_post_name", newPostEvent.getName());
+            postparams.put(getString(R.string.full_name), newPostEvent.getName());
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
