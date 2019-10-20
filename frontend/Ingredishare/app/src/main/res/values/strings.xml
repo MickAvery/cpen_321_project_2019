@@ -8,4 +8,17 @@
     <string name="tok_signin_put">/tokensignin</string>
     <string name="is_existing_user_get">/isExistingUser</string>
     <string name="save_fcm_tok_put">/saveFcmToken</string>
+    <string name="fb_user_info_put">/fbSingIn</string>
+    <string name="user_pass_log_in">/userPassLogIn</string>
+    <string name="user_pass_sign_up">/userPassSignUp</string>
+
+    <string name="id_token">id_token</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="full_name">full_name</string>
+    <string name="fb_profile_photo">fb_profile_photo</string>
+    <string name="success">success</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="fail_log_in">Email or password incorrect</string>
+    <string name="fail_sign_up">Email is taken</string>
 </resources>
