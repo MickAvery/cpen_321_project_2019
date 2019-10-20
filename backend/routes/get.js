@@ -19,18 +19,40 @@ router.get('/getAllRequests', (req, res) => {
     }
 });
 
-async function getAllRequests() {
+async function getAllRequests(lat,long) {
     const result = await dbIngrediShare.collection("requests").find({}).toArray();
+    return result;
+}
+
+router.get('/getAllRequestsFromLatLong', (req, res) => {
+    try {
+        getAllRequestsFromLatLong(req.body.lat, req.body.long).then((result) => {
+            res.writeHead(200, {"Content-Type": "text/plain"});
+            var str = "";
+            result.forEach(function (item) {
+                str += JSON.stringify(item);
+            });
+            res.end(str);
+        });
+    } catch (err) {
+    }
+});
+
+async function getAllRequestsFromLatLong(lat,long) {
+    const result = await dbIngrediShare.collection("requests").find({lat: lat, long:long}, { projection: { _id: 0, name: 1, lat: 1, long: 1 }}).toArray();
     return result;
 }
 
 router.post('/createRequest', (req, res) => {
     try {
-        var newReq = {name: req.body.name, quantity: req.body.quantity};
+        var newReq = {name: req.body.name, description: req.body.description, lat: req.body.lat, long: req.body.long};
         dbIngrediShare.collection("requests").insertOne(newReq, function(err,res) {
-            if(err) throw err;
+            if(err){
+                res.json("createRequestResponse false");
+                throw err;
+            } 
         })
-        res.json("inserted "+ newReq.name + " and "+ newReq.quantity + " successfully");
+        res.json("createRequestResponse true");
     } catch (err){}
 });
 
