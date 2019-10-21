@@ -171,6 +171,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
+
+        boolean isLoggedInFacebook = fbAccessToken != null && !fbAccessToken.isExpired();
 
         if(account != null) {
             /* check if user exists in backend */
@@ -213,6 +216,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch(JSONException jsonEx) {
 
             }
+        } else if(isLoggedInFacebook) {
+            /* TODO: we might wanna check if the user exists in the backend even after they log in via fb, but this will do for now */
+            Intent intent = new Intent(this, IngredientListActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -225,9 +232,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
+        } else {
+            fbcallbackManager.onActivityResult(requestCode, resultCode, data);
         }
-
-        fbcallbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
 
