@@ -1,13 +1,16 @@
 const express = require('express')
 const router = express.Router()
 
+const azureServerURL = "https://ingredishare-backend.azurewebsites.net"
+const localServerURL = "http://localhost:1337"
+
 router.get('/', (req, res) => {
     res.send("Hello world!");
 });
 
 router.get('/getProfileInfo', (req, res) => {
     let requestURL = req.url;
-    const currentURL = new URL("http://localhost:1337"+requestURL);
+    const currentURL = new URL(azureServerURL+requestURL);
     const search_params = currentURL.searchParams;
     var emailObj = {email : search_params.get('email')};
 

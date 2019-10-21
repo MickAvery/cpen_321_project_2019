@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
+const azureServerURL = "https://ingredishare-backend.azurewebsites.net"
+const localServerURL = "http://localhost:1337"
+
 router.get('/getAllRequests', (req, res) => {
     try {
         getAllRequests().then((result) => {
@@ -18,7 +21,7 @@ async function getAllRequests() {
 router.get('/getAllRequestsFromLatLong', (req, res) => {
     let requestURL = req.url;
 
-    const currentURL = new URL("http://localhost:1337" + requestURL);
+    const currentURL = new URL(azureServerURL + requestURL);
     const search_params = currentURL.searchParams;
 
     var temp = {

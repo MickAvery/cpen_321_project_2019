@@ -7,7 +7,8 @@ var bcrypt  = require('bcrypt');
 /*********************************************************************
  * MODULE SETUP
  *********************************************************************/
-
+const azureServerURL = "https://ingredishare-backend.azurewebsites.net"
+const localServerURL = "http://localhost:1337"
 /**
  * Google oath2.0
  **/
