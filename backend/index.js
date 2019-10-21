@@ -134,14 +134,53 @@ app.put('/fbSignIn', function(req, res) {
     console.log('/fbSignIn PUT');
 });
 
-app.get('/userPassSignIn', function(req, res) {
+app.get('/userPassLogIn', function(req, res) {
     console.log('/userPassSignIn GET');
+
+    var user_email = req.query.email;
+    var password = req.query.password;
+    console.log(user_email);
+    console.log(password);
+
+    /* verify that user exists in database */
+    var query = dbObj.collection("users").find({email:user_email}).toArray(function(err, result) {
+        if(err) throw err;
+
+        if(typeof result !== 'undefined' && result.length > 0) {
+            /* pre-existing user, verify password */
+            console.log('/userPassLogIn GET : user exists, verify password');
+
+            var hash = result[0].password;
+
+            bcrypt.compare(password, hash, function(err, hash_result) {
+                if(err) throw err;
+
+                var ret;
+
+                if(hash_result) {
+                    /* Passwords match */
+                    console.log('/userPassLogIn GET success : password correct');
+
+                    ret = {"success" : true};
+                } else {
+                    /* Passwords don't match */
+                    console.log('/userPassLogIn GET fail : password incorrect');
+
+                    ret = {"success" : false};
+                }
+
+                res.json(ret);
+            });
+        } else {
+            console.log('/userPassLogIn GET error : user does not exist');
+
+            res.json({"success" : false});
+        }
+    });
 });
 
 app.post('/userPassSignUp', function(req, res) {
     console.log('/userPassSignUp POST');
-
-    console.log(req.body.email);
 
     var user_email = req.body.email;
     var password = req.body.password;
@@ -155,7 +194,7 @@ app.post('/userPassSignUp', function(req, res) {
             console.log('/userPassSignUp POST error : user exists');
             res.json({"success" : false});
         } else {
-            console.log('/userPassSignUp POST error : user exists');
+            console.log('/userPassSignUp POST : attempt to create user');
 
             /* create user in database */
             res.json({"success" : true});

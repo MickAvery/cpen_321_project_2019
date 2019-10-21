@@ -350,42 +350,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
 
             mInvalidEmailView.setVisibility(View.INVISIBLE);
-            String url = getString(R.string.server_url) + getString(R.string.user_pass_log_in);
-            JSONObject postparams = new JSONObject();
+            String url =
+                    getString(R.string.server_url) + getString(R.string.user_pass_log_in)
+                    + "?"
+                    + "email=" + email
+                    + "&"
+                    + "password=" + password;
 
-            try {
-                postparams.put(getString(R.string.email), email);
-                postparams.put(getString(R.string.password), password);
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
+                    (JSONObject response) -> {
+                        try {
+                            boolean success = response.getBoolean(getString(R.string.success));
 
-                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                        (JSONObject response) -> {
-                            try {
-                                boolean success = response.getBoolean(getString(R.string.success));
-
-                                if (success) {
-                                    MyApplication.setUserEmail(email);
-                                    Log.println(Log.DEBUG, "resp", "Go to livefeed log in");
-                                    Intent intent = new Intent(this, IngredientListActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    mInvalidEmailView.setText(getString(R.string.fail_log_in));
-                                    mInvalidEmailView.setVisibility(View.VISIBLE);
-                                }
-
-                            } catch (JSONException jsonEx) {
-
+                            if (success) {
+                                MyApplication.setUserEmail(email);
+                                Log.println(Log.DEBUG, "resp", "Go to livefeed log in");
+                                Intent intent = new Intent(this, IngredientListActivity.class);
+                                startActivity(intent);
+                            } else {
+                                mInvalidEmailView.setText(getString(R.string.fail_log_in));
+                                mInvalidEmailView.setVisibility(View.VISIBLE);
                             }
-                        },
 
-                        (VolleyError error) -> {
-                            Log.println(Log.DEBUG, "resp", "error");
+                        } catch (JSONException jsonEx) {
+
                         }
-                );
+                    },
 
-                mReqQueue.addToRequestQueue(jsonObjReq, "post");
-            } catch (JSONException jsonEx) {
-                Log.e(this.getClass().toString(), "attemptLogIn:error", jsonEx);
-            }
+                    (VolleyError error) -> {
+                        Log.println(Log.DEBUG, "resp", "error");
+                    }
+            );
+
+            mReqQueue.addToRequestQueue(jsonObjReq, "post");
         } else {
             mInvalidEmailView.setText(R.string.invalid_email);
             mInvalidEmailView.setVisibility(View.VISIBLE);
