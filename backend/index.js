@@ -38,9 +38,10 @@ const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.n
 var dbObj;
 
 /* <-- Connection for PROD. COMMENT THIS SECTION IF CONNECTING TO LOCAL [START HERE]*/
-mongoClient.connect((mongoLocalUri), function(err, db) {
+mongoClient.connect((mongoProdUri), function(err, db) {
     if(err) throw err;
     dbObj = db.db("ingrediShare");
+    console.log("connected to MongoDB!");
     // dbObj.createCollection("customers", function(err, res) {
         // if (err) throw err;
         // console.log("MongoDB : Collection created!");
