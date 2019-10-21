@@ -8,7 +8,7 @@
     <string name="tok_signin_put">/tokensignin</string>
     <string name="is_existing_user_get">/isExistingUser</string>
     <string name="save_fcm_tok_put">/saveFcmToken</string>
-    <string name="fb_user_info_put">/fbSingIn</string>
+    <string name="fb_user_info_put">/fbSignIn</string>
     <string name="user_pass_log_in">/userPassLogIn</string>
     <string name="user_pass_sign_up">/userPassSignUp</string>
     <string name="get_all_requests_lat_long">/getAllRequestsFromLatLong</string>

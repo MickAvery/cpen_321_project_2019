@@ -131,8 +131,29 @@ app.put('/saveFcmToken', function(req, res) {
     res.json({"dummy": "dummy"}); /* TODO: figure out how Volley on frontend can accept empty responses */
 });
 
-app.put('/fbSignIn', function(req, res) {
-    console.log('/fbSignIn PUT');
+app.post('/fbSignIn', function(req, res) {
+    console.log('/fbSignIn POST');
+
+    var user_email = req.body.email;
+
+    var query = dbObj.collection("users").find({email:user_email}).toArray(function(err, result) {
+        if(err) throw err;
+
+        if(typeof result !== 'undefined' && result.length > 0) {
+            console.log('/fbSignIn POST : user exists');
+
+            res.json({"pre_existing_user" : true});
+        } else {
+            var newUser = {email : user_email};
+            dbObj.collection("users").insertOne(newUser, function(err, db_res) {
+                if(err) throw err;
+
+                console.log('/fbSignIn POST : user created');
+
+                res.json({"pre_existing_user" : false});
+            });
+        }
+    });
 });
 
 app.get('/userPassLogIn', function(req, res) {

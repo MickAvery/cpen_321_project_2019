@@ -416,7 +416,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         postparams.put(getString(R.string.full_name), name);
                         postparams.put(getString(R.string.fb_profile_photo), image);
 
-
                         JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                                 (JSONObject jsonResponse) -> {
                                     try {
