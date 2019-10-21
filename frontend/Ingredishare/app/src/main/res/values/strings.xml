@@ -29,4 +29,8 @@
     <string name="longitude">longitude</string>
     <string name="latitude">latitude</string>
     <string name="createRequest">/createRequest</string>
+    <string name="update_profile_info">/updateProfileInfo</string>
+    <string name="get_profile_info">/getProfileInfo</string>
+    <string name="bio">bio</string>
+    <string name="food_preferences">preferences</string>
 </resources>

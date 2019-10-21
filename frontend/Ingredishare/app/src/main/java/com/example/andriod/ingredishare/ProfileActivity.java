@@ -1,12 +1,28 @@
 package com.example.andriod.ingredishare;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by Brandon on 2019-10-08.
@@ -20,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
     private View mSaveButton;
     private View mBackButton;
     private Context mContext;
+    private GlobalRequestQueue mReqQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -32,20 +49,91 @@ public class ProfileActivity extends AppCompatActivity {
         mBackButton = findViewById(R.id.back_button);
         mSaveButton = findViewById(R.id.save_button);
 
-        // TO DO: Grab data from the backend
-        mNameEditText.setText("Brandon Holmes");
-        mBioEditText.setText("UBC student");
-        mPrefEditText.setText("I like baking cookies!");
+        getProfileInfoFromBackend();
 
         mBackButton.setOnClickListener(v -> {
             Toast.makeText(this, "BACK!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, IngredientListActivity.class);
+            startActivity(intent);
             finish();
         });
         mSaveButton.setOnClickListener(view -> {
-            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-            mContext = this;
-            Intent intent = new Intent(mContext, IngredientListActivity.class);
-            startActivity(intent);
+            updateProfileInfo();
         });
+    }
+
+    public void getProfileInfoFromBackend(){
+        String url = getString(R.string.server_url) + getString(R.string.get_profile_info);
+
+        JSONObject paramObject = new JSONObject();
+
+        try {
+            paramObject.put("email", MyApplication.getUserEmail());
+
+            JsonObjectRequest jsonArrayRequest = new JsonObjectRequest (Request.Method.GET,
+                    url,
+                    paramObject,
+                    (JSONObject response) -> {
+                        try {
+                            mNameEditText.setText(response.getString(getString(R.string.full_name)));
+                            mBioEditText.setText(response.getString(getString(R.string.bio)));
+                            mPrefEditText.setText(response.getString(getString(R.string.food_preferences)));
+
+                        } catch (JSONException jsonEx) {
+                            Log.e(this.getClass().toString(), jsonEx.toString());
+                        }
+
+                    },
+
+                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
+            );
+            // Add JsonArrayRequest to the RequestQueue
+            mReqQueue = GlobalRequestQueue.getInstance();
+            mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
+
+        } catch(Exception e) {
+
+        }
+    }
+
+    public void updateProfileInfo(){
+
+
+        String display_name = mNameEditText.getText().toString();
+        String bio = mBioEditText.getText().toString();
+        String preferences = mPrefEditText.getText().toString();
+
+        String url = getString(R.string.server_url) + getString(R.string.update_profile_info);
+
+        JSONObject postparams = new JSONObject();
+
+        try {
+            postparams.put(getString(R.string.full_name), display_name);
+            postparams.put(getString(R.string.bio), bio);
+            postparams.put(getString(R.string.food_preferences), preferences);
+
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                    (JSONObject response) -> {
+                        try {
+                            Boolean success_response = response.getBoolean("update_success_response");
+
+                            if (success_response) {
+                                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } catch (JSONException jsonEx) {
+                            Log.e(this.getClass().toString(), jsonEx.toString());
+                        }
+
+                    },
+
+                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
+            );
+
+            mReqQueue = GlobalRequestQueue.getInstance();
+            mReqQueue.addToRequestQueue(jsonObjReq, "post");
+        } catch(JSONException jsonEx) {
+
+        }
     }
 }
