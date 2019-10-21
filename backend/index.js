@@ -2,6 +2,7 @@ var express = require('express');
 var app     = express();
 var mongo   = require('mongodb');
 var gcm     = require('node-gcm');
+var bcrypt  = require('bcrypt');
 
 /*********************************************************************
  * MODULE SETUP
@@ -37,9 +38,14 @@ const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.n
 var dbObj;
 
 /* <-- Connection for PROD. COMMENT THIS SECTION IF CONNECTING TO LOCAL [START HERE]*/
-mongoClient.connect((mongoProdUri), function(err, db) {
+mongoClient.connect((mongoLocalUri), function(err, db) {
     if(err) throw err;
-    dbIngrediShare = db.db("ingrediShare");
+    dbObj = db.db("ingrediShare");
+    // dbObj.createCollection("customers", function(err, res) {
+        // if (err) throw err;
+        // console.log("MongoDB : Collection created!");
+        // db.close();
+    // });
 });
 /*Connection for PROD [END HERE] --> */
 
@@ -122,6 +128,51 @@ app.put('/saveFcmToken', function(req, res) {
     });
 
     res.json({"dummy": "dummy"}); /* TODO: figure out how Volley on frontend can accept empty responses */
+});
+
+app.put('/fbSignIn', function(req, res) {
+    console.log('/fbSignIn PUT');
+});
+
+app.get('/userPassSignIn', function(req, res) {
+    console.log('/userPassSignIn GET');
+});
+
+app.post('/userPassSignUp', function(req, res) {
+    console.log('/userPassSignUp POST');
+
+    console.log(req.body.email);
+
+    var user_email = req.body.email;
+    var password = req.body.password;
+
+    /* verify user doesn't exist in DB */
+    var query = dbObj.collection("users").find({email:user_email}).toArray(function(err, result) {
+        if(err) throw err;
+
+        if(typeof result !== 'undefined' && result.length > 0) {
+            /* pre-existing user, fail request */
+            console.log('/userPassSignUp POST error : user exists');
+            res.json({"success" : false});
+        } else {
+            console.log('/userPassSignUp POST error : user exists');
+
+            /* create user in database */
+            res.json({"success" : true});
+
+            bcrypt.hash(password, 10, function(err, hash) {
+                if(err) throw err;
+
+                /* Store hash in database */
+                var newUser = {email : user_email, password : hash};
+                dbObj.collection("users").insertOne(newUser, function(err, res) {
+                    if(err) throw err;
+
+                    console.log("/userPassSignUp POST success : Created new user");
+                });
+            });
+        }
+    });
 });
 
 app.get('/notif_test', function(req, res) {

@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     Intent intent = new Intent(this, ProfileActivity.class);
                                     startActivity(intent);
                                 } else {
-                                    mInvalidEmailView.setText(getString(R.string.fail_log_in));
+                                    mInvalidEmailView.setText(getString(R.string.fail_sign_up));
                                     mInvalidEmailView.setVisibility(View.VISIBLE);
                                 }
 
@@ -368,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     Intent intent = new Intent(this, IngredientListActivity.class);
                                     startActivity(intent);
                                 } else {
-                                    mInvalidEmailView.setText(getString(R.string.fail_sign_up));
+                                    mInvalidEmailView.setText(getString(R.string.fail_log_in));
                                     mInvalidEmailView.setVisibility(View.VISIBLE);
                                 }
 
