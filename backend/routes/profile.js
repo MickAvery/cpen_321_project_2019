@@ -15,31 +15,23 @@ router.get('/getProfileInfo', (req, res) => {
 });
 
 async function getProfileInfo(userId) {
-    const result = await dbIngrediShare.collection("users").find({email: userId}).toArray();
+    const result = await dbIngrediShare.collection("users").find({email: userId}, {projection: {displayName: 1, bio: 1, preferences: 1}}).toArray();
     return result;
 }
 
-// router.post('/updateProfileInfo', (req, res) => {
-//     try {
-//         var newProfileInfo = {
-//             displayName: req.body.full_name, 
-//             bio: req.body.bio,
-//             preferences: req.body.preferences 
-//         };
-//         if(newProfileInfo.displayName === undefined || 
-//             newProfileInfo.bio === undefined ||
-//             newProfileInfo.preferences === undefined
-//         ){
-//                 res.json({"updateProfileInfo": false}); return;
-//             }
-//         dbIngrediShare.collection("users").insertOne(newProfileInfo, function(err,res) {
-//             if(err){
-//                 res.json({"updateProfileInfo": false});
-//                 throw err;
-//             } 
-//         })
-//         res.json({"updateProfileInfo": true});
-//     } catch (err){}
-// });
+router.post('/updateProfileInfo', (req, res) => {
+    try {
+        var myquery = { email: req.body.email };
+        var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio, preferences: req.body.preferences} };
+        
+        dbIngrediShare.collection("users").updateOne(myquery, newvalues, function(err, res) {
+        if (err) throw err;
+        });
+        res.json({"updateProfileInfo": true});
+    } catch (err){
+        res.json({"updateProfileInfo": false});
+        throw err;
+    }
+});
 
 module.exports = router
