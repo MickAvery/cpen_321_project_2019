@@ -80,7 +80,8 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         try {
             postparams.put("name", name.getText());
             postparams.put("description", description.getText());
-            postparams.put("userId", "myemail@gmial.com");
+            postparams.put("userId", MyApplication.getUserEmail());
+
             //MyApplication.getUserEmail());
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,

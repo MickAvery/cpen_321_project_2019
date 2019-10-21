@@ -5,10 +5,10 @@ public class Event {
     private String name;
     private String userid;
     private String description;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
-    public Event(String userid, String name, String description, float latitude, float longitude) {
+    public Event(String userid, String name, String description, double latitude, double longitude) {
         this.userid = userid;
         this.name = name;
         this.description = description;
@@ -33,11 +33,11 @@ public class Event {
         return description;
     }
 
-    public float getLatitude(){
+    public double getLatitude(){
         return latitude;
     }
 
-    public float getLongitude(){
+    public double getLongitude(){
         return longitude;
     }
 }

@@ -22,10 +22,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -132,12 +134,10 @@ public class IngredientListActivity extends AppCompatActivity {
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
 
-      //  url = getString(R.string.server_url) + getString(R.string.getAllRequests);
-
         try {
-            getParams.put(getString(R.string.longitude), longitude);
-            getParams.put(getString(R.string.latitude), latitude);
-            getParams.put(getString(R.string.email), MyApplication.getUserEmail());
+            getParams.put("lat", 1);
+            getParams.put("long", 1);
+            //getParams.put(getString(R.string.email), MyApplication.getUserEmail());
 
             paramArray.put(getParams);
 
@@ -145,23 +145,33 @@ public class IngredientListActivity extends AppCompatActivity {
                     url,
                     paramArray,
                     (JSONArray json_events_array) -> {
+
+                        Log.d("resp", json_events_array.toString());
+
                         try {
-                            for (int i = 0; i < json_events_array.length(); i++)
-                            {
-                                JSONObject json_data = json_events_array.getJSONObject(i);
+                            System.out.println(json_events_array);
+                            Log.e(this.getClass().toString(), "inside loop");
 
-                                try{
-                                    String name = json_data.getString("name");
-                                    String description = json_data.getString("description");
-                                    String userid = json_data.getString("userId");
-                                    Float x = Float.parseFloat(json_data.getString("lat"));
-                                    Float y = Float.parseFloat(json_data.getString("long"));
+                            if(json_events_array.length() != 0) {
+                                for (int i = 0; i < json_events_array.length(); i++) {
+                                    try {
+                                        JSONObject json_data = json_events_array.getJSONObject(i);
 
-                                    Event event = new Event(userid, name, description, x, y);
-                                    adapter.addEvent(event);
-                                } catch(Exception e){}
+                                        String name = json_data.getString("name");
+                                        String description = json_data.getString("description");
+                                        // String userid = json_data.getString("userId");
+                                        //  Float x = Float.parseFloat(json_data.getString("lat"));
+                                        // Float y = Float.parseFloat(json_data.getString("long"));
+                                        Double x = 1.0;
+                                        Double y = 1.0;
+
+                                        Event event = new Event("name", name, description, x, y);
+                                        adapter.addEvent(event);
+
+                                    } catch (Error error) {
+                                    }
+                                }
                             }
-
 
                         } catch (JSONException jsonEx) {
                             Log.e(this.getClass().toString(), jsonEx.toString());
