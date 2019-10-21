@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -136,13 +137,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+
         mSignIn.setOnClickListener(view -> {
             attemptLogIn(mEmail.getText().toString(), mPassword.getText().toString());
+            Log.d("resp", "Go to livefeed");
+            Intent intent = new Intent(this, IngredientListActivity.class);
+            startActivity(intent);
         });
 
 
         mSignUp.setOnClickListener(view -> {
             attemptSignUp(mEmail.getText().toString(), mPassword.getText().toString());
+            Log.d("resp", "Go to livefeed");
+            Intent intent = new Intent(this, IngredientListActivity.class);
+            startActivity(intent);
+
         });
 
         // Request only the user's ID token, which can be used to identify the
@@ -390,7 +399,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          1st Param - AccessToken
          2nd Param - Callback (which will be invoked once the request is successful)
          **/
-        System.out.println(accessToken.getCurrentAccessToken().getPermissions());
+      //  Log.println(Log.DEBUG, "resp", accessToken.getCurrentAccessToken().getPermissions().toString());
+       // System.out.println(accessToken.getCurrentAccessToken().getPermissions());
         GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             //OnCompleted is invoked once the GraphRequest is successful
             @Override

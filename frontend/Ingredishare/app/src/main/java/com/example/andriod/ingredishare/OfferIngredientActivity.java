@@ -55,9 +55,9 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
             @Override
             public void onClick(View v) {
                 savePost();
-                // Intent intent = new Intent(mContext, IngredientListActivity.class);
-                //    Toast.makeText(mContext, "posted!", Toast.LENGTH_SHORT).show();
-                //  startActivity(intent);
+                 Intent intent = new Intent(mContext, IngredientListActivity.class);
+                 Toast.makeText(mContext, "posted!", Toast.LENGTH_SHORT).show();
+                  startActivity(intent);
             }
         });
     }
