@@ -74,7 +74,6 @@ const router = require('./routes/get')
 app.use(router)
 
 app.post('/tokensignin', function(req, res) {
-    console.log("/tokensignin POST");
     var token = req.body.idToken;
 
     /* TODO: token error checking */

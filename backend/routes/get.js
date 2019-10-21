@@ -8,18 +8,13 @@ router.get('/', (req, res) => {
 router.get('/getAllRequests', (req, res) => {
     try {
         getAllRequests().then((result) => {
-            res.writeHead(200, {"Content-Type": "text/plain"});
-            var str = "";
-            result.forEach(function (item) {
-                str += JSON.stringify(item);
-            });
-            res.end(str);
+            res.json(result);
         });
     } catch (err) {
     }
 });
 
-async function getAllRequests(lat,long) {
+async function getAllRequests() {
     const result = await dbIngrediShare.collection("requests").find({}).toArray();
     return result;
 }
@@ -48,17 +43,15 @@ router.post('/createRequest', (req, res) => {
         var newReq = {name: req.body.name, description: req.body.description, lat: req.body.lat, long: req.body.long};
         dbIngrediShare.collection("requests").insertOne(newReq, function(err,res) {
             if(err){
-                res.json("createRequestResponse false");
+                res.json({"createRequestResponse": false});
                 throw err;
             } 
         })
-        res.json("createRequestResponse true");
+        res.json({"createRequestResponse": true});
     } catch (err){}
 });
 
 router.get('/isExistingUser', (req, res) => {
-    console.log("/isExistingUser GET");
-
     var user_email = req.body.email;
 
     var query = dbIngrediShare.collection("users").find({email:user_email}).toArray(function(err, result) {
@@ -69,7 +62,6 @@ router.get('/isExistingUser', (req, res) => {
         } else {
             res.json({"pre_existing_user" : false});
 
-            /* TODO: save to db */
             var newUser = {email : user_email};
             dbIngrediShare.collection("users").insertOne(newUser, function(err, res) {
                 if(err) throw err;
