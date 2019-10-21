@@ -141,17 +141,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSignIn.setOnClickListener(view -> {
             attemptLogIn(mEmail.getText().toString(), mPassword.getText().toString());
             Log.d("resp", "Go to livefeed");
-            Intent intent = new Intent(this, IngredientListActivity.class);
-            startActivity(intent);
         });
 
 
         mSignUp.setOnClickListener(view -> {
             attemptSignUp(mEmail.getText().toString(), mPassword.getText().toString());
             Log.d("resp", "Go to livefeed");
-            Intent intent = new Intent(this, IngredientListActivity.class);
-            startActivity(intent);
-
         });
 
         // Request only the user's ID token, which can be used to identify the
