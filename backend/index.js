@@ -41,6 +41,7 @@ var dbObj;
 mongoClient.connect((mongoProdUri), function(err, db) {
     if(err) throw err;
     dbObj = db.db("ingrediShare");
+    dbIngrediShare = db.db("ingrediShare");
     console.log("connected to MongoDB!");
     // dbObj.createCollection("customers", function(err, res) {
         // if (err) throw err;
