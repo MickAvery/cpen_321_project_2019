@@ -11,17 +11,23 @@
     <string name="fb_user_info_put">/fbSingIn</string>
     <string name="user_pass_log_in">/userPassLogIn</string>
     <string name="user_pass_sign_up">/userPassSignUp</string>
+    <string name="get_all_requests">/getAllRequestsFromLatLong</string>
 
     <string name="id_token">id_token</string>
     <string name="email">email</string>
     <string name="password">password</string>
     <string name="full_name">full_name</string>
+    <string name="name">name</string>
     <string name="fb_profile_photo">fb_profile_photo</string>
     <string name="success">success</string>
     <string name="invalid_email">Invalid email</string>
     <string name="fail_log_in">Email or password incorrect</string>
     <string name="fail_sign_up">Email is taken</string>
+    <string name="_id">_id</string>
+    <string name="description">description</string>
+
+    <string name="longitude">longitude</string>
+    <string name="latitude">latitude</string>
 
     <string name="createRequest"></string>
-    <string name="getAllRequests"></string>
 </resources>

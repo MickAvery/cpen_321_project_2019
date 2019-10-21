@@ -1,9 +1,16 @@
 package com.example.andriod.ingredishare;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,13 +39,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class IngredientListActivity  extends AppCompatActivity {
+public class IngredientListActivity extends AppCompatActivity {
 
     private RecyclerView.LayoutManager lManager;
     private EventAdapter adapter;
     private Button postButton;
     private Context mContext;
-
     private GlobalRequestQueue mReqQueue;
 
     @Override
@@ -46,6 +52,7 @@ public class IngredientListActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newsfeed);
         mContext = this;
+        mReqQueue = GlobalRequestQueue.getInstance();
         // Get the RecyclerView
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -61,18 +68,14 @@ public class IngredientListActivity  extends AppCompatActivity {
         recycler.setAdapter(adapter);
 
         getEventsFromBackend();
-
         ((LinearLayoutManager)lManager).scrollToPositionWithOffset(0, 0);
 
         postButton = findViewById(R.id.post_ingredient_button);
 
-        postButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, IngrediPostActivity.class);
-                Toast.makeText(mContext, "Loading New Post Page", Toast.LENGTH_SHORT).show();
-                startActivity(intent);
-            }
+        postButton.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, IngrediPostActivity.class);
+            Toast.makeText(mContext, "Loading New Post Page", Toast.LENGTH_SHORT).show();
+            startActivity(intent);
         });
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -111,18 +114,40 @@ public class IngredientListActivity  extends AppCompatActivity {
      */
     public void getEventsFromBackend(){
 
-        String url = getString(R.string.server_url) + getString(R.string.getAllRequests);
+        String url = getString(R.string.server_url) + getString(R.string.get_all_requests);
+        JSONArray paramArray = new JSONArray();
+        JSONObject getParams = new JSONObject();
 
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // TODO: handle case if they say no
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+        }
+
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
 
         try {
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET, url, null,
+            getParams.put(getString(R.string.longitude), longitude);
+            getParams.put(getString(R.string.latitude), latitude);
+            getParams.put(getString(R.string.email), MyApplication.getUserEmail());
+            paramArray.put(getParams);
+
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
+                    url,
+                    paramArray,
                     (JSONArray json_events_array) -> {
                         try {
                             for (int i = 0; i < json_events_array.length(); i++)
                             {
                                 JSONObject json_data = json_events_array.getJSONObject(i);
 
-                                String name =json_data.getString("name");
+                                String name = json_data.getString("name");
                                 String description = json_data.getString("description");
 
                                 Event event = new Event(name, "egg", description, "photo");
