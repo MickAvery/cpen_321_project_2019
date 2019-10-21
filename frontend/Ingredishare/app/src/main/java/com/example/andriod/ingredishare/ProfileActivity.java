@@ -78,8 +78,9 @@ public class ProfileActivity extends AppCompatActivity {
                     paramArray,
                     (JSONArray response) -> {
                         try {
-                            Log.e(this.getClass().toString(), "updateProfile success");
+                            Log.e(this.getClass().toString(), response.toString());
                             if(response.length() != 0) {
+                                Log.e(this.getClass().toString(), "getProfile success");
                                 JSONObject json_data = response.getJSONObject(0);
                                 mNameEditText.setText(json_data.getString(getString(R.string.full_name)));
                                 mBioEditText.setText(json_data.getString(getString(R.string.bio)));
@@ -121,12 +122,18 @@ public class ProfileActivity extends AppCompatActivity {
             postparams.put(getString(R.string.food_preferences), preferences);
             postparams.put("email", email);
 
+            Log.e(this.getClass().toString(), display_name);
+            Log.e(this.getClass().toString(), bio);
+            Log.e(this.getClass().toString(), preferences);
+
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
                         try {
-                            Boolean success_response = response.getBoolean("update_success_response");
-
+                            Boolean success_response = response.getBoolean("updateProfileInfo");
                             if (success_response) {
+                                Log.e(this.getClass().toString(), "updateProfile success");
+
+
                                 Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
                             }
 
