@@ -116,10 +116,6 @@ public class IngredientListActivity extends AppCompatActivity {
      */
     public void getEventsFromBackend(){
 
-        String url = getString(R.string.server_url) + getString(R.string.get_all_requests_lat_long);
-        JSONArray paramArray = new JSONArray();
-        JSONObject getParams = new JSONObject();
-
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // TODO: handle case if they say no
@@ -131,6 +127,9 @@ public class IngredientListActivity extends AppCompatActivity {
         }
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        String url = getString(R.string.server_url) + getString(R.string.get_all_requests_lat_long);
+        JSONArray paramArray = new JSONArray();
+        JSONObject getParams = new JSONObject();
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
 

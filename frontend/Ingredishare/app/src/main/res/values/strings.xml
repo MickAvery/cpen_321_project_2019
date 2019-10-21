@@ -29,5 +29,4 @@
     <string name="longitude">longitude</string>
     <string name="latitude">latitude</string>
     <string name="createRequest">/createRequest</string>
-    <string name="getAllRequests">/getAllRequests</string>
 </resources>
