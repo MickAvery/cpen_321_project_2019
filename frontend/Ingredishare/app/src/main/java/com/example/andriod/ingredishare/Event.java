@@ -5,13 +5,15 @@ public class Event {
     private String name;
     private String userid;
     private String description;
-    private String photo;
+    private float latitude;
+    private float longitude;
 
-    public Event(String userid, String name, String description, String photo) {
+    public Event(String userid, String name, String description, float latitude, float longitude) {
         this.userid = userid;
         this.name = name;
         this.description = description;
-        this.photo = photo;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 
@@ -29,5 +31,13 @@ public class Event {
 
     public String getDescription() {
         return description;
+    }
+
+    public float getLatitude(){
+        return latitude;
+    }
+
+    public float getLongitude(){
+        return longitude;
     }
 }

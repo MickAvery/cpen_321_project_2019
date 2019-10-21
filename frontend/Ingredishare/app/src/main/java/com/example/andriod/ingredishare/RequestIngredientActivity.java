@@ -62,34 +62,8 @@ public class RequestIngredientActivity extends AppCompatActivity implements View
         Toast.makeText(mContext, "hello!", Toast.LENGTH_SHORT).show();
     }
 
+
     public void savePost(){
 
-        description = findViewById(R.id.description);
-        Event newPostEvent = new Event("Sarah", "123", description.toString(), "123");
-
-        // TODO(developer): send ID Token to server and validate
-        //     String url = "http://10.0.2.2:1337/tokensignin/";
-        String url = getString(R.string.server_url) + getString(R.string.tok_signin_put);
-
-        JSONObject postparams = new JSONObject();
-
-        try {
-            postparams.put(getString(R.string.full_name), newPostEvent.getName());
-
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                    (JSONObject response) -> {
-                        mContext = this;
-                        Intent intent = new Intent(mContext, IngredientListActivity.class);
-                        startActivity(intent);
-                    },
-                    (VolleyError error) -> {
-                        Log.println(Log.DEBUG, "resp", "error");
-                    }
-            );
-
-            //    addToRequestQueue(jsonObjReq, "post");
-        } catch(JSONException jsonEx) {
-
-        }
     }
 }

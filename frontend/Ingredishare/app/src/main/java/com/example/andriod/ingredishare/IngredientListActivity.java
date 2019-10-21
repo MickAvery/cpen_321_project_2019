@@ -114,7 +114,7 @@ public class IngredientListActivity extends AppCompatActivity {
      */
     public void getEventsFromBackend(){
 
-        String url = getString(R.string.server_url) + getString(R.string.get_all_requests);
+        String url = getString(R.string.server_url) + getString(R.string.get_all_requests_lat_long);
         JSONArray paramArray = new JSONArray();
         JSONObject getParams = new JSONObject();
 
@@ -132,26 +132,34 @@ public class IngredientListActivity extends AppCompatActivity {
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
 
+        url = getString(R.string.server_url) + getString(R.string.getAllRequests);
+
         try {
             getParams.put(getString(R.string.longitude), longitude);
             getParams.put(getString(R.string.latitude), latitude);
             getParams.put(getString(R.string.email), MyApplication.getUserEmail());
+
             paramArray.put(getParams);
 
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
                     url,
-                    paramArray,
+                    null,
                     (JSONArray json_events_array) -> {
                         try {
                             for (int i = 0; i < json_events_array.length(); i++)
                             {
                                 JSONObject json_data = json_events_array.getJSONObject(i);
 
-                                String name = json_data.getString("name");
-                                String description = json_data.getString("description");
-                                String userid = json_data.getString("userId");
-                                Event event = new Event(userid, name, description, "photo");
-                                adapter.addEvent(event);
+                                try{
+                                    String name = json_data.getString("name");
+                                    String description = json_data.getString("description");
+                                    String userid = json_data.getString("userId");
+                                    Float x = Float.parseFloat(json_data.getString("lat"));
+                                    Float y = Float.parseFloat(json_data.getString("long"));
+
+                                    Event event = new Event(userid, name, description, x, y);
+                                    adapter.addEvent(event);
+                                } catch(Exception e){}
                             }
 
 

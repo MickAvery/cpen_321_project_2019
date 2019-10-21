@@ -11,7 +11,7 @@
     <string name="fb_user_info_put">/fbSingIn</string>
     <string name="user_pass_log_in">/userPassLogIn</string>
     <string name="user_pass_sign_up">/userPassSignUp</string>
-    <string name="get_all_requests">/getAllRequestsFromLatLong</string>
+    <string name="get_all_requests_lat_long">/getAllRequestsFromLatLong</string>
 
     <string name="id_token">id_token</string>
     <string name="email">email</string>

@@ -71,8 +71,6 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         description = findViewById(R.id.description);
         name = findViewById(R.id.name);
 
-       // Event newPostEvent = new Event(name.getText(), "123", description.getText(), "123");
-
         // TODO(developer): send ID Token to server and validate
         //     String url = "http://10.0.2.2:1337/tokensignin/";
         String url = getString(R.string.server_url) + getString(R.string.createRequest);
