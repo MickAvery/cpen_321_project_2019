@@ -71,7 +71,7 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         description = findViewById(R.id.description);
         name = findViewById(R.id.name);
 
-        Event newPostEvent = new Event("Sarah", "123", description.toString(), "123");
+       // Event newPostEvent = new Event(name.getText(), "123", description.getText(), "123");
 
         // TODO(developer): send ID Token to server and validate
         //     String url = "http://10.0.2.2:1337/tokensignin/";
@@ -80,8 +80,10 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put("name", "abcd");
-            postparams.put("description", "defg");
+            postparams.put("name", name.getText());
+            postparams.put("description", description.getText());
+            postparams.put("userId", "myemail@gmial.com");
+            //MyApplication.getUserEmail());
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {

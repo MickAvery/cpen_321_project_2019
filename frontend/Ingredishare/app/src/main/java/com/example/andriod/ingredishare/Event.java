@@ -3,17 +3,21 @@ package com.example.andriod.ingredishare;
 public class Event {
 
     private String name;
-    private String id;
+    private String userid;
     private String description;
     private String photo;
 
-    public Event(String name, String eventId, String description, String photo) {
+    public Event(String userid, String name, String description, String photo) {
+        this.userid = userid;
         this.name = name;
-        this.id = eventId;
         this.description = description;
         this.photo = photo;
     }
 
+
+    public String getUserId(){
+        return userid;
+    }
     // Getters and setters
     public String getName() {
         return name;
@@ -21,10 +25,6 @@ public class Event {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getDescription() {

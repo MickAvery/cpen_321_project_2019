@@ -124,8 +124,8 @@ public class IngredientListActivity  extends AppCompatActivity {
 
                                 String name =json_data.getString("name");
                                 String description = json_data.getString("description");
-
-                                Event event = new Event(name, "egg", description, "photo");
+                                String userid = json_data.getString("userId");
+                                Event event = new Event(userid, name, description, "photo");
                                 adapter.addEvent(event);
                             }
 
