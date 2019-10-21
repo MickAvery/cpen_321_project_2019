@@ -19,17 +19,32 @@
             app:title="New Post"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
+
         <TextView
-            android:id="@+id/Item"
+            android:id="@+id/ItemDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/back_button"
-            android:layout_below="@+id/nameitem"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="23dp"
-            android:layout_marginTop="109dp"
-            android:layout_marginBottom="340dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="300dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toStartOf="@+id/description"
+            android:ellipsize="end"
             android:text="Item Description:" />
+
+        <EditText
+            android:id="@+id/description"
+            android:layout_width="217dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="279dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:inputType="textPersonName"
+            android:text="Description" />
 
         <TextView
             android:id="@+id/nameitem"
@@ -49,26 +64,10 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="19dp"
             android:layout_marginTop="157dp"
-            android:layout_marginEnd="9dp"
-            android:layout_toEndOf="@+id/Item"
+            android:layout_marginEnd="16dp"
             android:ems="10"
             android:inputType="textPersonName"
             android:text="Name" />
-
-
-        <EditText
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/postbutton"
-            android:layout_below="@+id/name"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="17dp"
-            android:layout_marginTop="82dp"
-            android:layout_marginEnd="11dp"
-            android:layout_marginBottom="320dp"
-            android:inputType="textPersonName"
-            android:text="Description" />
 
         <Button
             android:id="@+id/postbutton"
