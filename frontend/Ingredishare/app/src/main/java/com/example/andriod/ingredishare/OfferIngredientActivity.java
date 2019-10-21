@@ -80,8 +80,8 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put("name", newPostEvent.getName());
-            postparams.put("description", newPostEvent.getDescription());
+            postparams.put("name", "abcd");
+            postparams.put("description", "defg");
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
@@ -89,7 +89,7 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
                             Boolean success_response = response.getBoolean("createRequestResponse");
 
                             if (success_response) {
-                                Log.d("resp", "Go to livefeed");
+                                Log.d("resp", "Sent to backend successfully");
                                 Intent intent = new Intent(this, IngredientListActivity.class);
                                 startActivity(intent);
                             } else {

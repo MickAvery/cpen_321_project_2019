@@ -22,6 +22,6 @@
     <string name="fail_log_in">Email or password incorrect</string>
     <string name="fail_sign_up">Email is taken</string>
 
-    <string name="createRequest"></string>
-    <string name="getAllRequests"></string>
+    <string name="createRequest">/createRequest</string>
+    <string name="getAllRequests">/getAllRequests</string>
 </resources>
