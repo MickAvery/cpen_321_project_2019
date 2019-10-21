@@ -141,17 +141,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSignIn.setOnClickListener(view -> {
             attemptLogIn(mEmail.getText().toString(), mPassword.getText().toString());
             Log.d("resp", "Go to livefeed");
-            Intent intent = new Intent(this, IngredientListActivity.class);
-            startActivity(intent);
         });
 
 
         mSignUp.setOnClickListener(view -> {
             attemptSignUp(mEmail.getText().toString(), mPassword.getText().toString());
             Log.d("resp", "Go to livefeed");
-            Intent intent = new Intent(this, IngredientListActivity.class);
-            startActivity(intent);
-
         });
 
         // Request only the user's ID token, which can be used to identify the
@@ -171,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
+
+        boolean isLoggedInFacebook = fbAccessToken != null && !fbAccessToken.isExpired();
 
         if(account != null) {
             /* check if user exists in backend */
@@ -213,6 +211,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch(JSONException jsonEx) {
 
             }
+        } else if(isLoggedInFacebook) {
+            /* TODO: we might wanna check if the user exists in the backend even after they log in via fb, but this will do for now */
+            Intent intent = new Intent(this, IngredientListActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -225,9 +227,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
+        } else {
+            fbcallbackManager.onActivityResult(requestCode, resultCode, data);
         }
-
-        fbcallbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
 
@@ -322,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     Intent intent = new Intent(this, ProfileActivity.class);
                                     startActivity(intent);
                                 } else {
-                                    mInvalidEmailView.setText(getString(R.string.fail_log_in));
+                                    mInvalidEmailView.setText(getString(R.string.fail_sign_up));
                                     mInvalidEmailView.setVisibility(View.VISIBLE);
                                 }
 
@@ -350,42 +352,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
 
             mInvalidEmailView.setVisibility(View.INVISIBLE);
-            String url = getString(R.string.server_url) + getString(R.string.user_pass_log_in);
-            JSONObject postparams = new JSONObject();
+            String url =
+                    getString(R.string.server_url) + getString(R.string.user_pass_log_in)
+                    + "?"
+                    + "email=" + email
+                    + "&"
+                    + "password=" + password;
 
-            try {
-                postparams.put(getString(R.string.email), email);
-                postparams.put(getString(R.string.password), password);
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
+                    (JSONObject response) -> {
+                        try {
+                            boolean success = response.getBoolean(getString(R.string.success));
 
-                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                        (JSONObject response) -> {
-                            try {
-                                boolean success = response.getBoolean(getString(R.string.success));
-
-                                if (success) {
-                                    MyApplication.setUserEmail(email);
-                                    Log.println(Log.DEBUG, "resp", "Go to livefeed log in");
-                                    Intent intent = new Intent(this, IngredientListActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    mInvalidEmailView.setText(getString(R.string.fail_sign_up));
-                                    mInvalidEmailView.setVisibility(View.VISIBLE);
-                                }
-
-                            } catch (JSONException jsonEx) {
-
+                            if (success) {
+                                MyApplication.setUserEmail(email);
+                                Log.println(Log.DEBUG, "resp", "Go to livefeed log in");
+                                Intent intent = new Intent(this, IngredientListActivity.class);
+                                startActivity(intent);
+                            } else {
+                                mInvalidEmailView.setText(getString(R.string.fail_log_in));
+                                mInvalidEmailView.setVisibility(View.VISIBLE);
                             }
-                        },
 
-                        (VolleyError error) -> {
-                            Log.println(Log.DEBUG, "resp", "error");
+                        } catch (JSONException jsonEx) {
+
                         }
-                );
+                    },
 
-                mReqQueue.addToRequestQueue(jsonObjReq, "post");
-            } catch (JSONException jsonEx) {
-                Log.e(this.getClass().toString(), "attemptLogIn:error", jsonEx);
-            }
+                    (VolleyError error) -> {
+                        Log.println(Log.DEBUG, "resp", "error");
+                    }
+            );
+
+            mReqQueue.addToRequestQueue(jsonObjReq, "post");
         } else {
             mInvalidEmailView.setText(R.string.invalid_email);
             mInvalidEmailView.setVisibility(View.VISIBLE);
@@ -418,7 +417,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         postparams.put(getString(R.string.email), email);
                         postparams.put(getString(R.string.full_name), name);
                         postparams.put(getString(R.string.fb_profile_photo), image);
-
 
                         JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                                 (JSONObject jsonResponse) -> {
