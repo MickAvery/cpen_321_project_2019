@@ -127,10 +127,6 @@ public class IngredientListActivity extends AppCompatActivity {
         }
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        String url = getString(R.string.server_url) + getString(R.string.get_all_requests_lat_long);
-        JSONArray paramArray = new JSONArray();
-        JSONObject getParams = new JSONObject();
-
         double longitude;
         double latitude;
         if (location != null) {
@@ -140,16 +136,17 @@ public class IngredientListActivity extends AppCompatActivity {
             longitude = 1;
             latitude = 1;
         }
+        String url = getString(R.string.server_url)
+                + getString(R.string.get_all_requests_lat_long)
+                + "?lat="
+                + latitude
+                + "&long="
+                + longitude;
 
         try {
-            getParams.put("lat", 1);
-            getParams.put("long", 1);
-
-            paramArray.put(getParams);
-
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
                     url,
-                    paramArray,
+                    null,
                     (JSONArray json_events_array) -> {
                         try {
                             Log.e(this.getClass().toString(), "inside loop");
