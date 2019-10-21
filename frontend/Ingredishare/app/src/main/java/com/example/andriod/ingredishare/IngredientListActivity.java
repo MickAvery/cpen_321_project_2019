@@ -144,11 +144,7 @@ public class IngredientListActivity extends AppCompatActivity {
                     url,
                     paramArray,
                     (JSONArray json_events_array) -> {
-
-                        Log.d("resp", json_events_array.toString());
-
                         try {
-                            System.out.println(json_events_array);
                             Log.e(this.getClass().toString(), "inside loop");
 
                             if(json_events_array.length() != 0) {

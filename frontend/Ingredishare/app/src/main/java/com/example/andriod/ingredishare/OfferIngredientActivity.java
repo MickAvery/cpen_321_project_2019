@@ -1,8 +1,14 @@
 package com.example.andriod.ingredishare;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +22,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,7 +89,9 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
             postparams.put("description", description.getText());
             postparams.put("userId", MyApplication.getUserEmail());
 
-            //MyApplication.getUserEmail());
+            Double[] loc = getLocation();
+            postparams.put("lat", loc[0]);
+            postparams.put("long", loc[1]);
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
@@ -114,5 +123,27 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
             } catch(JSONException jsonEx) {
 
             }
+    }
+
+    public Double[] getLocation(){
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // TODO: handle case if they say no
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+        }
+
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        String url = getString(R.string.server_url) + getString(R.string.get_all_requests_lat_long);
+        JSONArray paramArray = new JSONArray();
+        JSONObject getParams = new JSONObject();
+        double longitude = location.getLongitude();
+        double latitude = location.getLatitude();
+
+        Double[] array = {latitude, longitude};
+        return array;
     }
 }
