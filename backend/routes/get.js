@@ -22,25 +22,26 @@ async function getAllRequests() {
 router.get('/getAllRequestsFromLatLong', (req, res) => {
     try {
         getAllRequestsFromLatLong(req.body.lat, req.body.long).then((result) => {
-            res.writeHead(200, {"Content-Type": "text/plain"});
-            var str = "";
-            result.forEach(function (item) {
-                str += JSON.stringify(item);
-            });
-            res.end(str);
+            res.json(result);
         });
     } catch (err) {
     }
 });
 
 async function getAllRequestsFromLatLong(lat,long) {
-    const result = await dbIngrediShare.collection("requests").find({lat: lat, long:long}, { projection: { _id: 0, name: 1, lat: 1, long: 1 }}).toArray();
+    const result = await dbIngrediShare.collection("requests").find({lat: lat, long:long}).toArray();
     return result;
 }
 
 router.post('/createRequest', (req, res) => {
     try {
-        var newReq = {name: req.body.name, description: req.body.description, userId: req.body.userId, lat: req.body.lat, long: req.body.long};
+        var newReq = {
+            name: req.body.name, 
+            description: req.body.description, 
+            lat: req.body.lat, 
+            long: req.body.long,
+            userId: req.body.userId
+        };
         dbIngrediShare.collection("requests").insertOne(newReq, function(err,res) {
             if(err){
                 res.json({"createRequestResponse": false});
