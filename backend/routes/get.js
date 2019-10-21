@@ -42,6 +42,13 @@ router.post('/createRequest', (req, res) => {
             long: req.body.long,
             userId: req.body.userId
         };
+        if(newReq.name === undefined || 
+            newReq.description === undefined ||
+            newReq.lat === undefined ||
+            newReq.long === undefined ||
+            newReq.userId === undefined){
+                res.json({"createRequestResponse": false}); return;
+            }
         dbIngrediShare.collection("requests").insertOne(newReq, function(err,res) {
             if(err){
                 res.json({"createRequestResponse": false});
