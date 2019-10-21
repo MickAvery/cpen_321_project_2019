@@ -70,8 +70,11 @@ var server = app.listen(port, function() {
  * RESTFUL SERVICES
  *********************************************************************/
 
-const router = require('./routes/get')
-app.use(router)
+const routerGet = require('../backend/routes/get')
+const routerProfile = require('../backend/routes/profile')
+const url = require('url');
+app.use(routerGet)
+app.use(routerProfile)
 
 app.post('/tokensignin', function(req, res) {
     var token = req.body.idToken;

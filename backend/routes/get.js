@@ -1,10 +1,6 @@
 const express = require('express')
 const router = express.Router()
 
-router.get('/', (req, res) => {
-    res.send("Hello world!");
-});
-
 router.get('/getAllRequests', (req, res) => {
     try {
         getAllRequests().then((result) => {
@@ -20,16 +16,26 @@ async function getAllRequests() {
 }
 
 router.get('/getAllRequestsFromLatLong', (req, res) => {
+    let requestURL = req.url;
+
+    const currentURL = new URL("http://localhost:1337" + requestURL);
+    const search_params = currentURL.searchParams;
+
+    var temp = {
+        lat: search_params.get('lat'),
+        long: search_params.get('long')
+    };
+
     try {
-        getAllRequestsFromLatLong(req.body.lat, req.body.long).then((result) => {
+        getAllRequestsFromLatLong(temp).then((result) => {
             res.json(result);
         });
     } catch (err) {
     }
 });
 
-async function getAllRequestsFromLatLong(lat,long) {
-    const result = await dbIngrediShare.collection("requests").find({lat: lat, long:long}).toArray();
+async function getAllRequestsFromLatLong(temp) {
+    const result = await dbIngrediShare.collection("requests").find({lat: Number(temp.lat), long: Number(temp.long)}).toArray();
     return result;
 }
 
