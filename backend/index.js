@@ -84,7 +84,7 @@ app.use(routerGet)
 app.use(routerProfile)
 
 app.post('/tokensignin', function(req, res) {
-    var token = req.body.idToken;
+    var token = req.body.id_token;
 
     /* TODO: token error checking */
 
