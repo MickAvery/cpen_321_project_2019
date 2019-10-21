@@ -67,17 +67,24 @@ public class ProfileActivity extends AppCompatActivity {
 
         JSONObject paramObject = new JSONObject();
 
+        JSONArray paramArray = new JSONArray();
+
         try {
             paramObject.put("email", MyApplication.getUserEmail());
+            paramArray.put(paramObject);
 
-            JsonObjectRequest jsonArrayRequest = new JsonObjectRequest (Request.Method.GET,
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
                     url,
-                    paramObject,
-                    (JSONObject response) -> {
+                    paramArray,
+                    (JSONArray response) -> {
                         try {
-                            mNameEditText.setText(response.getString(getString(R.string.full_name)));
-                            mBioEditText.setText(response.getString(getString(R.string.bio)));
-                            mPrefEditText.setText(response.getString(getString(R.string.food_preferences)));
+                            Log.e(this.getClass().toString(), "updateProfile success");
+                            if(response.length() != 0) {
+                                JSONObject json_data = response.getJSONObject(0);
+                                mNameEditText.setText(json_data.getString(getString(R.string.full_name)));
+                                mBioEditText.setText(json_data.getString(getString(R.string.bio)));
+                                mPrefEditText.setText(json_data.getString(getString(R.string.food_preferences)));
+                            }
 
                         } catch (JSONException jsonEx) {
                             Log.e(this.getClass().toString(), jsonEx.toString());
@@ -102,6 +109,7 @@ public class ProfileActivity extends AppCompatActivity {
         String display_name = mNameEditText.getText().toString();
         String bio = mBioEditText.getText().toString();
         String preferences = mPrefEditText.getText().toString();
+        String email = MyApplication.getUserEmail();
 
         String url = getString(R.string.server_url) + getString(R.string.update_profile_info);
 
@@ -111,6 +119,7 @@ public class ProfileActivity extends AppCompatActivity {
             postparams.put(getString(R.string.full_name), display_name);
             postparams.put(getString(R.string.bio), bio);
             postparams.put(getString(R.string.food_preferences), preferences);
+            postparams.put("email", email);
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
