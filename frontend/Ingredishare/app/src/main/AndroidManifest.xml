@@ -22,8 +22,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".MainActivity"
-            android:noHistory="true">
+        <activity android:name=".MainActivity">
+<!--            android:noHistory="true">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
