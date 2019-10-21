@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
         android:layout_gravity="center"
-        android:hint="Email"/>
+        android:hint="Email"
+        android:singleLine="true"/>
 
     <EditText
         android:id="@+id/password_edit_text"
@@ -31,7 +32,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="32dp"
         android:layout_gravity="center"
-        android:hint="Password"/>
+        android:hint="Password"
+        android:singleLine="true"/>
 
     <LinearLayout
         android:id="@+id/sign_in_layout"
