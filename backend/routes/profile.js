@@ -6,16 +6,21 @@ router.get('/', (req, res) => {
 });
 
 router.get('/getProfileInfo', (req, res) => {
+    let requestURL = req.url;
+    const currentURL = new URL("http://localhost:1337"+requestURL);
+    const search_params = currentURL.searchParams;
+    var emailObj = {email : search_params.get('email')};
+
     try {
-        getProfileInfo(req.body.email).then((result) => {
+        getProfileInfo(emailObj).then((result) => {
             res.json(result);
         });
     } catch (err) {
     }
 });
 
-async function getProfileInfo(userId) {
-    const result = await dbIngrediShare.collection("users").find({email: userId}, {projection: {displayName: 1, bio: 1, preferences: 1}}).toArray();
+async function getProfileInfo(obj) {
+    const result = await dbIngrediShare.collection("users").find({email: obj.email}, {projection: {displayName: 1, bio: 1, preferences: 1}}).toArray();
     return result;
 }
 
