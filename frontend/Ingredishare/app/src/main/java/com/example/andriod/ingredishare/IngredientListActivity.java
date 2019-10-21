@@ -132,7 +132,7 @@ public class IngredientListActivity extends AppCompatActivity {
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
 
-        url = getString(R.string.server_url) + getString(R.string.getAllRequests);
+      //  url = getString(R.string.server_url) + getString(R.string.getAllRequests);
 
         try {
             getParams.put(getString(R.string.longitude), longitude);
@@ -143,7 +143,7 @@ public class IngredientListActivity extends AppCompatActivity {
 
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
                     url,
-                    null,
+                    paramArray,
                     (JSONArray json_events_array) -> {
                         try {
                             for (int i = 0; i < json_events_array.length(); i++)
