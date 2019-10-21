@@ -136,7 +136,6 @@ public class IngredientListActivity extends AppCompatActivity {
         try {
             getParams.put("lat", 1);
             getParams.put("long", 1);
-            //getParams.put(getString(R.string.email), MyApplication.getUserEmail());
 
             paramArray.put(getParams);
 
@@ -147,25 +146,20 @@ public class IngredientListActivity extends AppCompatActivity {
                         try {
                             Log.e(this.getClass().toString(), "inside loop");
 
-                            if(json_events_array.length() != 0) {
-                                for (int i = 0; i < json_events_array.length(); i++) {
-                                    try {
-                                        JSONObject json_data = json_events_array.getJSONObject(i);
+                            for (int i = 0; i < json_events_array.length(); i++) {
+                                JSONObject json_data = json_events_array.getJSONObject(i);
 
-                                        String name = json_data.getString("name");
-                                        String description = json_data.getString("description");
-                                        // String userid = json_data.getString("userId");
-                                        //  Float x = Float.parseFloat(json_data.getString("lat"));
-                                        // Float y = Float.parseFloat(json_data.getString("long"));
-                                        Double x = 1.0;
-                                        Double y = 1.0;
+                                String name = json_data.getString("name");
+                                String description = json_data.getString("description");
+                                String userid = json_data.getString("userId");
+                                //  Float x = Float.parseFloat(json_data.getString("lat"));
+                                // Float y = Float.parseFloat(json_data.getString("long"));
+                                Double x = 1.0;
+                                Double y = 1.0;
 
-                                        Event event = new Event("name", name, description, x, y);
-                                        adapter.addEvent(event);
+                                Event event = new Event("name", name, description, x, y);
+                                adapter.addEvent(event);
 
-                                    } catch (Error error) {
-                                    }
-                                }
                             }
 
                         } catch (JSONException jsonEx) {
