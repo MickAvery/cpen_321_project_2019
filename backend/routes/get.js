@@ -40,7 +40,7 @@ async function getAllRequestsFromLatLong(lat,long) {
 
 router.post('/createRequest', (req, res) => {
     try {
-        var newReq = {name: req.body.name, description: req.body.description, lat: req.body.lat, long: req.body.long};
+        var newReq = {name: req.body.name, description: req.body.description, userId: req.body.userId, lat: req.body.lat, long: req.body.long};
         dbIngrediShare.collection("requests").insertOne(newReq, function(err,res) {
             if(err){
                 res.json({"createRequestResponse": false});
