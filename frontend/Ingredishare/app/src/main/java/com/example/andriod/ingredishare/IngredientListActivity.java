@@ -130,8 +130,16 @@ public class IngredientListActivity extends AppCompatActivity {
         String url = getString(R.string.server_url) + getString(R.string.get_all_requests_lat_long);
         JSONArray paramArray = new JSONArray();
         JSONObject getParams = new JSONObject();
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
+
+        double longitude;
+        double latitude;
+        if (location != null) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+        } else {
+            longitude = 1;
+            latitude = 1;
+        }
 
         try {
             getParams.put("lat", 1);
