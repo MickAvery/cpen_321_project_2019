@@ -64,7 +64,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void getProfileInfoFromBackend(){
-        String url = getString(R.string.server_url) + getString(R.string.get_profile_info);
+        String url = getString(R.string.server_url) + getString(R.string.get_profile_info)
+                + "?email=" + MyApplication.getUserEmail();
 
         JSONObject paramObject = new JSONObject();
 
@@ -75,15 +76,15 @@ public class ProfileActivity extends AppCompatActivity {
             paramArray.put(paramObject);
 
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
-                    url,
-                    paramArray,
+                    url, null,
                     (JSONArray response) -> {
+                        Log.e(this.getClass().toString(), response.toString());
                         try {
                             Log.e(this.getClass().toString(), response.toString());
                             if(response.length() != 0) {
                                 Log.e(this.getClass().toString(), "getProfile success");
                                 JSONObject json_data = response.getJSONObject(0);
-                                mNameEditText.setText(json_data.getString(getString(R.string.full_name)));
+                                mNameEditText.setText(json_data.getString("displayName"));
                                 mBioEditText.setText(json_data.getString(getString(R.string.bio)));
                                 mPrefEditText.setText(json_data.getString(getString(R.string.food_preferences)));
                             }
@@ -113,12 +114,12 @@ public class ProfileActivity extends AppCompatActivity {
         String preferences = mPrefEditText.getText().toString();
         String email = MyApplication.getUserEmail();
 
-        String url = getString(R.string.server_url) + getString(R.string.update_profile_info);
+        String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
 
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put(getString(R.string.full_name), display_name);
+            postparams.put("displayName", display_name);
             postparams.put(getString(R.string.bio), bio);
             postparams.put(getString(R.string.food_preferences), preferences);
             postparams.put("email", email);
