@@ -11,28 +11,24 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
-import com.android.volley.Response;
-import com.android.volley.Request;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OfferIngredientActivity extends AppCompatActivity implements View.OnClickListener{
-    private View mPost;
+public class OfferIngredientActivity extends AppCompatActivity{
     private Context mContext;
-    private Button backbutton;
-    private Button postButton;
+    private Button mBackbutton;
+    private Button mPostButton;
     private EditText description;
     private EditText name;
+    private Toolbar mToolbar;
     private GlobalRequestQueue mReqQueue;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,38 +36,17 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         setContentView(R.layout.ingredipost_layout);
         mContext = this;
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
+        mBackbutton = findViewById(R.id.back_button);
+        mPostButton = findViewById(R.id.postbutton);
 
-        toolbar.setTitle("Offer Ingredient");
-
-        backbutton = findViewById(R.id.back_button);
-        postButton = findViewById(R.id.postbutton);
-
-        backbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, IngrediPostActivity.class);
-                startActivity(intent);
-                // Intent intent = new Intent(mContext, IngredientListActivity.class);
-                //    Toast.makeText(mContext, "posted!", Toast.LENGTH_SHORT).show();
-                //  startActivity(intent);
-            }
+        mBackbutton.setOnClickListener(v -> finish());
+        mPostButton.setOnClickListener(v -> {
+            savePost();
+            finish();
         });
 
-        postButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                savePost();
-                 Intent intent = new Intent(mContext, IngredientListActivity.class);
-                 Toast.makeText(mContext, "posted!", Toast.LENGTH_SHORT).show();
-                  startActivity(intent);
-            }
-        });
-    }
-
-    @Override
-    public void onClick(View v) {
-        Toast.makeText(mContext, "hello!", Toast.LENGTH_SHORT).show();
+        mToolbar.setTitle(getIntent().getStringExtra(getString(R.string.request_or_offer)));
     }
 
     public void savePost(){
@@ -79,7 +54,6 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         name = findViewById(R.id.name);
 
         // TODO(developer): send ID Token to server and validate
-        //     String url = "http://10.0.2.2:1337/tokensignin/";
         String url = getString(R.string.server_url) + getString(R.string.createRequest);
 
         JSONObject postparams = new JSONObject();
@@ -137,13 +111,17 @@ public class OfferIngredientActivity extends AppCompatActivity implements View.O
         }
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        String url = getString(R.string.server_url) + getString(R.string.get_all_requests_lat_long);
-        JSONArray paramArray = new JSONArray();
-        JSONObject getParams = new JSONObject();
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
+        double longitude;
+        double latitude;
 
-        Double[] array = {latitude, longitude};
-        return array;
+        if (location != null) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+        } else {
+            longitude = 1;
+            latitude = 1;
+        }
+
+        return new Double[]{latitude, longitude};
     }
 }

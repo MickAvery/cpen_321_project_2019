@@ -29,12 +29,12 @@
         android:id="@+id/post_ingredient_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="287dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="150px"
+        android:layout_marginBottom="48dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         android:background="@color/lightGrey"
         android:text="New Post" />
 

@@ -6,4 +6,5 @@
     <color name="red">#FF0000</color>
     <color name="black">#000</color>
     <color name="lightGrey">#cfd8dc</color>
+    <color name="white">#FFF</color>
 </resources>

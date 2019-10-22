@@ -4,6 +4,7 @@
     <string name="fb_login_protocol_scheme">fb445659526044700</string>
     <string name="server_client_id">127621605968-j54jl9efu5b5jfhoo5bub65vsokohp5r.apps.googleusercontent.com</string>
 
+    <!-- change to http://localhost:1337 for testing maybe -->
     <string name="server_url">http://10.0.2.2:1337</string>
     <string name="tok_signin_put">/tokensignin</string>
     <string name="is_existing_user_get">/isExistingUser</string>
@@ -32,5 +33,11 @@
     <string name="update_profile_info">/updateProfileInfo</string>
     <string name="get_profile_info">/getProfileInfo</string>
     <string name="bio">bio</string>
-    <string name="food_preferences">preferences</string>
+    <string name="food_preferences">preferences</string>\
+
+    <string name="request_or_offer">request_or_offer</string>
+    <string name="request_ingredient">Request Ingredient</string>
+    <string name="offer_ingredient">Offer Ingredient</string>
+    <string name="ingredient_name">Ingredient Name</string>
+    <string name="ingredient_description">Ingredient Description</string>
 </resources>

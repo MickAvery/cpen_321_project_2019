@@ -1,36 +1,32 @@
 package com.example.andriod.ingredishare;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
@@ -38,8 +34,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class IngredientListActivity extends AppCompatActivity {
 
@@ -75,9 +71,7 @@ public class IngredientListActivity extends AppCompatActivity {
         postButton = findViewById(R.id.post_ingredient_button);
 
         postButton.setOnClickListener(v -> {
-            Intent intent = new Intent(mContext, IngrediPostActivity.class);
-            Toast.makeText(mContext, "Loading New Post Page", Toast.LENGTH_SHORT).show();
-            startActivity(intent);
+            showClickableToast();
         });
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
@@ -184,5 +178,35 @@ public class IngredientListActivity extends AppCompatActivity {
         } catch(Exception e) {
 
         }
+    }
+
+    private void showClickableToast() {
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.offer_request_quick, this.findViewById(R.id.layout_root));
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setView(layout);
+        AlertDialog alertDialog = dialogBuilder.create();
+        WindowManager.LayoutParams wmlp = Objects.requireNonNull(alertDialog.getWindow()).getAttributes();
+        wmlp.gravity = Gravity.BOTTOM;
+
+        layout.findViewById(R.id.offer).setOnClickListener( view -> {
+            Intent intent = new Intent(mContext, OfferIngredientActivity.class);
+            intent.putExtra(getString(R.string.request_or_offer), getString(R.string.offer_ingredient));
+            startActivity(intent);
+            if (alertDialog.isShowing()) {
+                alertDialog.dismiss();
+            }
+        });
+        layout.findViewById(R.id.request).setOnClickListener( view -> {
+            Intent intent = new Intent(mContext, OfferIngredientActivity.class);
+            intent.putExtra(getString(R.string.request_or_offer), getString(R.string.request_ingredient));
+            startActivity(intent);
+            if (alertDialog.isShowing()) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
     }
 }

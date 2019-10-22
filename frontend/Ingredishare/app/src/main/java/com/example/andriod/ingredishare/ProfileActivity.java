@@ -35,7 +35,6 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mPrefEditText;
     private View mSaveButton;
     private View mBackButton;
-    private Context mContext;
     private GlobalRequestQueue mReqQueue;
 
     @Override
@@ -52,13 +51,15 @@ public class ProfileActivity extends AppCompatActivity {
         getProfileInfoFromBackend();
 
         mBackButton.setOnClickListener(v -> {
-            Toast.makeText(this, "BACK!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, IngredientListActivity.class);
             startActivity(intent);
             finish();
         });
         mSaveButton.setOnClickListener(view -> {
             updateProfileInfo();
+            Intent intent = new Intent(this, IngredientListActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 

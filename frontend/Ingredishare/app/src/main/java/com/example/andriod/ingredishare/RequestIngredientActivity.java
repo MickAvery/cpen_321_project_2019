@@ -38,11 +38,7 @@ public class RequestIngredientActivity extends AppCompatActivity implements View
         backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, IngrediPostActivity.class);
-                startActivity(intent);
-                // Intent intent = new Intent(mContext, IngredientListActivity.class);
-                //    Toast.makeText(mContext, "posted!", Toast.LENGTH_SHORT).show();
-                //  startActivity(intent);
+                finish();
             }
         });
 
