@@ -18,6 +18,8 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
 
     @Override
     public void onNewToken(String token) {
+
+        Log.d("TAG", token);
 //        super.onNewToken(s);
         /* TODO: send to backend for saving, to target specific device for push notifs */
         String url = getString(R.string.server_url) + getString(R.string.save_fcm_tok_put);

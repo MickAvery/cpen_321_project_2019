@@ -238,16 +238,24 @@ app.post('/userPassSignUp', function(req, res) {
     });
 });
 
-app.get('/notif_test', function(req, res) {
+app.post('/notif_test', function(req, res) {
     console.log("/notif_test GET");
+    var newReq = {
+        name: req.body.name,
+        description: req.body.description,
+        lat: req.body.lat,
+        long: req.body.long,
+        userId: req.body.userId
+    };
 
+    console.log(newReq)
     /* prepare message */
     var message = new gcm.Message({
         data : {key1 : 'mgs1'},
         notification: {
-            title: "Hello, World",
+            title: newReq.userId + " requested " + newReq.name,
             icon: "ic_launcher",
-            body: "This is a notification that will be displayed if your app is in the background."
+            body: newReq.description
         }
     });
 

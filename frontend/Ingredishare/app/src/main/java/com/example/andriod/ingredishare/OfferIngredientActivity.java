@@ -16,13 +16,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OfferIngredientActivity extends AppCompatActivity{
+public class OfferIngredientActivity extends AppCompatActivity {
     private Context mContext;
     private Button mBackbutton;
     private Button mPostButton;
@@ -43,13 +44,14 @@ public class OfferIngredientActivity extends AppCompatActivity{
         mBackbutton.setOnClickListener(v -> finish());
         mPostButton.setOnClickListener(v -> {
             savePost();
+            testNotifications();
             finish();
         });
 
         mToolbar.setTitle(getIntent().getStringExtra(getString(R.string.request_or_offer)));
     }
 
-    public void savePost(){
+    public void savePost() {
         description = findViewById(R.id.description);
         name = findViewById(R.id.name);
 
@@ -64,8 +66,8 @@ public class OfferIngredientActivity extends AppCompatActivity{
             postparams.put("userId", MyApplication.getUserEmail());
 
             Double[] loc = getLocation();
-            postparams.put("lat", loc[0]);
-            postparams.put("long", loc[1]);
+            postparams.put("lat", 1);
+            postparams.put("long", 1);
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
@@ -89,17 +91,31 @@ public class OfferIngredientActivity extends AppCompatActivity{
 
                     },
 
-                        (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-                );
+                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
+            );
 
-                mReqQueue = GlobalRequestQueue.getInstance();
-                mReqQueue.addToRequestQueue(jsonObjReq, "post");
-            } catch(JSONException jsonEx) {
+            mReqQueue = GlobalRequestQueue.getInstance();
+            mReqQueue.addToRequestQueue(jsonObjReq, "post");
 
-            }
+        } catch (JSONException jsonEx) {
+
+        }
+
+        url = getString(R.string.server_url) + "/notif_test";
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                (JSONObject response) -> {
+
+                },
+
+                (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
+        );
+
+        mReqQueue = GlobalRequestQueue.getInstance();
+        mReqQueue.addToRequestQueue(jsonObjReq, "post");
     }
 
-    public Double[] getLocation(){
+    public Double[] getLocation() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // TODO: handle case if they say no
@@ -123,5 +139,22 @@ public class OfferIngredientActivity extends AppCompatActivity{
         }
 
         return new Double[]{latitude, longitude};
+    }
+
+
+    public void testNotifications() {
+
+        String url = getString(R.string.server_url) + "/notif_test";
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, null,
+                (JSONObject response) -> {
+
+                },
+
+                (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
+        );
+
+        mReqQueue = GlobalRequestQueue.getInstance();
+        mReqQueue.addToRequestQueue(jsonObjReq, "post");
     }
 }

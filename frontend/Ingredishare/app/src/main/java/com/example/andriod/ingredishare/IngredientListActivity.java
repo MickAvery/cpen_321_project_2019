@@ -132,10 +132,8 @@ public class IngredientListActivity extends AppCompatActivity {
         }
         String url = getString(R.string.server_url)
                 + getString(R.string.get_all_requests_lat_long)
-                + "?lat="
-                + latitude
-                + "&long="
-                + longitude;
+                + "?lat=1"
+                + "&long=1";
 
         try {
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,

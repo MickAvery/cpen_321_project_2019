@@ -4,7 +4,9 @@
     <string name="fb_login_protocol_scheme">fb445659526044700</string>
     <string name="server_client_id">127621605968-j54jl9efu5b5jfhoo5bub65vsokohp5r.apps.googleusercontent.com</string>
 
-    <!-- change to http://localhost:1337 for testing maybe -->
+    <!-- change to
+     http://10.0.2.2:1337
+     http://localhost:1337 for testing maybe -->
     <string name="server_url">http://10.0.2.2:1337</string>
     <string name="tok_signin_put">/tokensignin</string>
     <string name="is_existing_user_get">/isExistingUser</string>
