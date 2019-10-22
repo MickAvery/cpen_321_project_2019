@@ -150,15 +150,16 @@ public class IngredientListActivity extends AppCompatActivity {
 
                                 String name = json_data.getString("name");
                                 String description = json_data.getString("description");
+                                String userid = "none";
                                 if(json_data.has("userId")) {
-                                    String userid = json_data.getString("userId");
+                                    userid = json_data.getString("userId");
                                 }
                                 //  Float x = Float.parseFloat(json_data.getString("lat"));
                                 // Float y = Float.parseFloat(json_data.getString("long"));
                                 Double x = 1.0;
                                 Double y = 1.0;
 
-                                Event event = new Event("name", name, description, x, y);
+                                Event event = new Event(userid, name, description, x, y);
                                 adapter.addEvent(event);
 
                             }
