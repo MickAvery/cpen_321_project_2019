@@ -89,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
             Log.e(this.getClass().toString(), "Email : " + MyApplication.getUserEmail());
 
             response = mBackendCommunicationService.post(url, paramObject,
-                    getString(R.string.response_success_id_updateProfile));
+                    getString(R.string.success_id_updateProfile));
         } catch (JSONException e) {
             e.printStackTrace();
         }

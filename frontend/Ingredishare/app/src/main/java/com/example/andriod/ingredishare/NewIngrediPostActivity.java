@@ -35,6 +35,7 @@ public class NewIngrediPostActivity extends AppCompatActivity {
     private EditText name;
     private Toolbar mToolbar;
     private GlobalRequestQueue mReqQueue;
+    private BackendCommunicationService mBackendCommunicationService;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +45,7 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         mBackbutton = findViewById(R.id.back_button);
         mPostButton = findViewById(R.id.postbutton);
+        mBackendCommunicationService = new BackendCommunicationService();
 
         mBackbutton.setOnClickListener(v -> finish());
         mPostButton.setOnClickListener(v -> {
@@ -59,7 +61,6 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         description = findViewById(R.id.description);
         name = findViewById(R.id.name);
 
-        // TODO(developer): send ID Token to server and validate
         String url = getString(R.string.server_url) + getString(R.string.createRequest);
 
         JSONObject postparams = new JSONObject();
@@ -73,34 +74,16 @@ public class NewIngrediPostActivity extends AppCompatActivity {
             postparams.put("lat", 1);
             postparams.put("long", 1);
 
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                    (JSONObject response) -> {
-                        try {
-                            Boolean success_response = response.getBoolean("createRequestResponse");
+            Boolean response = mBackendCommunicationService.post(url, postparams,
+                    getString(R.string.success_id_savepost));
 
-                            if (success_response) {
-                                Log.d("resp", "Sent to backend successfully");
-                                Intent intent = new Intent(this, IngredientListActivity.class);
-                                startActivity(intent);
-                            } else {
-                                /* TODO: new user activity. Get rid of "go to" log after done */
-                                Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(this, IngredientListActivity.class);
-                                startActivity(intent);
-                            }
-
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
-
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
-            );
-
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonObjReq, "post");
-
+            if(response){
+                Log.d("resp", "Sent to backend successfully");
+                Intent intent = new Intent(this, IngredientListActivity.class);
+                startActivity(intent);
+            } else{
+                Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
+            }
         } catch (JSONException jsonEx) {
 
         }

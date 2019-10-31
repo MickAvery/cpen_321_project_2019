@@ -33,10 +33,10 @@
     <string name="latitude">latitude</string>
     <string name="createRequest">/createRequest</string>
     <string name="update_profile_info">/updateProfileInfo</string>
-    <string name="response_success_id_updateProfile">updateProfileInfo</string>
     <string name="get_profile_info">/getProfileInfo</string>
     <string name="bio">bio</string>
     <string name="food_preferences">preferences</string>\
+    <string name="success_id_updateProfile">updateProfileInfo</string>
 
     <string name="request_or_offer">request_or_offer</string>
     <string name="request_ingredient">Request Ingredient</string>
@@ -44,4 +44,5 @@
     <string name="ingredient_name">Ingredient Name</string>
     <string name="ingredient_description">Ingredient Description</string>
     <string name="displayName">displayName</string>
+    <string name="success_id_savepost">createRequestResponse</string>
 </resources>
