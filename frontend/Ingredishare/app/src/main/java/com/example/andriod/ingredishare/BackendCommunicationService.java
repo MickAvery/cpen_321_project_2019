@@ -25,6 +25,4 @@ public class BackendCommunicationService {
     public BackendCommunicationService() {
     }
 
-
-
 }

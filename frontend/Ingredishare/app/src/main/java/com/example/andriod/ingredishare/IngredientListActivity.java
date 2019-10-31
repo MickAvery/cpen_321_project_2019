@@ -156,18 +156,21 @@ public class IngredientListActivity extends AppCompatActivity {
                             for (int i = 0; i < json_events_array.length(); i++) {
                                 JSONObject json_data = json_events_array.getJSONObject(i);
 
-                                String name = json_data.getString("name");
-                                String description = json_data.getString("description");
+                                String name = json_data.getString(getString(R.string.name));
+                                String description = json_data.getString(getString(R.string.description));
                                 String userid = "none";
-                                if(json_data.has("userId")) {
-                                    userid = json_data.getString("userId");
+                                String type = "Offer";
+                                if(json_data.has(getString(R.string.userId))) {
+                                    userid = json_data.getString(getString(R.string.userId));
                                 }
-                                //  Float x = Float.parseFloat(json_data.getString("lat"));
-                                // Float y = Float.parseFloat(json_data.getString("long"));
+                                if(json_data.has(getString(R.string.type))){
+                                    type = json_data.getString(getString(R.string.userId));
+                                }
+                               // Float x = Float.parseFloat(json_data.getString("lat"));
+                                //Float y = Float.parseFloat(json_data.getString("long"));
                                 Double x = 1.0;
                                 Double y = 1.0;
 
-                                String type = "request";
                                 Event event = new Event(userid, name, description, x, y, type);
                                 adapter.addEvent(event);
 

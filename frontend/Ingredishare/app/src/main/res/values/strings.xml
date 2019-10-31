@@ -38,6 +38,8 @@
     <string name="food_preferences">preferences</string>\
 
     <string name="request_or_offer">request_or_offer</string>
+    <string name="type">type</string>
+    <string name="userId">userId</string>
     <string name="request_ingredient">Request Ingredient</string>
     <string name="offer_ingredient">Offer Ingredient</string>
     <string name="ingredient_name">Ingredient Name</string>

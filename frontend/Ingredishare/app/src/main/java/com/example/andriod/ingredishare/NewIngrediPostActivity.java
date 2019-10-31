@@ -35,6 +35,7 @@ public class NewIngrediPostActivity extends AppCompatActivity {
     private EditText name;
     private Toolbar mToolbar;
     private GlobalRequestQueue mReqQueue;
+    private String mType;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,7 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         });
 
         mToolbar.setTitle(getIntent().getStringExtra(getString(R.string.request_or_offer)));
+        mType = getIntent().getStringExtra(getString(R.string.request_or_offer));
     }
 
     public void savePost() {
@@ -65,9 +67,10 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put("name", name.getText());
-            postparams.put("description", description.getText());
-            postparams.put("userId", MyApplication.getUserEmail());
+            postparams.put(getString(R.string.name), name.getText());
+            postparams.put(getString(R.string.description), description.getText());
+            postparams.put(getString(R.string.userId), MyApplication.getUserEmail());
+            postparams.put(getString(R.string.type), mType);
 
             Double[] loc = getLocation();
             postparams.put("lat", 1);
