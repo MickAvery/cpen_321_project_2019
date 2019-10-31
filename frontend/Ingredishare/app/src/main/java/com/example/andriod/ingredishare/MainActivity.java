@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,7 +53,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText mPassword;
 
     private Context mContext;
+    private FirebaseAuth mFirebaseAuth;
     private FacebookSdk FacebookSdk;
     private AppEventsLogger AppEventsLogger;
     private LoginButton fbLoginButton;
@@ -95,7 +103,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mInvalidEmailView = findViewById(R.id.invalid_email);
         mContext = this;
 
+        mSignIn.setOnClickListener(this);
+        mSignUp.setOnClickListener(this);
         mGoogleSignIn.setOnClickListener(this);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         fbLoginButton = findViewById(R.id.fb_login_button);
         fbLoginButton.setPermissions(Arrays.asList("email", "public_profile"));
@@ -120,16 +132,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-        mSignIn.setOnClickListener(view -> {
-            attemptLogIn(mEmail.getText().toString(), mPassword.getText().toString());
-            Log.d("resp", "Go to livefeed");
-        });
-
-
-        mSignUp.setOnClickListener(view -> {
-            attemptSignUp(mEmail.getText().toString(), mPassword.getText().toString());
-            Log.d("resp", "Go to livefeed");
-        });
+//        mSignIn.setOnClickListener(view -> {
+//            attemptLogIn(mEmail.getText().toString(), mPassword.getText().toString());
+//            Log.d("resp", "Go to livefeed");
+//        });
+//
+//
+//        mSignUp.setOnClickListener(view -> {
+//            attemptSignUp(mEmail.getText().toString(), mPassword.getText().toString());
+//            Log.d("resp", "Go to livefeed");
+//        });
 
         // Request only the user's ID token, which can be used to identify the
         // user securely to your backend. This will contain the user's basic
@@ -151,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AccessToken fbAccessToken = AccessToken.getCurrentAccessToken();
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // TODO check mFirebaseAuth for active users
 
         // TODO: handle case if they say no
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -291,97 +305,171 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.google_auth:
                 signIn();
                 break;
-        }
-    }
 
-    private void attemptSignUp(String email, String password) {
-        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            case R.id.log_in_button: {
+                String email = mEmail.getText().toString();
+                String password = mPassword.getText().toString();
 
-            mInvalidEmailView.setVisibility(View.INVISIBLE);
-            String url = getString(R.string.server_url) + getString(R.string.user_pass_sign_up);
-            JSONObject postparams = new JSONObject();
-
-            try {
-                postparams.put(getString(R.string.email), email);
-                postparams.put(getString(R.string.password), password);
-
-                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                        (JSONObject response) -> {
-                            try {
-                                boolean success = response.getBoolean(getString(R.string.success));
-
-                                if (success) {
-                                    MyApplication.setUserEmail(email);
-                                    Log.println(Log.DEBUG, "resp", "Go to new profile");
-                                    Intent intent = new Intent(this, ProfileActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    mInvalidEmailView.setText(getString(R.string.fail_sign_up));
-                                    mInvalidEmailView.setVisibility(View.VISIBLE);
-                                }
-
-                            } catch (JSONException jsonEx) {
-
-                            }
-                        },
-
-                        (VolleyError error) -> {
-                            Log.println(Log.DEBUG, "resp", "error");
-                        }
-                );
-
-                mReqQueue.addToRequestQueue(jsonObjReq, "post");
-            } catch (JSONException jsonEx) {
-                Log.e(this.getClass().toString(), "attemptLogIn:error", jsonEx);
+                attemptEmailSignIn(email, password);
+                break;
             }
+
+            case R.id.sign_up_button: {
+                String email = mEmail.getText().toString();
+                String password = mPassword.getText().toString();
+
+                attemptEmailSignUp(email, password);
+                break;
+            }
+        }
+    }
+
+    private void attemptEmailSignIn(String email, String password) {
+        boolean emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+
+        if(emailIsValid) {
+            /* attempt sign in using Firebase Auth API */
+            mFirebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, (Task<AuthResult> task) -> {
+                        if(task.isSuccessful()) {
+                            /* Firebase Signin successful, send ID token to backend for verification */
+                            // TODO: implement this
+                        } else {
+                            /* Firebase signin failed */
+                            mInvalidEmailView.setText(R.string.fail_log_in);
+                            mInvalidEmailView.setVisibility(View.VISIBLE);
+                        }
+                    });
         } else {
             mInvalidEmailView.setText(R.string.invalid_email);
             mInvalidEmailView.setVisibility(View.VISIBLE);
         }
     }
 
-    private void attemptLogIn(String email, String password) {
-        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+    private void attemptEmailSignUp(String email, String password) {
+        boolean emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
 
-            mInvalidEmailView.setVisibility(View.INVISIBLE);
-            String url =
-                    getString(R.string.server_url) + getString(R.string.user_pass_log_in)
-                    + "?"
-                    + "email=" + email
-                    + "&"
-                    + "password=" + password;
+        if(emailIsValid) {
+            /* attempt to register using Firebase Auth API */
+            mFirebaseAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, (Task<AuthResult> task) -> {
+                        if(task.isSuccessful()) {
+                            /* new user created, send ID token to backend for verification */
+                            // TODO: implement this
+                        } else {
+                            /* failed to create user, reasons below */
 
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
-                    (JSONObject response) -> {
-                        try {
-                            boolean success = response.getBoolean(getString(R.string.success));
+                            if(task.getException() instanceof FirebaseAuthWeakPasswordException) {
+                                /* invalid password */
+                                mInvalidEmailView.setText(R.string.fail_sign_up_invalid_password);
 
-                            if (success) {
-                                MyApplication.setUserEmail(email);
-                                Log.println(Log.DEBUG, "resp", "Go to livefeed log in");
-                                Intent intent = new Intent(this, IngredientListActivity.class);
-                                startActivity(intent);
-                            } else {
-                                mInvalidEmailView.setText(getString(R.string.fail_log_in));
-                                mInvalidEmailView.setVisibility(View.VISIBLE);
+                            } else if(task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                                /* invalid email */
+                                mInvalidEmailView.setText(R.string.invalid_email);
+
+                            } else if(task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                /* email already in use */
+                                mInvalidEmailView.setText(R.string.fail_sign_up_user_exists);
+
                             }
 
-                        } catch (JSONException jsonEx) {
-
+                            mInvalidEmailView.setVisibility(View.VISIBLE);
                         }
-                    },
-
-                    (VolleyError error) -> {
-                        Log.println(Log.DEBUG, "resp", "error");
-                    }
-            );
-
-            mReqQueue.addToRequestQueue(jsonObjReq, "post");
+            });
         } else {
             mInvalidEmailView.setText(R.string.invalid_email);
             mInvalidEmailView.setVisibility(View.VISIBLE);
         }
     }
+
+//    private void attemptSignUp(String email, String password) {
+//        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+//
+//            mInvalidEmailView.setVisibility(View.INVISIBLE);
+//            String url = getString(R.string.server_url) + getString(R.string.user_pass_sign_up);
+//            JSONObject postparams = new JSONObject();
+//
+//            try {
+//                postparams.put(getString(R.string.email), email);
+//                postparams.put(getString(R.string.password), password);
+//
+//                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+//                        (JSONObject response) -> {
+//                            try {
+//                                boolean success = response.getBoolean(getString(R.string.success));
+//
+//                                if (success) {
+//                                    MyApplication.setUserEmail(email);
+//                                    Log.println(Log.DEBUG, "resp", "Go to new profile");
+//                                    Intent intent = new Intent(this, ProfileActivity.class);
+//                                    startActivity(intent);
+//                                } else {
+//                                    mInvalidEmailView.setText(getString(R.string.fail_sign_up));
+//                                    mInvalidEmailView.setVisibility(View.VISIBLE);
+//                                }
+//
+//                            } catch (JSONException jsonEx) {
+//
+//                            }
+//                        },
+//
+//                        (VolleyError error) -> {
+//                            Log.println(Log.DEBUG, "resp", "error");
+//                        }
+//                );
+//
+//                mReqQueue.addToRequestQueue(jsonObjReq, "post");
+//            } catch (JSONException jsonEx) {
+//                Log.e(this.getClass().toString(), "attemptLogIn:error", jsonEx);
+//            }
+//        } else {
+//            mInvalidEmailView.setText(R.string.invalid_email);
+//            mInvalidEmailView.setVisibility(View.VISIBLE);
+//        }
+//    }
+//
+//    private void attemptLogIn(String email, String password) {
+//        if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+//
+//            mInvalidEmailView.setVisibility(View.INVISIBLE);
+//            String url =
+//                    getString(R.string.server_url) + getString(R.string.user_pass_log_in)
+//                    + "?"
+//                    + "email=" + email
+//                    + "&"
+//                    + "password=" + password;
+//
+//            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
+//                    (JSONObject response) -> {
+//                        try {
+//                            boolean success = response.getBoolean(getString(R.string.success));
+//
+//                            if (success) {
+//                                MyApplication.setUserEmail(email);
+//                                Log.println(Log.DEBUG, "resp", "Go to livefeed log in");
+//                                Intent intent = new Intent(this, IngredientListActivity.class);
+//                                startActivity(intent);
+//                            } else {
+//                                mInvalidEmailView.setText(getString(R.string.fail_log_in));
+//                                mInvalidEmailView.setVisibility(View.VISIBLE);
+//                            }
+//
+//                        } catch (JSONException jsonEx) {
+//
+//                        }
+//                    },
+//
+//                    (VolleyError error) -> {
+//                        Log.println(Log.DEBUG, "resp", "error");
+//                    }
+//            );
+//
+//            mReqQueue.addToRequestQueue(jsonObjReq, "post");
+//        } else {
+//            mInvalidEmailView.setText(R.string.invalid_email);
+//            mInvalidEmailView.setVisibility(View.VISIBLE);
+//        }
+//    }
 
 
     private void useFBLoginInformation(AccessToken accessToken) {
