@@ -27,7 +27,6 @@ public class BackendCommunicationService {
         success = false;
     }
 
-
     /*
     REST API function 'post' that communicates with backend
     @param request_url
