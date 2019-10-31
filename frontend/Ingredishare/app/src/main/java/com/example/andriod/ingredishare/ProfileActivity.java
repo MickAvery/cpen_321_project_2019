@@ -45,13 +45,16 @@ public class ProfileActivity extends AppCompatActivity {
         mSaveButton = findViewById(R.id.save_button);
         mBackendCommunicationService = new BackendCommunicationService();
 
-        /*HashMap<String,String> profileInfo = mBackendCommunicationService.getProfileInfoFromBackend();
+        // Get profile info from the backend
+        MyApplication.setUserEmail("taravirginillo@gmail.com");
+        HashMap<String,String> profileInfo = mBackendCommunicationService.getProfileInfoFromBackend();
+
+        // Display profile info received from backend
         if(!profileInfo.isEmpty()){
             mNameEditText.setText(profileInfo.get(getString(R.string.displayName)));
             mBioEditText.setText(profileInfo.get(getString(R.string.bio)));
             mPrefEditText.setText(profileInfo.get(getString(R.string.food_preferences)));
-        }*/
-        getProfileInfoFromBackend();
+        }
 
         mBackButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, IngredientListActivity.class);
@@ -59,104 +62,16 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
         mSaveButton.setOnClickListener(view -> {
-            updateProfileInfo();
 
-            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+            // Post new profile info to the backend
+            Boolean response = mBackendCommunicationService.updateProfileInfo(mNameEditText.getText().toString(),
+                    mBioEditText.getText().toString(), mPrefEditText.getText().toString(),
+                    MyApplication.getUserEmail());
+
+            if(response) { Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show(); }
             Intent intent = new Intent(this, IngredientListActivity.class);
             startActivity(intent);
             finish();
         });
-    }
-
-    public void getProfileInfoFromBackend(){
-        String url = getString(R.string.server_url) + getString(R.string.get_profile_info)
-                + "?email=" + MyApplication.getUserEmail();
-
-        JSONObject paramObject = new JSONObject();
-
-        JSONArray paramArray = new JSONArray();
-
-        try {
-            paramObject.put("email", MyApplication.getUserEmail());
-            paramArray.put(paramObject);
-
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
-                    url, null,
-                    (JSONArray response) -> {
-                        Log.e(this.getClass().toString(), response.toString());
-                        try {
-                            Log.e(this.getClass().toString(), response.toString());
-                            if(response.length() != 0) {
-                                Log.e(this.getClass().toString(), "getProfile success");
-                                JSONObject json_data = response.getJSONObject(0);
-                                mNameEditText.setText(json_data.getString("displayName"));
-                                mBioEditText.setText(json_data.getString(getString(R.string.bio)));
-                                mPrefEditText.setText(json_data.getString(getString(R.string.food_preferences)));
-                            }
-
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
-
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-            );
-            // Add JsonArrayRequest to the RequestQueue
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
-
-        } catch(Exception e) {
-
-        }
-    }
-
-    public void updateProfileInfo(){
-
-
-        String display_name = mNameEditText.getText().toString();
-        String bio = mBioEditText.getText().toString();
-        String preferences = mPrefEditText.getText().toString();
-        String email = MyApplication.getUserEmail();
-
-        String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
-
-        JSONObject postparams = new JSONObject();
-
-        try {
-            postparams.put("displayName", display_name);
-            postparams.put(getString(R.string.bio), bio);
-            postparams.put(getString(R.string.food_preferences), preferences);
-            postparams.put("email", email);
-
-            Log.e(this.getClass().toString(), display_name);
-            Log.e(this.getClass().toString(), bio);
-            Log.e(this.getClass().toString(), preferences);
-
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                    (JSONObject response) -> {
-                        try {
-                            Boolean success_response = response.getBoolean("updateProfileInfo");
-                            if (success_response) {
-                                Log.e(this.getClass().toString(), "updateProfile success");
-
-
-                                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-                            }
-
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
-
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-            );
-
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonObjReq, "post");
-        } catch(JSONException jsonEx) {
-
-        }
     }
 }
