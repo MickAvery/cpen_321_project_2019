@@ -79,8 +79,33 @@ public class BackendCommunicationService {
 
         try {
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
-                    request_url, paramArray,
-                    (JSONArray response) -> {
+                    request_url, paramArray, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+
+                    // Parse the JSON:
+                    try {
+
+                        Log.v("GET Request value", response.toString());
+                        if(response.length() != 0) {
+                            for(int i=0; i<response.length();i++){
+                                output.put(i, response.getJSONObject(i));
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("GET Request Error", error.toString());
+                }
+            });
+                 /*   (JSONArray response) -> {
                         Log.e(this.getClass().toString(), response.toString());
                         try {
                             Log.e(this.getClass().toString(), response.toString());
@@ -98,7 +123,7 @@ public class BackendCommunicationService {
                     },
 
                     (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-            );
+            );*/
             // Add JsonArrayRequest to the RequestQueue
             mReqQueue = GlobalRequestQueue.getInstance();
             mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
