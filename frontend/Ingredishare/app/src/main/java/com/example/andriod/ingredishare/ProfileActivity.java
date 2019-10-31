@@ -17,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 /**
  * Created by Brandon on 2019-10-08.
  */
@@ -29,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
     private View mSaveButton;
     private View mBackButton;
     private GlobalRequestQueue mReqQueue;
+    private BackendCommunicationService mBackendCommunicationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -40,7 +43,14 @@ public class ProfileActivity extends AppCompatActivity {
         mPrefEditText = findViewById(R.id.pref_edit_text);
         mBackButton = findViewById(R.id.back_button);
         mSaveButton = findViewById(R.id.save_button);
+        mBackendCommunicationService = new BackendCommunicationService();
 
+        /*HashMap<String,String> profileInfo = mBackendCommunicationService.getProfileInfoFromBackend();
+        if(!profileInfo.isEmpty()){
+            mNameEditText.setText(profileInfo.get(getString(R.string.displayName)));
+            mBioEditText.setText(profileInfo.get(getString(R.string.bio)));
+            mPrefEditText.setText(profileInfo.get(getString(R.string.food_preferences)));
+        }*/
         getProfileInfoFromBackend();
 
         mBackButton.setOnClickListener(v -> {
@@ -50,6 +60,8 @@ public class ProfileActivity extends AppCompatActivity {
         });
         mSaveButton.setOnClickListener(view -> {
             updateProfileInfo();
+
+            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, IngredientListActivity.class);
             startActivity(intent);
             finish();
