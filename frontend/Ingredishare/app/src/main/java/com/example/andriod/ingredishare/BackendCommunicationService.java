@@ -23,8 +23,86 @@ public class BackendCommunicationService {
     private Boolean success;
 
     public BackendCommunicationService() {
-        success = false;
         mContext = MyApplication.getContext();
+        success = false;
+    }
+
+
+    /*
+    REST API function 'post' that communicates with backend
+    @param request_url
+    @param JSONObject postparams
+    @returns boolean, true if post was successful
+     */
+    public boolean post(String request_url, JSONObject postparams, String responseSuccessID){
+        this.success = false;
+
+        try {
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(request_url, postparams,
+                    (JSONObject response) -> {
+                        try {
+                            Boolean success_response = response.getBoolean(responseSuccessID);
+                            if (success_response) {
+                                Log.e(this.getClass().toString(), "updateProfile success");
+                                this.success = true;
+                            }
+
+                        } catch (JSONException jsonEx) {
+                            Log.e(this.getClass().toString(), jsonEx.toString());
+                        }
+
+                    },
+
+                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
+            );
+
+            mReqQueue = GlobalRequestQueue.getInstance();
+            mReqQueue.addToRequestQueue(jsonObjReq, "post");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+
+    /*
+    REST API function 'get' that communicates with backend
+    @param request_url
+    @param JSONArray paramarray
+    @returns JSONArray output
+    */
+    public JSONArray get(String request_url, JSONArray paramArray){
+        JSONArray output = new JSONArray();
+
+        try {
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
+                    request_url, paramArray,
+                    (JSONArray response) -> {
+                        Log.e(this.getClass().toString(), response.toString());
+                        try {
+                            Log.e(this.getClass().toString(), response.toString());
+                            if(response.length() != 0) {
+                                Log.e(this.getClass().toString(), "getProfile success");
+
+                                for(int i=0; i<response.length();i++){
+                                    output.put(i, response.getJSONObject(i));
+                                }
+                            }
+                        } catch (JSONException jsonEx) {
+                            Log.e(this.getClass().toString(), jsonEx.toString());
+                        }
+
+                    },
+
+                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
+            );
+            // Add JsonArrayRequest to the RequestQueue
+            mReqQueue = GlobalRequestQueue.getInstance();
+            mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
+
+        } catch(Exception e) {
+
+        }
+        return output;
     }
 
     /*
@@ -94,7 +172,7 @@ public class BackendCommunicationService {
     @returns boolean
      */
     public Boolean updateProfileInfo(String displayName, String bio, String preferences, String email){
-        success = false;
+        Boolean success = false;
 
         String url = mContext.getString(R.string.server_url) + mContext.getString(R.string.update_profile_info) ;
 
