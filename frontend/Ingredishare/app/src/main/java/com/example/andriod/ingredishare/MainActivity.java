@@ -439,7 +439,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         mReqQueue.addToRequestQueue(jsonObjReq, "post");
 
-                        // TODO : Send name, photo, and email to backend for storage
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

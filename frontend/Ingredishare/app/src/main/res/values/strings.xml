@@ -42,4 +42,5 @@
     <string name="offer_ingredient">Offer Ingredient</string>
     <string name="ingredient_name">Ingredient Name</string>
     <string name="ingredient_description">Ingredient Description</string>
+    <string name="displayName">displayName</string>
 </resources>
