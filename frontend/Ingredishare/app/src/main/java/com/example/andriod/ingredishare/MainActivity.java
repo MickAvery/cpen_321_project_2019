@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 //import android.support.v4.app.ActivityCompat;
 //import android.support.v4.content.ContextCompat;
 //import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
 //import android.support.v7.widget.RecyclerView;
 
@@ -156,8 +157,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(currentUser != null) {
             verifyFirebaseTokenBackend(currentUser);
-            Intent intent = new Intent(this, IngredientListActivity.class);
-            startActivity(intent);
         }
 
 //        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -465,14 +464,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void verifyFirebaseTokenBackend(FirebaseUser user) {
+
         user.getIdToken(true)
                 .addOnCompleteListener((Task<GetTokenResult> task) -> {
                     if(task.isSuccessful()) {
                         /* Send token to backend for verification */
                         // TODO: implement this
                         String idToken = task.getResult().getToken();
-                        String url = user.getPhotoUrl().toString();
-                        Log.d("url", url);
 
                         Intent intent = new Intent(this, IngredientListActivity.class);
                         startActivity(intent);
@@ -480,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         /* failed to get token for one reason or another */
                     }
                 });
+
     }
 
 //    private void attemptSignUp(String email, String password) {
