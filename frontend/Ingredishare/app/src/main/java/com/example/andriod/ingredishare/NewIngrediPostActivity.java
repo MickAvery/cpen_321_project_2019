@@ -12,8 +12,10 @@ import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -33,6 +35,7 @@ public class NewIngrediPostActivity extends AppCompatActivity {
     private Button mPostButton;
     private EditText description;
     private EditText name;
+    private TextView mInvalidPostView;
     private Toolbar mToolbar;
     private GlobalRequestQueue mReqQueue;
     private BackendCommunicationService mBackendCommunicationService;
@@ -45,61 +48,80 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         mBackbutton = findViewById(R.id.back_button);
         mPostButton = findViewById(R.id.postbutton);
+
+        mInvalidPostView = findViewById(R.id.invalid_form);
+        mInvalidPostView.setVisibility(View.INVISIBLE);
+
         mBackendCommunicationService = new BackendCommunicationService();
 
         mBackbutton.setOnClickListener(v -> finish());
         mPostButton.setOnClickListener(v -> {
-            savePost();
-            testNotifications();
-            finish();
+            if(savePost()) {
+                finish();
+                testNotifications();
+            }
         });
 
         mToolbar.setTitle(getIntent().getStringExtra(getString(R.string.request_or_offer)));
     }
 
-    public void savePost() {
+    public boolean savePost() {
         description = findViewById(R.id.description);
         name = findViewById(R.id.name);
 
-        String url = getString(R.string.server_url) + getString(R.string.createRequest);
+        String newDescription = description.getText().toString();
+        String newName = name.getText().toString();
 
-        JSONObject postparams = new JSONObject();
+        Log.e("resp", description.getText().toString());
 
-        try {
-            postparams.put("name", name.getText());
-            postparams.put("description", description.getText());
-            postparams.put("userId", MyApplication.getUserEmail());
+        // Ensures all fields are created
+        if(newDescription.matches("") || newName.matches("")){
+            mInvalidPostView.setVisibility(View.VISIBLE);
+            return false;
+        } else {
+            Log.e(this.getClass().toString(), "sending post to backend");
+            String url = getString(R.string.server_url) + getString(R.string.createRequest);
 
-            Double[] loc = getLocation();
-            postparams.put("lat", 1);
-            postparams.put("long", 1);
+            JSONObject postparams = new JSONObject();
 
-            Boolean response = mBackendCommunicationService.post(url, postparams,
-                    getString(R.string.success_id_savepost));
+            try {
+                postparams.put("name", name.getText());
+                postparams.put("description", description.getText());
+                postparams.put("userId", MyApplication.getUserEmail());
 
-            if(response){
-                Log.d("resp", "Sent to backend successfully");
-                Intent intent = new Intent(this, IngredientListActivity.class);
-                startActivity(intent);
-            } else{
-                Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
+                Double[] loc = getLocation();
+                postparams.put("lat", 1);
+                postparams.put("long", 1);
+
+                Boolean response = mBackendCommunicationService.post(url, postparams,
+                        getString(R.string.success_id_savepost));
+
+                if (response) {
+                    Log.d("resp", "Sent to backend successfully");
+                    Intent intent = new Intent(this, IngredientListActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            } catch (JSONException jsonEx) {
+
             }
-        } catch (JSONException jsonEx) {
 
+            url = getString(R.string.server_url) + "/notif_test";
+
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+                    (JSONObject response) -> {
+
+                    },
+
+                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
+            );
+
+            mReqQueue = GlobalRequestQueue.getInstance();
+            mReqQueue.addToRequestQueue(jsonObjReq, "post");
         }
-
-        url = getString(R.string.server_url) + "/notif_test";
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                (JSONObject response) -> {
-
-                },
-
-                (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
-        );
-
-        mReqQueue = GlobalRequestQueue.getInstance();
-        mReqQueue.addToRequestQueue(jsonObjReq, "post");
+        return true;
     }
 
     public Double[] getLocation() {

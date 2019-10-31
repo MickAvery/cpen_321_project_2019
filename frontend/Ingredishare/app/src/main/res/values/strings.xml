@@ -28,7 +28,7 @@
     <string name="fail_sign_up">Email is taken</string>
     <string name="_id">_id</string>
     <string name="description">description</string>
-
+    <string name="invalid_form_description">Please fill in all form boxes.</string>
     <string name="longitude">longitude</string>
     <string name="latitude">latitude</string>
     <string name="createRequest">/createRequest</string>

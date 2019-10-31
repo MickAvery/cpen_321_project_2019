@@ -25,12 +25,22 @@
             android:layout_alignParentTop="true"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/invalid_form"
+                android:paddingTop="200dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/invalid_form_description"
+                android:visibility="invisible"
+                android:textColor="@color/red"/>
+
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
-                android:paddingTop="250dp"
+                android:paddingTop="25dp"
                 android:hint="@string/ingredient_name"/>
 
             <EditText

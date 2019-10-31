@@ -5,7 +5,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -14,6 +16,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class BackendCommunicationService {
@@ -32,18 +36,18 @@ public class BackendCommunicationService {
     @returns boolean, true if post was successful
      */
     public boolean post(String request_url, JSONObject postparams, String responseSuccessID){
-        this.success = false;
+        AtomicReference<Boolean> success = new AtomicReference<>();
+        success.set(false);
 
         try {
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(request_url, postparams,
                     (JSONObject response) -> {
                         try {
                             Boolean success_response = response.getBoolean(responseSuccessID);
-                            if (success_response) {
-                                Log.e(this.getClass().toString(), "updateProfile success");
-                                this.success = true;
+                            if(success_response) {
+                                success.set(true);
+                                Log.e(this.getClass().toString(), "success from backend received");
                             }
-
                         } catch (JSONException jsonEx) {
                             Log.e(this.getClass().toString(), jsonEx.toString());
                         }
@@ -58,7 +62,9 @@ public class BackendCommunicationService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return success;
+
+        Log.e("resp = ", success.toString());
+        return success.get();
     }
 
     /*
@@ -99,6 +105,8 @@ public class BackendCommunicationService {
         } catch(Exception e) {
 
         }
+
+        Log.e("resp", output.toString());
         return output;
     }
 }
