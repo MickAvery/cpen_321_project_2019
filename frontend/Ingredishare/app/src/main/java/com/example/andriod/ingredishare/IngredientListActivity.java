@@ -200,7 +200,7 @@ public class IngredientListActivity extends AppCompatActivity {
         wmlp.gravity = Gravity.BOTTOM;
 
         layout.findViewById(R.id.offer).setOnClickListener( view -> {
-            Intent intent = new Intent(mContext, OfferIngredientActivity.class);
+            Intent intent = new Intent(mContext, NewIngrediPostActivity.class);
             intent.putExtra(getString(R.string.request_or_offer), getString(R.string.offer_ingredient));
             startActivity(intent);
             if (alertDialog.isShowing()) {
@@ -208,7 +208,7 @@ public class IngredientListActivity extends AppCompatActivity {
             }
         });
         layout.findViewById(R.id.request).setOnClickListener( view -> {
-            Intent intent = new Intent(mContext, OfferIngredientActivity.class);
+            Intent intent = new Intent(mContext, NewIngrediPostActivity.class);
             intent.putExtra(getString(R.string.request_or_offer), getString(R.string.request_ingredient));
             startActivity(intent);
             if (alertDialog.isShowing()) {

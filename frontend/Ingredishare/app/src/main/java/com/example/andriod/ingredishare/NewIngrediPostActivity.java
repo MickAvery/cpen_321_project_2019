@@ -27,7 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OfferIngredientActivity extends AppCompatActivity {
+public class NewIngrediPostActivity extends AppCompatActivity {
     private Context mContext;
     private Button mBackbutton;
     private Button mPostButton;

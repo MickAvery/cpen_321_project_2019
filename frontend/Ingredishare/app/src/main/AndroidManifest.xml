@@ -38,9 +38,7 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".RequestIngredientActivity"
-            android:noHistory="true"/>
-        <activity android:name=".OfferIngredientActivity"
+        <activity android:name=".NewIngrediPostActivity"
             android:noHistory="true"/>
 
         <!-- prevent FCM auto initialization -->
