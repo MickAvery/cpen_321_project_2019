@@ -159,12 +159,12 @@ public class IngredientListActivity extends AppCompatActivity {
                                 String name = json_data.getString(getString(R.string.name));
                                 String description = json_data.getString(getString(R.string.description));
                                 String userid = "none";
-                                String type = "Offer";
+                                String type = "Post";
                                 if(json_data.has(getString(R.string.userId))) {
                                     userid = json_data.getString(getString(R.string.userId));
                                 }
                                 if(json_data.has(getString(R.string.type))){
-                                    type = json_data.getString(getString(R.string.userId));
+                                    type = json_data.getString(getString(R.string.type));
                                 }
                                // Float x = Float.parseFloat(json_data.getString("lat"));
                                 //Float y = Float.parseFloat(json_data.getString("long"));

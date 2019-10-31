@@ -49,7 +49,8 @@ router.post('/createRequest', (req, res) => {
             description: req.body.description, 
             lat: req.body.lat, 
             long: req.body.long,
-            userId: req.body.userId
+            userId: req.body.userId,
+            type: req.body.type
         };
         if(newReq.name === undefined || 
             newReq.description === undefined ||
