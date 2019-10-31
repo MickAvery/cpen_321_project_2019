@@ -93,7 +93,7 @@ public class BackendCommunicationService {
     @param String email
     @returns boolean
      */
-    public Boolean postProfileInfo(String displayName, String bio, String preferences, String email){
+    public Boolean updateProfileInfo(String displayName, String bio, String preferences, String email){
         success = false;
 
         String url = mContext.getString(R.string.server_url) + mContext.getString(R.string.update_profile_info) ;
