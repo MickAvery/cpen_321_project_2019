@@ -54,6 +54,7 @@ public class IngredientListActivity extends AppCompatActivity {
     private Button postButton;
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
+    private BackendCommunicationService mBackendCommunicationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,9 @@ public class IngredientListActivity extends AppCompatActivity {
         setContentView(R.layout.newsfeed);
         mContext = this;
         mReqQueue = GlobalRequestQueue.getInstance();
+
+        mBackendCommunicationService = new BackendCommunicationService();
+
         // Get the RecyclerView
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler_view);
 
@@ -118,7 +122,7 @@ public class IngredientListActivity extends AppCompatActivity {
     /*
       Grabs events from the backend and adds them to the adapter
      */
-    public void getEventsFromBackend(){
+    public void getEventsFromBackend() {
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -126,8 +130,8 @@ public class IngredientListActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    0);
+                                              new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                              0);
         }
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -142,50 +146,39 @@ public class IngredientListActivity extends AppCompatActivity {
         }
         String url = getString(R.string.server_url)
                 + getString(R.string.get_all_requests_lat_long)
-                + "?lat=1"
-                + "&long=1";
+                + "?lat=" + latitude
+                + "&long=" + longitude;
 
         try {
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
-                    url,
-                    null,
-                    (JSONArray json_events_array) -> {
-                        try {
-                            Log.e(this.getClass().toString(), "inside loop");
 
-                            for (int i = 0; i < json_events_array.length(); i++) {
-                                JSONObject json_data = json_events_array.getJSONObject(i);
+            JSONArray json_events_array = mBackendCommunicationService.get(url, null);
+            try {
+                Log.e(this.getClass().toString(), "inside loop");
 
-                                String name = json_data.getString("name");
-                                String description = json_data.getString("description");
-                                String userid = "none";
-                                if(json_data.has("userId")) {
-                                    userid = json_data.getString("userId");
-                                }
-                                //  Float x = Float.parseFloat(json_data.getString("lat"));
-                                // Float y = Float.parseFloat(json_data.getString("long"));
-                                Double x = 1.0;
-                                Double y = 1.0;
+                for (int i = 0; i < json_events_array.length(); i++) {
+                    JSONObject json_data = json_events_array.getJSONObject(i);
 
-                                Event event = new Event(userid, name, description, x, y);
-                                adapter.addEvent(event);
+                    String name = json_data.getString("name");
+                    String description = json_data.getString("description");
+                    String userid = "none";
 
-                            }
+                    if (json_data.has("userId")) {
+                        userid = json_data.getString("userId");
+                    }
+                    //  Float x = Float.parseFloat(json_data.getString("lat"));
+                    // Float y = Float.parseFloat(json_data.getString("long"));
+                    Double x = 1.0;
+                    Double y = 1.0;
 
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
+                    Event event = new Event(userid, name, description, x, y);
+                    adapter.addEvent(event);
 
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-            );
-            // Add JsonArrayRequest to the RequestQueue
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
-
-        } catch(Exception e) {
-
+                }
+            } catch (JSONException jsonEx) {
+                Log.e(this.getClass().toString(), jsonEx.toString());
+            }
+        } catch(Exception e){
+            Log.e(this.getClass().toString(), e.toString());
         }
     }
 

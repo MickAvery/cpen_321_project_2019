@@ -23,7 +23,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BackendCommunicationService {
 
     private GlobalRequestQueue mReqQueue;
-    private Boolean success;
+    public Boolean success;
+    public JSONArray output;
 
     public BackendCommunicationService() {
         success = false;
@@ -36,8 +37,8 @@ public class BackendCommunicationService {
     @returns boolean, true if post was successful
      */
     public boolean post(String request_url, JSONObject postparams, String responseSuccessID){
-        AtomicReference<Boolean> success = new AtomicReference<>();
-        success.set(false);
+      //  AtomicReference<Boolean> success = new AtomicReference<>();
+        success = false;
 
         try {
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(request_url, postparams,
@@ -45,7 +46,7 @@ public class BackendCommunicationService {
                         try {
                             Boolean success_response = response.getBoolean(responseSuccessID);
                             if(success_response) {
-                                success.set(true);
+                                success = true;
                                 Log.e(this.getClass().toString(), "success from backend received");
                             }
                         } catch (JSONException jsonEx) {
@@ -64,7 +65,7 @@ public class BackendCommunicationService {
         }
 
         Log.e("resp = ", success.toString());
-        return success.get();
+        return success;
     }
 
     /*
@@ -74,7 +75,7 @@ public class BackendCommunicationService {
     @returns JSONArray output
     */
     public JSONArray get(String request_url, JSONArray paramArray){
-        JSONArray output = new JSONArray();
+        output = new JSONArray();
 
         try {
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
@@ -84,7 +85,7 @@ public class BackendCommunicationService {
                         try {
                             Log.e(this.getClass().toString(), response.toString());
                             if(response.length() != 0) {
-                                Log.e(this.getClass().toString(), "getProfile success");
+                                Log.e(this.getClass().toString(), "got stuff from backend");
 
                                 for(int i=0; i<response.length();i++){
                                     output.put(i, response.getJSONObject(i));
