@@ -30,7 +30,6 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mPrefEditText;
     private View mSaveButton;
     private View mBackButton;
-    private GlobalRequestQueue mReqQueue;
     private BackendCommunicationService mBackendCommunicationService;
 
     @Override
@@ -45,16 +44,13 @@ public class ProfileActivity extends AppCompatActivity {
         mSaveButton = findViewById(R.id.save_button);
         mBackendCommunicationService = new BackendCommunicationService();
 
-        // Get profile info from the backend
-        MyApplication.setUserEmail("taravirginillo@gmail.com");
-        HashMap<String,String> profileInfo = mBackendCommunicationService.getProfileInfoFromBackend();
+        // Brute force fix to bug
+        if(MyApplication.getUserEmail() == null) {
+            MyApplication.setUserEmail("taravirginillo@gmail.com");
+        }
 
         // Display profile info received from backend
-        if(!profileInfo.isEmpty()){
-            mNameEditText.setText(profileInfo.get(getString(R.string.displayName)));
-            mBioEditText.setText(profileInfo.get(getString(R.string.bio)));
-            mPrefEditText.setText(profileInfo.get(getString(R.string.food_preferences)));
-        }
+        getProfileInfo();
 
         mBackButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, IngredientListActivity.class);
@@ -63,15 +59,77 @@ public class ProfileActivity extends AppCompatActivity {
         });
         mSaveButton.setOnClickListener(view -> {
 
-            // Post new profile info to the backend
-            Boolean response = mBackendCommunicationService.updateProfileInfo(mNameEditText.getText().toString(),
-                    mBioEditText.getText().toString(), mPrefEditText.getText().toString(),
-                    MyApplication.getUserEmail());
 
-            if(response) { Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show(); }
+            if(updateProfileInfo()) { Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show(); }
             Intent intent = new Intent(this, IngredientListActivity.class);
             startActivity(intent);
             finish();
         });
     }
+
+    /*
+    Posts profile info to the backend
+    @returns true if post is successful
+     */
+    public boolean updateProfileInfo(){
+
+        Boolean response = false;
+
+        String url = MyApplication.getContext().getString(R.string.server_url) +
+                MyApplication.getContext().getString(R.string.get_profile_info);
+
+        JSONObject paramObject = new JSONObject();
+
+        JSONArray paramArray = new JSONArray();
+
+        try {
+            paramObject.put(MyApplication.getContext().getString(R.string.email), MyApplication.getUserEmail());
+            paramArray.put(paramObject);
+            Log.e(this.getClass().toString(), "Parameter array : " + paramArray.toString());
+            Log.e(this.getClass().toString(), "Email : " + MyApplication.getUserEmail());
+
+            response = mBackendCommunicationService.post(url, paramObject,
+                    getString(R.string.response_success_id_updateProfile));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    /*
+   Grabs data from backend and displays on view
+    */
+    public void getProfileInfo(){
+
+        String url = MyApplication.getContext().getString(R.string.server_url) +
+                MyApplication.getContext().getString(R.string.get_profile_info);
+        //   + "?email=" + MyApplication.getUserEmail();
+
+        JSONObject paramObject = new JSONObject();
+
+        JSONArray paramArray = new JSONArray();
+
+        try {
+            paramObject.put(MyApplication.getContext().getString(R.string.email), MyApplication.getUserEmail());
+            paramArray.put(paramObject);
+            Log.e(this.getClass().toString(), "Parameter array : " + paramArray.toString());
+            Log.e(this.getClass().toString(), "Email : " + MyApplication.getUserEmail());
+
+            JSONArray response = mBackendCommunicationService.get(url, paramArray);
+
+            // Display profile info received from backend
+            if(response.length() != 0) {
+                JSONObject json_data = response.getJSONObject(0);
+
+                mNameEditText.setText(json_data.getString(getString(R.string.displayName)));
+                mBioEditText.setText(json_data.getString(getString(R.string.bio)));
+                mPrefEditText.setText(json_data.getString(getString(R.string.food_preferences)));
+            }
+
+        } catch(Exception e) {
+
+        }
+    }
+
+
 }
