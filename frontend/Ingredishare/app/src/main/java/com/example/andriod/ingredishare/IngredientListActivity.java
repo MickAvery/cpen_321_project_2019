@@ -167,7 +167,8 @@ public class IngredientListActivity extends AppCompatActivity {
                                 Double x = 1.0;
                                 Double y = 1.0;
 
-                                Event event = new Event(userid, name, description, x, y);
+                                String type = "request";
+                                Event event = new Event(userid, name, description, x, y, type);
                                 adapter.addEvent(event);
 
                             }

@@ -7,10 +7,12 @@ public class Event {
     private String description;
     private double latitude;
     private double longitude;
+    private String type;
 
-    public Event(String userid, String name, String description, double latitude, double longitude) {
+    public Event(String userid, String name, String description, double latitude, double longitude, String type) {
         this.userid = userid;
         this.name = name;
+        this.type = type;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -39,5 +41,9 @@ public class Event {
 
     public double getLongitude(){
         return longitude;
+    }
+
+    public String getType(){
+        return type;
     }
 }
