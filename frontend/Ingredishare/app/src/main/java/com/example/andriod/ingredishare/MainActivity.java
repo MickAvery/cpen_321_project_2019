@@ -55,11 +55,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mReqQueue = GlobalRequestQueue.getInstance();
         mSignUp = findViewById(R.id.sign_up_button);
         mSignIn = findViewById(R.id.log_in_button);
-        mGoogleSignIn = findViewById(R.id.google_auth);
+        mGoogleSignIn = findViewById(R.id.google_sign_in_button);
         mEmail = findViewById(R.id.email_edit_text);
         mPassword = findViewById(R.id.password_edit_text);
         mInvalidEmailView = findViewById(R.id.invalid_email);
@@ -228,82 +230,89 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // This task is always completed immediately, there is no need to attach an
-        // asynchronous listener.
         if (requestCode == RC_SIGN_IN) {
+            /* result returned from launching intent from Google Signin button */
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
+
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                attemptFirebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                /*
+                 * Based on testing, the code gets here if the user decides not to continue with Google Signin
+                 **/
+                // TODO: error handling if necessary
+            }
+//            handleSignInResult(task);
         } else {
             fbcallbackManager.onActivityResult(requestCode, resultCode, data);
         }
-
     }
 
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private void handleSignInResult(@NonNull Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            String idToken = account.getIdToken();
-            String email = account.getEmail();
-            Log.w("TAG", idToken);
-
-            // Save user email for access across app
-            MyApplication.setUserEmail(email);
-
-            // Send ID Token to server and validate
-            String url = getString(R.string.server_url) + getString(R.string.tok_signin_put);
-
-            JSONObject postparams = new JSONObject();
-
-            try {
-                postparams.put(getString(R.string.id_token), idToken);
-
-                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                        (JSONObject response) -> {
-                            try {
-                                boolean pre_existing_user = response.getBoolean("pre_existing_user");
-
-                                if(pre_existing_user) {
-                                    /* TODO: proceed to live feed */
-                                    Log.println(Log.DEBUG, "resp", "Go to livefeed");
-                                    Intent intent = new Intent(this, IngredientListActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    /* TODO: new user activity */
-                                    Log.println(Log.DEBUG, "resp", "Create new user");
-                                    Intent intent = new Intent(this, ProfileActivity.class);
-                                    startActivity(intent);
-                                }
-
-                            } catch (JSONException jsonEx) {
-
-                            }
-                        },
-
-                        (VolleyError error) -> {
-                            Log.println(Log.DEBUG, "resp", "error");
-                        }
-                );
-
-                mReqQueue.addToRequestQueue(jsonObjReq, "post");
-            } catch(JSONException jsonEx) {
-                Log.e(this.getClass().toString(), "handleSignInResult:error", jsonEx);
-            }
-
-        } catch (ApiException e) {
-            Log.e(this.getClass().toString(), "handleSignInResult:error", e);
-        }
-    }
+//    private void handleSignInResult(@NonNull Task<GoogleSignInAccount> completedTask) {
+//        try {
+//            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+//            String idToken = account.getIdToken();
+//            String email = account.getEmail();
+//            Log.w("TAG", idToken);
+//
+//            // Save user email for access across app
+//            MyApplication.setUserEmail(email);
+//
+//            // Send ID Token to server and validate
+//            String url = getString(R.string.server_url) + getString(R.string.tok_signin_put);
+//
+//            JSONObject postparams = new JSONObject();
+//
+//            try {
+//                postparams.put(getString(R.string.id_token), idToken);
+//
+//                JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
+//                        (JSONObject response) -> {
+//                            try {
+//                                boolean pre_existing_user = response.getBoolean("pre_existing_user");
+//
+//                                if(pre_existing_user) {
+//                                    /* TODO: proceed to live feed */
+//                                    Log.println(Log.DEBUG, "resp", "Go to livefeed");
+//                                    Intent intent = new Intent(this, IngredientListActivity.class);
+//                                    startActivity(intent);
+//                                } else {
+//                                    /* TODO: new user activity */
+//                                    Log.println(Log.DEBUG, "resp", "Create new user");
+//                                    Intent intent = new Intent(this, ProfileActivity.class);
+//                                    startActivity(intent);
+//                                }
+//
+//                            } catch (JSONException jsonEx) {
+//
+//                            }
+//                        },
+//
+//                        (VolleyError error) -> {
+//                            Log.println(Log.DEBUG, "resp", "error");
+//                        }
+//                );
+//
+//                mReqQueue.addToRequestQueue(jsonObjReq, "post");
+//            } catch(JSONException jsonEx) {
+//                Log.e(this.getClass().toString(), "handleSignInResult:error", jsonEx);
+//            }
+//
+//        } catch (ApiException e) {
+//            Log.e(this.getClass().toString(), "handleSignInResult:error", e);
+//        }
+//    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.google_auth:
-                signIn();
+            case R.id.google_sign_in_button:
+                /* start new intent for Google Signin */
+
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+                /* at this point, the result from the intent is handled in onActivityResult() */
                 break;
 
             case R.id.log_in_button: {
@@ -380,6 +389,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mInvalidEmailView.setText(R.string.invalid_email);
             mInvalidEmailView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void attemptFirebaseAuthWithGoogle(GoogleSignInAccount account) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        mFirebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, (Task<AuthResult> firebaseTask) -> {
+                    if(firebaseTask.isSuccessful()) {
+                        /* send ID token to backend for verification */
+                        // TODO: implement this
+                    } else {
+                        /* Google Signin failed for one reason or another */
+
+                        if(firebaseTask.getException() instanceof FirebaseAuthUserCollisionException) {
+                            /* user already exists through another signin method */
+                            mInvalidEmailView.setText("User already exists through another signin method");
+                        } else {
+                            /*
+                             * At this point, exception can either be
+                             *  - FirebaseAuthInvalidUserException (user account you are trying to sign in to has been disabled)
+                             *  - FirebaseAuthInvalidCredentialsException (thrown if the credential is malformed or has expired)
+                             * (https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.html#signInWithCredential(com.google.firebase.auth.AuthCredential))
+                             * Just throw generic error
+                             */
+                            mInvalidEmailView.setText("Failed to log in with Google email");
+                        }
+
+                        mInvalidEmailView.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
 //    private void attemptSignUp(String email, String password) {
