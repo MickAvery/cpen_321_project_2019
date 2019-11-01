@@ -47,6 +47,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Arrays;
 
@@ -65,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private GlobalRequestQueue mReqQueue;
+
+    private String mFirebaseCloudMsgRegistrationToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +111,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e(this.getClass().toString(), "facebook signin error ", error);
             }
         });
+
+        /* Let's try to get the Firebase Cloud Messaging registration token */
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener((Task<InstanceIdResult> task) -> {
+                    if(task.isSuccessful()) {
+                        mFirebaseCloudMsgRegistrationToken = task.getResult().getToken();
+                    }
+                });
 
         // Request only the user's ID token, which can be used to identify the
         // user securely to your backend. This will contain the user's basic
@@ -328,13 +340,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .addOnCompleteListener((Task<GetTokenResult> task) -> {
                     if(task.isSuccessful()) {
                         /* Send token to backend for verification */
-                        // TODO: implement this
+
                         String idToken = task.getResult().getToken();
 
                         Uri uriQuery = Uri.parse(getString(R.string.server_url))
                                 .buildUpon()
                                 .appendPath("firebaseVerifyIdToken")
                                 .appendQueryParameter("idTok", idToken)
+                                .appendQueryParameter("fcmTok", mFirebaseCloudMsgRegistrationToken)
                                 .build();
 
                         StringRequest req = new StringRequest(Request.Method.POST, uriQuery.toString(),
@@ -344,6 +357,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 },
 
                                 (VolleyError error) -> {
+                                    mInvalidEmailView.setText("Login failed for some reason");
+                                    mInvalidEmailView.setVisibility(View.VISIBLE);
                                     mFirebaseAuth.signOut();
                                 });
 

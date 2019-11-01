@@ -88,7 +88,6 @@ public class IngredientListActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
-        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
 
     @Override

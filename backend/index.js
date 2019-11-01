@@ -117,6 +117,7 @@ app.post('/firebaseVerifyIdToken', function(req, res) {
     console.log('/firebaseVerifyIdToken POST');
 
     idToken = req.query.idTok;
+    fcmToken = req.query.fcmTok;
 
     firebaseAdmin.auth().verifyIdToken(idToken)
         .then(function(decodedToken) {
@@ -125,7 +126,8 @@ app.post('/firebaseVerifyIdToken', function(req, res) {
             var email = decodedToken.email;
             var obj = {
                 displayName : decodedToken.name,
-                photoUri : decodedToken.picture
+                photoUri : decodedToken.picture,
+                fcm_tok : fcmToken
             }
             var newVals = {$set : obj};
 
