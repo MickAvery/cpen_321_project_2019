@@ -80,6 +80,8 @@ public class NewIngrediPostActivity extends AppCompatActivity {
                 postparams.put("lat", null);
                 postparams.put("long", null);
             }
+            Log.d("latitude", loc[0].toString());
+            Log.d("longitude", loc[1].toString());
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
                         try {
