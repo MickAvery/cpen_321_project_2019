@@ -12,6 +12,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,12 +30,15 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mRadiusPref;
     private View mSaveButton;
     private View mBackButton;
+    private FirebaseAuth mFirebaseAuth;
     private GlobalRequestQueue mReqQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_layout);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         mNameEditText = findViewById(R.id.name_edit_text);
         mBioEditText = findViewById(R.id.bio_edit_text);
@@ -61,30 +65,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void getProfileInfoFromBackend(){
         String url = getString(R.string.server_url) + getString(R.string.get_profile_info)
-                + "?email=" + MyApplication.getUserEmail();
-
-        JSONObject paramObject = new JSONObject();
-
-        JSONArray paramArray = new JSONArray();
+                + "?email=" + mFirebaseAuth.getCurrentUser().getEmail();
 
         try {
-            paramObject.put("email", MyApplication.getUserEmail());
-            paramArray.put(paramObject);
 
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
-                    url, paramArray,
-                    (JSONArray response) -> {
-                        Log.e(this.getClass().toString(), response.toString());
+
+            JsonObjectRequest jsonObjectRequest= new JsonObjectRequest (Request.Method.GET,
+                    url, null,
+                    (JSONObject response) -> {
                         try {
                             Log.e(this.getClass().toString(), response.toString());
-                            if(response.length() != 0) {
-                                Log.e(this.getClass().toString(), "getProfile success");
-                                JSONObject json_data = response.getJSONObject(0);
-                                mNameEditText.setText(json_data.getString(getString(R.string.displayName)));
-                                mBioEditText.setText(json_data.getString(getString(R.string.bio)));
-                                mPrefEditText.setText(json_data.getString(getString(R.string.food_preferences)));
-                                mRadiusPref.setText(json_data.getString(getString(R.string.radius_preference)));
-                            }
+
+                            mNameEditText.setText(response.getString("displayName"));
+                            mBioEditText.setText(response.getString(getString(R.string.bio)));
+                            mPrefEditText.setText(response.getString(getString(R.string.food_preferences)));
 
                         } catch (JSONException jsonEx) {
                             Log.e(this.getClass().toString(), jsonEx.toString());
@@ -96,7 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
             );
             // Add JsonArrayRequest to the RequestQueue
             mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
+            mReqQueue.addToRequestQueue(jsonObjectRequest,"get");
 
         } catch(Exception e) {
 

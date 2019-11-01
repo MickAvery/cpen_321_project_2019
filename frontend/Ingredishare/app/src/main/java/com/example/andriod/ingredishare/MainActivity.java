@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if(currentUser != null) {
-            verifyFirebaseTokenBackend(currentUser);
+            verifyFirebaseTokenBackend(currentUser, false);
         }
     }
 
@@ -221,7 +221,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if(task.isSuccessful()) {
                             /* Firebase Signin successful, send ID token to backend for verification */
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            verifyFirebaseTokenBackend(user);
+                            Boolean newUser = task.getResult().getAdditionalUserInfo().isNewUser();
+
+                            verifyFirebaseTokenBackend(user, newUser);
                         } else {
                             /* Firebase signin failed */
                             mInvalidEmailView.setText(R.string.fail_log_in);
@@ -244,7 +246,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if(task.isSuccessful()) {
                             /* new user created, send ID token to backend for verification */
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            verifyFirebaseTokenBackend(user);
+                            Boolean newUser = task.getResult().getAdditionalUserInfo().isNewUser();
+
+                            verifyFirebaseTokenBackend(user, newUser);
                         } else {
                             /* failed to create user, reasons below */
 
@@ -278,7 +282,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if(task.isSuccessful()) {
                         /* send ID token to backend for verification */
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        verifyFirebaseTokenBackend(user);
+                        Boolean newUser = task.getResult().getAdditionalUserInfo().isNewUser();
+
+                        verifyFirebaseTokenBackend(user, newUser);
                     } else {
                         /* Google Signin failed for one reason or another */
 
@@ -310,7 +316,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if(task.isSuccessful()) {
                         /* send ID token to backend for verification */
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        verifyFirebaseTokenBackend(user);
+                        Boolean newUser = task.getResult().getAdditionalUserInfo().isNewUser();
+
+                        verifyFirebaseTokenBackend(user, newUser);
                     } else {
                         /* Facebook signin failed for one reason or another */
 
@@ -334,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
     }
 
-    private void verifyFirebaseTokenBackend(FirebaseUser user) {
+    private void verifyFirebaseTokenBackend(FirebaseUser user, boolean newUser) {
 
         user.getIdToken(true)
                 .addOnCompleteListener((Task<GetTokenResult> task) -> {
@@ -352,7 +360,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         StringRequest req = new StringRequest(Request.Method.POST, uriQuery.toString(),
                                 (String response) -> {
-                                    Intent intent = new Intent(this, IngredientListActivity.class);
+                                    Intent intent;
+
+                                    if(newUser) {
+                                        intent = new Intent(this, ProfileActivity.class);
+                                    } else {
+                                        intent = new Intent(this, IngredientListActivity.class);
+                                    }
+
                                     startActivity(intent);
                                 },
 
@@ -370,6 +385,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         mFirebaseAuth.signOut();
                     }
                 });
-
     }
 }
