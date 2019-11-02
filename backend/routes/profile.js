@@ -23,14 +23,15 @@ router.get('/getProfileInfo', (req, res) => {
 });
 
 async function getProfileInfo(obj) {
-    const result = await dbIngrediShare.collection("users").find({email: obj.email}, {projection: {displayName: 1, bio: 1, preferences: 1}}).toArray();
+    const result = await dbIngrediShare.collection("users").find({email: obj.email}, {projection: {displayName: 1, bio: 1, preferences: 1, radius_preference: 1}}).toArray();
     return result;
 }
 
 router.post('/updateProfileInfo', (req, res) => {
     try {
         var myquery = { email: req.body.email };
-        var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio, preferences: req.body.preferences} };
+        var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio,
+                preferences: req.body.preferences, radius_preference: req.body.radius_preference} };
         
         dbIngrediShare.collection("users").updateOne(myquery, newvalues, function(err, res) {
         if (err) throw err;
