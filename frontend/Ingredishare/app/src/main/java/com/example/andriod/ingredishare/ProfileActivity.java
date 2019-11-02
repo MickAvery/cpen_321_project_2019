@@ -72,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
             paramArray.put(paramObject);
 
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
-                    url, null,
+                    url, paramArray,
                     (JSONArray response) -> {
                         Log.e(this.getClass().toString(), response.toString());
                         try {
