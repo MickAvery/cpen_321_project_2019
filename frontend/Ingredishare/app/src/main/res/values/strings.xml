@@ -31,6 +31,7 @@
 
     <string name="longitude">longitude</string>
     <string name="latitude">latitude</string>
+    <string name="lat">lat</string>
     <string name="createRequest">/createRequest</string>
     <string name="update_profile_info">/updateProfileInfo</string>
     <string name="get_profile_info">/getProfileInfo</string>

@@ -26,7 +26,8 @@ router.get('/getAllRequestsFromLatLong', (req, res) => {
 
     var temp = {
         lat: search_params.get('lat'),
-        long: search_params.get('long')
+        long: search_params.get('long'),
+        email: search_params.get('email')
     };
 
     try {

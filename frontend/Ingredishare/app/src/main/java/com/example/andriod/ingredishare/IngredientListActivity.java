@@ -143,9 +143,19 @@ public class IngredientListActivity extends AppCompatActivity {
         String url = getString(R.string.server_url)
                 + getString(R.string.get_all_requests_lat_long)
                 + "?lat=" + latitude
-                + "&long=" + longitude;
+                + "&long=" + longitude
+                + "&email=" + MyApplication.getUserEmail();
+
+        JSONObject paramObj = new JSONObject();
+        JSONArray paramArray = new JSONArray();
 
         try {
+
+            paramObj.put(getString(R.string.lat), String.format("%f", latitude));
+            paramObj.put("long", String.format("%f", longitude));
+            paramObj.put(getString(R.string.email), MyApplication.getUserEmail());
+            paramArray.put(paramObj);
+
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
                     url,
                     null,
