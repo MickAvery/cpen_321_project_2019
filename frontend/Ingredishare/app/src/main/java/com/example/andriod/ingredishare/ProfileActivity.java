@@ -26,6 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mNameEditText;
     private EditText mBioEditText;
     private EditText mPrefEditText;
+    private EditText mRadiusPref;
     private View mSaveButton;
     private View mBackButton;
     private GlobalRequestQueue mReqQueue;
@@ -38,8 +39,10 @@ public class ProfileActivity extends AppCompatActivity {
         mNameEditText = findViewById(R.id.name_edit_text);
         mBioEditText = findViewById(R.id.bio_edit_text);
         mPrefEditText = findViewById(R.id.pref_edit_text);
+        mRadiusPref = findViewById(R.id.radius_pref);
         mBackButton = findViewById(R.id.back_button);
         mSaveButton = findViewById(R.id.save_button);
+
 
         getProfileInfoFromBackend();
 
@@ -77,9 +80,10 @@ public class ProfileActivity extends AppCompatActivity {
                             if(response.length() != 0) {
                                 Log.e(this.getClass().toString(), "getProfile success");
                                 JSONObject json_data = response.getJSONObject(0);
-                                mNameEditText.setText(json_data.getString("displayName"));
+                                mNameEditText.setText(json_data.getString(getString(R.string.displayName)));
                                 mBioEditText.setText(json_data.getString(getString(R.string.bio)));
                                 mPrefEditText.setText(json_data.getString(getString(R.string.food_preferences)));
+                                mRadiusPref.setText(json_data.getString(getString(R.string.radius_preference)));
                             }
 
                         } catch (JSONException jsonEx) {
@@ -106,12 +110,14 @@ public class ProfileActivity extends AppCompatActivity {
         String bio = mBioEditText.getText().toString();
         String preferences = mPrefEditText.getText().toString();
         String email = MyApplication.getUserEmail();
-
-        String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
-
-        JSONObject postparams = new JSONObject();
+        String radius_pref = mRadiusPref.getText().toString();
 
         try {
+            float rad = Float.parseFloat(radius_pref);
+
+            String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
+
+            JSONObject postparams = new JSONObject();
             postparams.put("displayName", display_name);
             postparams.put(getString(R.string.bio), bio);
             postparams.put(getString(R.string.food_preferences), preferences);
@@ -145,6 +151,8 @@ public class ProfileActivity extends AppCompatActivity {
             mReqQueue.addToRequestQueue(jsonObjReq, "post");
         } catch(JSONException jsonEx) {
 
+        } catch(NumberFormatException e){
+        Toast.makeText(this, "Radius must be a number!", Toast.LENGTH_SHORT).show();
         }
     }
 }

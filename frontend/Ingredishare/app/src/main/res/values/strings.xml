@@ -35,7 +35,8 @@
     <string name="update_profile_info">/updateProfileInfo</string>
     <string name="get_profile_info">/getProfileInfo</string>
     <string name="bio">bio</string>
-    <string name="food_preferences">preferences</string>\
+    <string name="food_preferences">preferences</string>
+    <string name="radius_preference">radius_preference</string>
 
     <string name="request_or_offer">request_or_offer</string>
     <string name="type">type</string>
