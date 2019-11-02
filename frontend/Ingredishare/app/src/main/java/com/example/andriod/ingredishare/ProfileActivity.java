@@ -122,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
             postparams.put(getString(R.string.bio), bio);
             postparams.put(getString(R.string.food_preferences), preferences);
             postparams.put("email", email);
+            postparams.put(getString(R.string.radius_preference), radius_pref);
 
             Log.e(this.getClass().toString(), display_name);
             Log.e(this.getClass().toString(), bio);
