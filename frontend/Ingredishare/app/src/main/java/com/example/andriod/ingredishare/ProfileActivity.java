@@ -33,6 +33,9 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private GlobalRequestQueue mReqQueue;
 
+    private Boolean profileUpdated;
+    private Boolean newUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -47,19 +50,28 @@ public class ProfileActivity extends AppCompatActivity {
         mBackButton = findViewById(R.id.back_button);
         mSaveButton = findViewById(R.id.save_button);
 
+        Intent myIntent = getIntent();
+
+        // Checks if user is a new user
+        newUser =  myIntent.getBooleanExtra(getString(R.string.newUser), false);
+
+        // True if profile has been updated at least once in this intent
+        profileUpdated = false;
+
 
         getProfileInfoFromBackend();
 
         mBackButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, IngredientListActivity.class);
-            startActivity(intent);
-            finish();
+            if(newUser && !profileUpdated){
+                Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(this, IngredientListActivity.class);
+                startActivity(intent);
+                finish();
+            }
         });
         mSaveButton.setOnClickListener(view -> {
             updateProfileInfo();
-            Intent intent = new Intent(this, IngredientListActivity.class);
-            startActivity(intent);
-            finish();
         });
     }
 
@@ -106,7 +118,17 @@ public class ProfileActivity extends AppCompatActivity {
         String email = MyApplication.getUserEmail();
         String radius_pref = mRadiusPref.getText().toString();
 
+        Log.e(this.getClass().toString(), display_name);
+        Log.e(this.getClass().toString(), bio);
+
+
         try {
+            if(display_name.equals("") ||
+                    bio.equals("") ||
+                    preferences.equals("")){
+                throw new StringIndexOutOfBoundsException();
+            }
+
             float rad = Float.parseFloat(radius_pref);
 
             String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
@@ -118,9 +140,9 @@ public class ProfileActivity extends AppCompatActivity {
             postparams.put("email", email);
             postparams.put(getString(R.string.radius_preference), radius_pref);
 
-            Log.e(this.getClass().toString(), display_name);
-            Log.e(this.getClass().toString(), bio);
-            Log.e(this.getClass().toString(), preferences);
+            Log.d(this.getClass().toString(), display_name);
+            Log.d(this.getClass().toString(), bio);
+            Log.d(this.getClass().toString(), preferences);
 
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
                     (JSONObject response) -> {
@@ -128,6 +150,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Boolean success_response = response.getBoolean("updateProfileInfo");
                             if (success_response) {
                                 Log.e(this.getClass().toString(), "updateProfile success");
+                                profileUpdated = true;
 
 
                                 Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
@@ -147,7 +170,9 @@ public class ProfileActivity extends AppCompatActivity {
         } catch(JSONException jsonEx) {
 
         } catch(NumberFormatException e){
-        Toast.makeText(this, "Radius must be a number!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Radius must be a number!", Toast.LENGTH_SHORT).show();
+        } catch(StringIndexOutOfBoundsException e){
+            Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
         }
     }
 }

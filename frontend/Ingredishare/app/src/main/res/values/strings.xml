@@ -29,6 +29,7 @@
     <string name="fail_sign_up_user_exists">This email is already being used</string>
     <string name="fail_sign_up">Email is taken</string>
     <string name="_id">_id</string>
+    <string name="newUser">newUser</string>
     <string name="description">description</string>
 
     <string name="longitude">longitude</string>
