@@ -39,12 +39,19 @@ router.get('/getAllRequestsFromLatLong', (req, res) => {
 });
 
 async function getAllRequestsFromLatLong(temp) {
-    // const result = await dbIngrediShare.collection("requests").find({lat: Number(temp.lat), long: Number(temp.long)}).toArray();
-    // db.student.find({ u1 : { $gt :  30, $lt : 60}});
+    const radius = await dbIngrediShare.collection("users").find(
+        {email: temp.email},
+        {projection: {radius_preference: 1}}
+    ).toArray();
+
+    var radiusPref = radius[0].radius_preference;
+
     const result = await dbIngrediShare.collection("requests").find({
-        lat: { $gt: Number(temp.lat - 5), $lt: Number(temp.lat + 5)},
-        long: { $gt: Number(temp.long - 5), $lt: Number(temp.long + 5)},
+        lat: { $gt: (Number(temp.lat)-Number(radiusPref)), $lt: (Number(temp.lat)+Number(radiusPref))},
+        long: { $gt: (Number(temp.long)-Number(radiusPref)), $lt: (Number(temp.long)+Number(radiusPref))},
+        userId: temp.email
     }).toArray();
+
     return result;
 }
 
