@@ -9,21 +9,18 @@ router.get('/', (req, res) => {
 });
 
 router.get('/getProfileInfo', (req, res) => {
-    let requestURL = req.url;
-    const currentURL = new URL(azureServerURL+requestURL);
-    const search_params = currentURL.searchParams;
-    var emailObj = {email : search_params.get('email')};
+    var email = req.query.email;
 
     try {
-        getProfileInfo(emailObj).then((result) => {
+        getProfileInfo(email).then((result) => {
             res.json(result);
         });
     } catch (err) {
     }
 });
 
-async function getProfileInfo(obj) {
-    const result = await dbIngrediShare.collection("users").find({email: obj.email}, {projection: {displayName: 1, bio: 1, preferences: 1, radius_preference: 1}}).toArray();
+async function getProfileInfo(email) {
+    const result = await dbIngrediShare.collection("users").findOne({email: email}, {projection: {displayName: 1, bio: 1, preferences: 1}});
     return result;
 }
 

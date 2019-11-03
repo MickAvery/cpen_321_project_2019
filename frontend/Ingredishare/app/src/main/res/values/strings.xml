@@ -25,6 +25,8 @@
     <string name="success">success</string>
     <string name="invalid_email">Invalid email</string>
     <string name="fail_log_in">Email or password incorrect</string>
+    <string name="fail_sign_up_invalid_password">Password must be at least 6 characters long</string>
+    <string name="fail_sign_up_user_exists">This email is already being used</string>
     <string name="fail_sign_up">Email is taken</string>
     <string name="_id">_id</string>
     <string name="description">description</string>

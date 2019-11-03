@@ -12,5 +12,7 @@
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/action_settings"
         android:title="Settings" />
+    <item android:id="@+id/log_out"
+        android:title="Log Out" />
 
 </menu>

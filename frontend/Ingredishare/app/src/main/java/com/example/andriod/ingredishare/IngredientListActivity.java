@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
@@ -87,7 +88,6 @@ public class IngredientListActivity extends AppCompatActivity {
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
 
-        FirebaseMessaging.getInstance().setAutoInitEnabled(true);
     }
 
     @Override
@@ -102,17 +102,27 @@ public class IngredientListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
-                return true;
+                break;
+
+            case R.id.log_out:
+                FirebaseAuth.getInstance().signOut();
+
+                Intent mainActivity = new Intent(this, MainActivity.class);
+                startActivity(mainActivity);
+                break;
 
             case R.id.action_profile:
                 Intent intent = new Intent(this, ProfileActivity.class);
                 startActivity(intent);
+                break;
 
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+
+        return true;
     }
 
     /*
