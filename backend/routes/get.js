@@ -1,37 +1,17 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
-const azureServerURL = "https://ingredishare-backend.azurewebsites.net"
-const localServerURL = "http://localhost:1337"
-
-router.get('/getAllRequests', (req, res) => {
-    try {
-        getAllRequests().then((result) => {
-            res.json(result);
-        });
-    } catch (err) {
-    }
-});
+const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
+const localServerURL = "http://localhost:1337";
 
 async function getAllRequests() {
     const result = await dbIngrediShare.collection("requests").find({}).toArray();
     return result;
 }
 
-router.get('/getAllRequestsFromLatLong', (req, res) => {
-    let requestURL = req.url;
-
-    const currentURL = new URL(azureServerURL + requestURL);
-    const search_params = currentURL.searchParams;
-
-    var temp = {
-        lat: search_params.get('lat'),
-        long: search_params.get('long'),
-        email: search_params.get('email')
-    };
-
+router.get('/getAllRequests', (req, res) => {
     try {
-        getAllRequestsFromLatLong(temp).then((result) => {
+        getAllRequests().then((result) => {
             res.json(result);
         });
     } catch (err) {
@@ -45,15 +25,38 @@ async function getAllRequestsFromLatLong(temp) {
     ).toArray();
 
     var radiusPref = radius[0].radius_preference;
+    var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
+    var longRange = Number(radiusPref) * (Number(1) / (Number(111.320) * Math.cos(temp.lat)));
 
     const result = await dbIngrediShare.collection("requests").find({
-        lat: { $gt: (Number(temp.lat)-Number(radiusPref)), $lt: (Number(temp.lat)+Number(radiusPref))},
-        long: { $gt: (Number(temp.long)-Number(radiusPref)), $lt: (Number(temp.long)+Number(radiusPref))},
+        lat: { $gt: (Number(temp.lat)-Number(latRange)), $lt: (Number(temp.lat)+Number(latRange))},
+        long: { $gt: (Number(temp.long)-Number(longRange)), $lt: (Number(temp.long)+Number(longRange))},
         userId: temp.email
     }).toArray();
 
     return result;
 }
+
+router.get('/getAllRequestsFromLatLong', (req, res) => {
+    let requestURL = req.url;
+
+    const currentURL = new URL(azureServerURL + requestURL);
+    const searchParams = currentURL.searchParams;
+
+    var temp = {
+        lat: searchParams.get('lat'),
+        long: searchParams.get('long'),
+        email: searchParams.get('email')
+    };
+
+    try {
+        getAllRequestsFromLatLong(temp).then((result) => {
+            res.json(result);
+        });
+    } catch (err) {
+        throw err;
+    }
+});
 
 router.post('/createRequest', (req, res) => {
     try {
@@ -77,15 +80,15 @@ router.post('/createRequest', (req, res) => {
                 res.json({"createRequestResponse": false});
                 throw err;
             } 
-        })
+        });
         res.json({"createRequestResponse": true});
     } catch (err){}
 });
 
 router.get('/isExistingUser', (req, res) => {
-    var user_email = req.body.email;
+    var userEmail = req.body.email;
 
-    var query = dbIngrediShare.collection("users").find({email:user_email}).toArray(function(err, result) {
+    var query = dbIngrediShare.collection("users").find({email:userEmail}).toArray(function(err, result) {
         if(err) throw err;
 
         if(typeof result !== 'undefined' && result.length > 0) {
@@ -93,14 +96,14 @@ router.get('/isExistingUser', (req, res) => {
         } else {
             res.json({"pre_existing_user" : false});
 
-            var newUser = {email : user_email};
+            var newUser = {email : userEmail};
             dbIngrediShare.collection("users").insertOne(newUser, function(err, res) {
-                if(err) throw err;
-
-                console.log("Created new user!");
+                if(err) {
+                    throw err;
+                };
             });
         }
     });
 });
 
-module.exports = router
+module.exports = router;

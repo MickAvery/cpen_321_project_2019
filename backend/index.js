@@ -9,8 +9,8 @@ var bcrypt         = require('bcrypt');
 /*********************************************************************
  * MODULE SETUP
  *********************************************************************/
-const azureServerURL = "https://ingredishare-backend.azurewebsites.net"
-const localServerURL = "http://localhost:1337"
+const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
+const localServerURL = "http://localhost:1337";
 /**
  * Google oath2.0
  **/
@@ -89,14 +89,13 @@ var server = app.listen(port, function() {
  * RESTFUL SERVICES
  *********************************************************************/
 
-const routerGet = require('../backend/routes/get')
-const routerProfile = require('../backend/routes/profile')
+const routerGet = require('../backend/routes/get');
+const routerProfile = require('../backend/routes/profile');
 const url = require('url');
-app.use(routerGet)
-app.use(routerProfile)
+app.use(routerGet);
+app.use(routerProfile);
 
 app.put('/saveFcmToken', function(req, res) {
-    console.log("/saveFcmToken PUT");
 
     var email = req.body.email;
     var tok = req.body.token;
@@ -107,7 +106,6 @@ app.put('/saveFcmToken', function(req, res) {
 
     var query = dbObj.collection("users").updateOne(query, newVals, function(err, res) {
         if(err) throw err;
-        console.log("update success");
     });
 
     res.json({"dummy": "dummy"}); /* TODO: figure out how Volley on frontend can accept empty responses */
@@ -183,20 +181,3 @@ app.post('/notif_test', function(req, res) {
         });
     });
 });
-
-/*********************************************************************
- * HELPER FUNCTIONS
- *********************************************************************/
-
-async function verifyToken(token) {
-    const ticket = await client.verifyIdToken({
-        idToken : token,
-        audience: SERVER_CLIENT_ID
-    });
-    // console.log(ticket);
-    const payload = ticket.getPayload();
-    const userid = payload['sub'];
-    const email = payload['email'];
-    
-    return email;
-}
