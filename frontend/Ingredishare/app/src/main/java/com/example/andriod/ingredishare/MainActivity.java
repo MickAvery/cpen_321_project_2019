@@ -367,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     } else {
                                         intent = new Intent(this, IngredientListActivity.class);
                                     }
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                                     startActivity(intent);
                                 },
