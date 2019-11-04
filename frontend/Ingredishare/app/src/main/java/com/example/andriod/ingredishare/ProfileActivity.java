@@ -12,11 +12,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

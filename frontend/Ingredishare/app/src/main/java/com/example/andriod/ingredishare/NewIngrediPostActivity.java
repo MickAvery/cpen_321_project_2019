@@ -17,9 +17,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;

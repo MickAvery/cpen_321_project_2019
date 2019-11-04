@@ -1,7 +1,5 @@
 package com.example.andriod.ingredishare;
 
-import android.content.Intent;
-import android.provider.Settings;
 import android.util.Log;
 
 import com.android.volley.Request;
