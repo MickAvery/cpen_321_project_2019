@@ -1,14 +1,7 @@
 package com.example.andriod.ingredishare;
 
-import android.content.Context;
 
-
+// TODO: decide whether or not to use this
 public class BackendCommunicationService {
-
-    private Context mContext;
-    private GlobalRequestQueue mReqQueue;
-
-    public BackendCommunicationService() {
-    }
 
 }

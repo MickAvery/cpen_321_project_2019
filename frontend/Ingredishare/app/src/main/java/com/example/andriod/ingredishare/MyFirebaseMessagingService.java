@@ -11,8 +11,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MyFirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
-    public MyFirebaseMessagingService() {
-    }
 
     @Override
     public void onNewToken(String token) {
@@ -59,14 +57,6 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d("TAG", "Message data payload: " + remoteMessage.getData());
-
-            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-//                scheduleJob();
-            } else {
-                // Handle message within 10 seconds
-//                handleNow();
-            }
 
         }
 

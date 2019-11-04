@@ -28,8 +28,8 @@ public class NewIngrediPostActivity extends AppCompatActivity {
     private Context mContext;
     private Button mBackbutton;
     private Button mPostButton;
-    private EditText description;
-    private EditText name;
+    private EditText mDescription;
+    private EditText mName;
     private Toolbar mToolbar;
     private GlobalRequestQueue mReqQueue;
     private String mType;
@@ -55,8 +55,8 @@ public class NewIngrediPostActivity extends AppCompatActivity {
     }
 
     public void savePost() {
-        description = findViewById(R.id.description);
-        name = findViewById(R.id.name);
+        mDescription = findViewById(R.id.description);
+        mName = findViewById(R.id.name);
 
         // TODO(developer): send ID Token to server and validate
         String url = getString(R.string.server_url) + getString(R.string.createRequest);
@@ -64,8 +64,8 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         JSONObject postparams = new JSONObject();
 
         try {
-            postparams.put(getString(R.string.name), name.getText());
-            postparams.put(getString(R.string.description), description.getText());
+            postparams.put(getString(R.string.name), mName.getText());
+            postparams.put(getString(R.string.description), mDescription.getText());
             postparams.put(getString(R.string.userId), MyApplication.getUserEmail());
             postparams.put(getString(R.string.type), mType);
 

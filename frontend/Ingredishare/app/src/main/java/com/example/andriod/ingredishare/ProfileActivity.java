@@ -129,9 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         try {
-            if(display_name.equals("") ||
-                    bio.equals("") ||
-                    preferences.equals("")){
+            if(display_name.isEmpty() || bio.isEmpty() || preferences.isEmpty()){
                 throw new StringIndexOutOfBoundsException();
             }
 

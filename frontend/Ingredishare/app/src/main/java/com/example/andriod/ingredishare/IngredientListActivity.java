@@ -42,9 +42,9 @@ import java.util.Objects;
 
 public class IngredientListActivity extends AppCompatActivity {
 
-    private RecyclerView.LayoutManager lManager;
-    private EventAdapter adapter;
-    private Button postButton;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private EventAdapter mEventAdapter;
+    private Button mPostButton;
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
 
@@ -57,23 +57,20 @@ public class IngredientListActivity extends AppCompatActivity {
         // Get the RecyclerView
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler_view);
 
-       // Toolbar myToolbar = findViewById(R.id.toolbar);
-        //setSupportActionBar(myToolbar);
+        mLayoutManager = new LinearLayoutManager(this);
+        recycler.setLayoutManager(mLayoutManager);
 
-        lManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(lManager);
-
-        // Set the custom adapter
+        // Set the custom mEventAdapter
         List<Event> eventList = new ArrayList<>();
-        adapter = new EventAdapter(eventList);
-        recycler.setAdapter(adapter);
+        mEventAdapter = new EventAdapter(eventList);
+        recycler.setAdapter(mEventAdapter);
 
         getEventsFromBackend();
-        ((LinearLayoutManager)lManager).scrollToPositionWithOffset(0, 0);
+        ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
 
-        postButton = findViewById(R.id.post_ingredient_button);
+        mPostButton = findViewById(R.id.post_ingredient_button);
 
-        postButton.setOnClickListener(v -> {
+        mPostButton.setOnClickListener(v -> {
             showClickableToast();
         });
 
@@ -118,7 +115,7 @@ public class IngredientListActivity extends AppCompatActivity {
     }
 
     /*
-      Grabs events from the backend and adds them to the adapter
+      Grabs events from the backend and adds them to the mEventAdapter
      */
     public void getEventsFromBackend(){
 
@@ -184,7 +181,7 @@ public class IngredientListActivity extends AppCompatActivity {
                                 Double y = 1.0;
 
                                 Event event = new Event(userid, name, description, x, y, type);
-                                adapter.addEvent(event);
+                                mEventAdapter.addEvent(event);
 
                             }
 
