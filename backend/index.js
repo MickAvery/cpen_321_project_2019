@@ -42,8 +42,7 @@ var dbObj;
 
 /* <-- Connection for PROD. COMMENT THIS SECTION IF CONNECTING TO LOCAL [START HERE]*/
 mongoClient.connect((mongoProdUri), function(err, db) {
-    if(err)
-    {
+    if(err) {
         throw err;
     }
 
@@ -86,8 +85,10 @@ app.put("/saveFcmToken", function(req, res) {
     var obj = {fcmTok : tok};
     var newVals = { $set : obj };
 
-    dbObj.collection("users").updateOne(query, newVals, function(err, res) {
-        if(err) throw err;
+    dbObj.collection("users").updateOne(query, newVals, function(err, mongoRes) {
+        if(err) {
+            res.send(500).end();
+        }
     });
 
     res.json({"dummy": "dummy"}); /* TODO: figure out how Volley on frontend can accept empty responses */
@@ -154,8 +155,7 @@ app.post("/notif_test", function(req, res) {
 
     /* notify all users */
     var query = dbObj.collection("users").find().toArray(function(err, result) {
-        if(err)
-        {
+        if(err) {
             throw err;
         }
 
@@ -167,8 +167,7 @@ app.post("/notif_test", function(req, res) {
         });
 
         sender.send(message, {registrationTokens : regTokens}, function(err, resp) {
-            if(err)
-            {
+            if(err) {
                 // console.error(err);
                 throw err;
             }

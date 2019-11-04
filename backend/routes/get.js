@@ -65,20 +65,25 @@ router.post("/createRequest", (req, res) => {
             userId: req.body.userId,
             type: req.body.type
         };
-        if(newReq.name === undefined || 
-            newReq.description === undefined ||
-            newReq.lat === undefined ||
-            newReq.long === undefined ||
-            newReq.userId === undefined){
-                res.json({"createRequestResponse": false}); return;
-            }
-        dbObj.collection("requests").insertOne(newReq, function(err,res) {
-            if(err){
-                res.json({"createRequestResponse": false});
-                throw err;
-            } 
-        });
-        res.json({"createRequestResponse": true});
+
+        /* gotta check if any of the fields are falsey */
+        if(!newReq.name ||
+            !newReq.description ||
+            !newReq.lat ||
+            !newReq.long ||
+            !newReq.userId) {
+
+            res.json({"createRequestResponse": false});
+        } else {
+            dbObj.collection("requests").insertOne(newReq, function(err,res) {
+                if(err) {
+                    res.json({"createRequestResponse": false});
+                    throw err;
+                } else {
+                    res.json({"createRequestResponse": true});
+                }
+            });
+        }
     } catch (err) {
         res.status(500).end();
     }
@@ -88,11 +93,16 @@ router.get("/isExistingUser", (req, res) => {
     var userEmail = req.body.email;
 
     var query = dbObj.collection("users").find({email:userEmail}).toArray(function(err, result) {
-        if(err) throw err;
+        if(err) {
 
-        if(typeof result !== "undefined" && result.length > 0) {
+            res.send(500).end();
+
+        } else if(typeof result !== "undefined" && result.length > 0) {
+
             res.json({"pre_existing_user" : true});
+
         } else {
+
             res.json({"pre_existing_user" : false});
 
             var newUser = {email : userEmail};
