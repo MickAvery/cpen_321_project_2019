@@ -31,21 +31,17 @@ async function getProfileInfo(email) {
 }
 
 router.post('/updateProfileInfo', (req, res) => {
-    try {
-        var myquery = { email: req.body.email };
-        var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio,
-                preferences: req.body.preferences, radius_preference: req.body.radius_preference} };
-        
-        dbIngrediShare.collection("users").updateOne(myquery, newvalues, function(err, res) {
+    var myquery = { email: req.body.email };
+    var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio,
+            preferences: req.body.preferences, radius_preference: req.body.radius_preference} };
+
+    dbIngrediShare.collection("users").updateOne(myquery, newvalues, function(err, res) {
         if (err) {
             throw err
         };
     });
-        res.json({"updateProfileInfo": true});
-    } catch (err){
-        res.json({"updateProfileInfo": false});
-        throw err;
-    }
+
+    res.json({"updateProfileInfo": true});
 });
 
 module.exports = router;

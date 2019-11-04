@@ -26,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -42,20 +41,25 @@ import java.util.Objects;
 
 public class IngredientListActivity extends AppCompatActivity {
 
-    private RecyclerView.LayoutManager mLayoutManager;
     private EventAdapter mEventAdapter;
-    private Button mPostButton;
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RecyclerView.LayoutManager mLayoutManager;
+        Button mPostButton;
+
+//        RecyclerView.LayoutManager lManager;
+//        Button postButton;
+
         setContentView(R.layout.newsfeed);
         mContext = this;
         mReqQueue = GlobalRequestQueue.getInstance();
         // Get the RecyclerView
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recycler = findViewById(R.id.recycler_view);
 
         mLayoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(mLayoutManager);
