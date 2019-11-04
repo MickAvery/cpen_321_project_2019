@@ -42,12 +42,18 @@ var dbObj;
 
 /* <-- Connection for PROD. COMMENT THIS SECTION IF CONNECTING TO LOCAL [START HERE]*/
 mongoClient.connect((mongoProdUri), function(err, db) {
-    if(err) throw err;
+    if(err)
+    {
+        throw err;
+    }
+
     dbObj = db.db("ingrediShare");
     
     // console.log("connected to MongoDB!");
-
 });
+
+module.exports = dbObj;
+
 /*Connection for PROD [END HERE] --> */
 
 /**
@@ -157,7 +163,7 @@ app.post("/notif_test", function(req, res) {
         var regTokens = [];
 
         result.forEach(function(item, index) {
-            regTokens.push(item['fcmTok']);
+            regTokens.push(item["fcmTok"]);
         });
 
         sender.send(message, {registrationTokens : regTokens}, function(err, resp) {

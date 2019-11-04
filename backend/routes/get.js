@@ -1,5 +1,6 @@
 const express = require("express");
-const router = new express.Router();
+const router  = new express.Router();
+const dbObj   = require("../index.js");
 
 const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
@@ -16,7 +17,7 @@ router.get("/getAllRequests", (req, res) => {
 });
 
 async function getAllRequestsFromLatLong(temp) {
-    const radius = await dbIngrediShare.collection("users").find(
+    const radius = await dbObj.collection("users").find(
         {email: temp.email},
         {projection: {radius_preference: 1}}
     ).toArray();
@@ -24,7 +25,7 @@ async function getAllRequestsFromLatLong(temp) {
     var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
     var longRange = Number(radiusPref) * (Number(1) / (Number(111.320) * Math.cos(temp.lat)));
 
-    const result = await dbIngrediShare.collection("requests").find({
+    const result = await dbObj.collection("requests").find({
         lat: { $gt: (Number(temp.lat)-Number(latRange)), $lt: (Number(temp.lat)+Number(latRange))},
         long: { $gt: (Number(temp.long)-Number(longRange)), $lt: (Number(temp.long)+Number(longRange))},
         userId: temp.email
@@ -71,7 +72,7 @@ router.post("/createRequest", (req, res) => {
             newReq.userId === undefined){
                 res.json({"createRequestResponse": false}); return;
             }
-        dbIngrediShare.collection("requests").insertOne(newReq, function(err,res) {
+        dbObj.collection("requests").insertOne(newReq, function(err,res) {
             if(err){
                 res.json({"createRequestResponse": false});
                 throw err;
@@ -86,7 +87,7 @@ router.post("/createRequest", (req, res) => {
 router.get("/isExistingUser", (req, res) => {
     var userEmail = req.body.email;
 
-    var query = dbIngrediShare.collection("users").find({email:userEmail}).toArray(function(err, result) {
+    var query = dbObj.collection("users").find({email:userEmail}).toArray(function(err, result) {
         if(err) throw err;
 
         if(typeof result !== "undefined" && result.length > 0) {
@@ -95,7 +96,7 @@ router.get("/isExistingUser", (req, res) => {
             res.json({"pre_existing_user" : false});
 
             var newUser = {email : userEmail};
-            dbIngrediShare.collection("users").insertOne(newUser, function(err, res) {
+            dbObj.collection("users").insertOne(newUser, function(err, res) {
                 if(err) {
                     res.status(500).end();
                 }
