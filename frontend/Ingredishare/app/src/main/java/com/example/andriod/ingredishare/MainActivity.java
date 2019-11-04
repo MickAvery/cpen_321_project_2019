@@ -1,7 +1,6 @@
 package com.example.andriod.ingredishare;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -11,7 +10,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -198,6 +196,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String password = mPassword.getText().toString();
 
                 attemptEmailSignUp(email, password);
+                break;
+            }
+            default: {
                 break;
             }
         }
