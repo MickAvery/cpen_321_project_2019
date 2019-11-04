@@ -44,7 +44,6 @@ var dbObj;
 mongoClient.connect((mongoProdUri), function(err, db) {
     if(err) throw err;
     dbObj = db.db("ingrediShare");
-    dbIngrediShare = db.db("ingrediShare");
     
     // console.log("connected to MongoDB!");
 
@@ -66,9 +65,9 @@ var server = app.listen(port, function() {
  * RESTFUL SERVICES
  *********************************************************************/
 
-const routerGet = require('../backend/routes/get');
-const routerProfile = require('../backend/routes/profile');
-const url = require('url');
+const routerGet = require("../backend/routes/get");
+const routerProfile = require("../backend/routes/profile");
+const url = require("url");
 app.use(routerGet);
 app.use(routerProfile);
 
@@ -77,11 +76,11 @@ app.put("/saveFcmToken", function(req, res) {
     var email = req.body.email;
     var tok = req.body.token;
 
-    var query = {email : email};
+    var query = {email};
     var obj = {fcm_tok : tok};
     var newVals = { $set : obj };
 
-    var query = dbObj.collection("users").updateOne(query, newVals, function(err, res) {
+    dbObj.collection("users").updateOne(query, newVals, function(err, res) {
         if(err) throw err;
     });
 
@@ -122,7 +121,7 @@ app.post('/firebaseVerifyIdToken', function(req, res) {
         });
 });
 
-app.post('/notif_test', function(req, res) {
+app.post("/notif_test", function(req, res) {
     // console.log("/notif_test GET");
 
     var newReq = {
@@ -135,7 +134,7 @@ app.post('/notif_test', function(req, res) {
 
     /* prepare message */
     var message = new gcm.Message({
-        data : {key1 : 'mgs1'},
+        data : {key1 : "mgs1"},
         notification: {
             title: newReq.userId + " requested " + newReq.name,
             icon: "ic_launcher",
@@ -145,7 +144,10 @@ app.post('/notif_test', function(req, res) {
 
     /* notify all users */
     var query = dbObj.collection("users").find().toArray(function(err, result) {
-        if(err) throw err;
+        if(err)
+        {
+            throw err;
+        }
 
         /* append user reg tokens here */
         var regTokens = [];
@@ -156,7 +158,10 @@ app.post('/notif_test', function(req, res) {
 
         sender.send(message, {registrationTokens : regTokens}, function(err, resp) {
             if(err)
-                console.error(err);
+            {
+                // console.error(err);
+                throw err;
+            }
         });
     });
 });

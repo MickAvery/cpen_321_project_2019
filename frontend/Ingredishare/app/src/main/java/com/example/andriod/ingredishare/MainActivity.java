@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText mPassword;
 
     private FirebaseAuth mFirebaseAuth;
-    private LoginButton fbLoginButton;
     private CallbackManager mFacebookCallbackManager;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
@@ -72,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View mSignUp;
         View mSignIn;
         View mGoogleSignIn;
+        LoginButton fbLoginButton;
+
 
         mReqQueue = GlobalRequestQueue.getInstance();
         mSignUp = findViewById(R.id.sign_up_button);

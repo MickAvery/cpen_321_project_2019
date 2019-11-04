@@ -30,12 +30,12 @@ async function getProfileInfo(email) {
     return result;
 }
 
-router.post('/updateProfileInfo', (req, res) => {
+router.post("/updateProfileInfo", (req, res) => {
     var myquery = { email: req.body.email };
     var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio,
             preferences: req.body.preferences, radius_preference: req.body.radius_preference} };
 
-    dbIngrediShare.collection("users").updateOne(myquery, newvalues, function(err, res) {
+    dbObj.collection("users").updateOne(myquery, newvalues, function(err, res) {
         if (err) {
             throw err
         };

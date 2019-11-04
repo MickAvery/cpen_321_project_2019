@@ -5,11 +5,11 @@ const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
 
 async function getAllRequests() {
-    const result = await dbIngrediShare.collection("requests").find({}).toArray();
+    const result = await dbObj.collection("requests").find({}).toArray();
     return result;
 }
 
-router.get('/getAllRequests', (req, res) => {
+router.get("/getAllRequests", (req, res) => {
     try {
         getAllRequests().then((result) => {
             res.json(result);
@@ -37,16 +37,16 @@ async function getAllRequestsFromLatLong(temp) {
     return result;
 }
 
-router.get('/getAllRequestsFromLatLong', (req, res) => {
+router.get("/getAllRequestsFromLatLong", (req, res) => {
     let requestURL = req.url;
 
     const currentURL = new URL(azureServerURL + requestURL);
     const searchParams = currentURL.searchParams;
 
     var temp = {
-        lat: searchParams.get('lat'),
-        long: searchParams.get('long'),
-        email: searchParams.get('email')
+        lat: searchParams.get("lat"),
+        long: searchParams.get("long"),
+        email: searchParams.get("email")
     };
 
     try {
@@ -58,7 +58,7 @@ router.get('/getAllRequestsFromLatLong', (req, res) => {
     }
 });
 
-router.post('/createRequest', (req, res) => {
+router.post("/createRequest", (req, res) => {
     try {
         var newReq = {
             name: req.body.name, 
@@ -85,7 +85,7 @@ router.post('/createRequest', (req, res) => {
     } catch (err){}
 });
 
-router.get('/isExistingUser', (req, res) => {
+router.get("/isExistingUser", (req, res) => {
     var userEmail = req.body.email;
 
     var query = dbIngrediShare.collection("users").find({email:userEmail}).toArray(function(err, result) {
@@ -100,7 +100,7 @@ router.get('/isExistingUser', (req, res) => {
             dbIngrediShare.collection("users").insertOne(newUser, function(err, res) {
                 if(err) {
                     throw err;
-                };
+                }
             });
         }
     });
