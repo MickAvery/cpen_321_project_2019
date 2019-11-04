@@ -16,8 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
-
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
@@ -26,11 +24,6 @@ import org.json.JSONObject;
 
 public class NewIngrediPostActivity extends AppCompatActivity {
     private Context mContext;
-    private Button mBackbutton;
-    private Button mPostButton;
-    private EditText mDescription;
-    private EditText mName;
-    private Toolbar mToolbar;
     private GlobalRequestQueue mReqQueue;
     private String mType;
 
@@ -38,6 +31,10 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredipost_layout);
         mContext = this;
+
+        Button mBackbutton;
+        Button mPostButton;
+        Toolbar mToolbar;
 
         mToolbar = findViewById(R.id.toolbar);
         mBackbutton = findViewById(R.id.back_button);
@@ -55,6 +52,10 @@ public class NewIngrediPostActivity extends AppCompatActivity {
     }
 
     public void savePost() {
+
+        EditText mDescription;
+        EditText mName;
+
         mDescription = findViewById(R.id.description);
         mName = findViewById(R.id.name);
 

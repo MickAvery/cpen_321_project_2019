@@ -77,7 +77,7 @@ app.put("/saveFcmToken", function(req, res) {
     var tok = req.body.token;
 
     var query = {email};
-    var obj = {fcm_tok : tok};
+    var obj = {fcmTok : tok};
     var newVals = { $set : obj };
 
     dbObj.collection("users").updateOne(query, newVals, function(err, res) {
@@ -87,7 +87,7 @@ app.put("/saveFcmToken", function(req, res) {
     res.json({"dummy": "dummy"}); /* TODO: figure out how Volley on frontend can accept empty responses */
 });
 
-app.post('/firebaseVerifyIdToken', function(req, res) {
+app.post("/firebaseVerifyIdToken", function(req, res) {
     // console.log('/firebaseVerifyIdToken POST');
 
     var idToken = req.query.idTok;
@@ -101,7 +101,7 @@ app.post('/firebaseVerifyIdToken', function(req, res) {
             var obj = {
                 displayName : decodedToken.name,
                 photoUri : decodedToken.picture,
-                fcm_tok : fcmToken
+                fcmTok : fcmToken
             };
             var newVals = {$set : obj};
 
@@ -110,9 +110,13 @@ app.post('/firebaseVerifyIdToken', function(req, res) {
                 newVals,
                 { upsert: true },
                 function(err, mongoRes) {
-                    if(err) throw err;
-                    // console.log("update success");
-                    res.status(200).end();
+                    if(err) {
+                        res.status(500).end();
+                        // throw err;
+                    } else {
+                        // console.log("update success");
+                        res.status(200).end();
+                    }
             });
         })
         .catch(function(error) {
@@ -153,7 +157,7 @@ app.post("/notif_test", function(req, res) {
         var regTokens = [];
 
         result.forEach(function(item, index) {
-            regTokens.push(item['fcm_tok']);
+            regTokens.push(item['fcmTok']);
         });
 
         sender.send(message, {registrationTokens : regTokens}, function(err, resp) {

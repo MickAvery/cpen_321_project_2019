@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router();
+const router = new express.Router();
 
 const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
@@ -10,13 +10,9 @@ async function getAllRequests() {
 }
 
 router.get("/getAllRequests", (req, res) => {
-    try {
-        getAllRequests().then((result) => {
-            res.json(result);
-        });
-    } catch (err) {
-        throw err;
-    }
+    getAllRequests().then((result) => {
+        res.json(result);
+    });
 });
 
 async function getAllRequestsFromLatLong(temp) {
@@ -54,7 +50,7 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
             res.json(result);
         });
     } catch (err) {
-        throw err;
+        res.status(500).end();
     }
 });
 
@@ -82,7 +78,9 @@ router.post("/createRequest", (req, res) => {
             } 
         });
         res.json({"createRequestResponse": true});
-    } catch (err){}
+    } catch (err) {
+        res.status(500).end();
+    }
 });
 
 router.get("/isExistingUser", (req, res) => {
@@ -99,7 +97,7 @@ router.get("/isExistingUser", (req, res) => {
             var newUser = {email : userEmail};
             dbIngrediShare.collection("users").insertOne(newUser, function(err, res) {
                 if(err) {
-                    throw err;
+                    res.status(500).end();
                 }
             });
         }
