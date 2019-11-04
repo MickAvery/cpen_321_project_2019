@@ -19,7 +19,7 @@ router.get("/getAllRequests", (req, res) => {
 async function getAllRequestsFromLatLong(temp) {
     const radius = await dbObj.collection("users").find(
         {email: temp.email},
-        {projection: {radius_preference: 1}}
+        {radius_preference: 1}
     ).toArray();
     var radiusPref = (radius.length > 0)? ((radius[0].radius_preference)? radius[0].radius_preference : 0) : 0;
     var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
@@ -58,9 +58,9 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
 router.post("/createRequest", (req, res) => {
     try {
         var newReq = {
-            name: req.body.name, 
-            description: req.body.description, 
-            lat: req.body.lat, 
+            name: req.body.name,
+            description: req.body.description,
+            lat: req.body.lat,
             long: req.body.long,
             userId: req.body.userId,
             type: req.body.type
@@ -76,10 +76,9 @@ router.post("/createRequest", (req, res) => {
             dbObj.collection("requests").insertOne(newReq, function(err,res) {
                 if(err) {
                     res.json({"createRequestResponse": false});
-                    throw err;
+                } else {
+                    res.json({"createRequestResponse": true});
                 }
-
-                res.json({"createRequestResponse": true});
             });
 
             return;
