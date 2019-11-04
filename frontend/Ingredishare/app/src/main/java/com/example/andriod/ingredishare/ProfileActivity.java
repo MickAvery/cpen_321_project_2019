@@ -28,8 +28,6 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mBioEditText;
     private EditText mPrefEditText;
     private Spinner mRadiusPref;
-    private View mSaveButton;
-    private View mBackButton;
     private FirebaseAuth mFirebaseAuth;
     private GlobalRequestQueue mReqQueue;
 
@@ -39,6 +37,9 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_layout);
+
+        View mSaveButton;
+        View mBackButton;
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -140,10 +141,11 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         try {
-            if(display_name.isEmpty() || bio.isEmpty() || preferences.isEmpty()){
+            if("".equals(display_name) ||
+                    "".equals(bio) ||
+                    "".equals(preferences)){
                 throw new StringIndexOutOfBoundsException();
             }
-
 
             String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
 

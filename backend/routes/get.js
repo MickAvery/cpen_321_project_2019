@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
@@ -91,7 +91,7 @@ router.get('/isExistingUser', (req, res) => {
     var query = dbIngrediShare.collection("users").find({email:userEmail}).toArray(function(err, result) {
         if(err) throw err;
 
-        if(typeof result !== 'undefined' && result.length > 0) {
+        if(typeof result !== "undefined" && result.length > 0) {
             res.json({"pre_existing_user" : true});
         } else {
             res.json({"pre_existing_user" : false});
