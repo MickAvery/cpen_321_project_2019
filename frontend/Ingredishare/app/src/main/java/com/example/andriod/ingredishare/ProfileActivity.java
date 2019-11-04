@@ -33,8 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private GlobalRequestQueue mReqQueue;
 
-    private Boolean profileUpdated;
-    private Boolean newUser;
+    private Boolean mProfileUpdatedFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -58,16 +57,16 @@ public class ProfileActivity extends AppCompatActivity {
         Intent myIntent = getIntent();
 
         // Checks if user is a new user
-        newUser =  myIntent.getBooleanExtra(getString(R.string.newUser), false);
+        boolean newUser =  myIntent.getBooleanExtra(getString(R.string.newUser), false);
 
         // True if profile has been updated at least once in this intent
-        profileUpdated = false;
+        mProfileUpdatedFlag = false;
 
 
         getProfileInfoFromBackend();
 
         mBackButton.setOnClickListener(v -> {
-            if(newUser && !profileUpdated){
+            if(newUser && !mProfileUpdatedFlag){
                 Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(this, IngredientListActivity.class);
@@ -93,9 +92,21 @@ public class ProfileActivity extends AppCompatActivity {
                         try {
                             Log.e(this.getClass().toString(), response.toString());
 
-                            mNameEditText.setText(response.getString("displayName"));
-                            mBioEditText.setText(response.getString(getString(R.string.bio)));
-                            mPrefEditText.setText(response.getString(getString(R.string.food_preferences)));
+                            String name = response.getString(getString(R.string.display_name));
+                            String bio = response.getString(getString(R.string.bio));
+                            String preference = response.getString(getString(R.string.food_preferences));
+
+                            // If values are null just leave them empty
+                            if (name != null) {
+                                mNameEditText.setText(name);
+                            }
+                            if (bio != null) {
+                                mBioEditText.setText(bio);
+                            }
+                            if (preference != null) {
+                                mPrefEditText.setText(preference);
+                            }
+
 
                         } catch (JSONException jsonEx) {
                             Log.e(this.getClass().toString(), jsonEx.toString());
@@ -153,7 +164,7 @@ public class ProfileActivity extends AppCompatActivity {
                             Boolean success_response = response.getBoolean("updateProfileInfo");
                             if (success_response) {
                                 Log.e(this.getClass().toString(), "updateProfile success");
-                                profileUpdated = true;
+                                mProfileUpdatedFlag = true;
 
 
                                 Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
