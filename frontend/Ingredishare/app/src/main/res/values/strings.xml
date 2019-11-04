@@ -50,4 +50,15 @@
     <string name="ingredient_name">Ingredient Name</string>
     <string name="ingredient_description">Ingredient Description</string>
     <string name="displayName">displayName</string>
+
+    <string-array name="km_radius_pref">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
 </resources>

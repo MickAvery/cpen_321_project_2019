@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -27,7 +29,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mNameEditText;
     private EditText mBioEditText;
     private EditText mPrefEditText;
-    private EditText mRadiusPref;
+    private Spinner mRadiusPref;
     private View mSaveButton;
     private View mBackButton;
     private FirebaseAuth mFirebaseAuth;
@@ -49,6 +51,11 @@ public class ProfileActivity extends AppCompatActivity {
         mRadiusPref = findViewById(R.id.radius_pref);
         mBackButton = findViewById(R.id.back_button);
         mSaveButton = findViewById(R.id.save_button);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item,
+                getResources().getStringArray(R.array.km_radius_pref));
+        mRadiusPref.setAdapter(adapter);
 
         Intent myIntent = getIntent();
 
@@ -116,7 +123,8 @@ public class ProfileActivity extends AppCompatActivity {
         String bio = mBioEditText.getText().toString();
         String preferences = mPrefEditText.getText().toString();
         String email = MyApplication.getUserEmail();
-        String radius_pref = mRadiusPref.getText().toString();
+
+        int rad = mRadiusPref.getSelectedItemPosition() + 1;
 
         Log.e(this.getClass().toString(), display_name);
         Log.e(this.getClass().toString(), bio);
@@ -129,7 +137,6 @@ public class ProfileActivity extends AppCompatActivity {
                 throw new StringIndexOutOfBoundsException();
             }
 
-            float rad = Float.parseFloat(radius_pref);
 
             String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
 
@@ -138,7 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
             postparams.put(getString(R.string.bio), bio);
             postparams.put(getString(R.string.food_preferences), preferences);
             postparams.put("email", email);
-            postparams.put(getString(R.string.radius_preference), radius_pref);
+            postparams.put(getString(R.string.radius_preference), rad);
 
             Log.d(this.getClass().toString(), display_name);
             Log.d(this.getClass().toString(), bio);
@@ -169,9 +176,7 @@ public class ProfileActivity extends AppCompatActivity {
             mReqQueue.addToRequestQueue(jsonObjReq, "post");
         } catch(JSONException jsonEx) {
 
-        } catch(NumberFormatException e){
-            Toast.makeText(this, "Radius must be a number!", Toast.LENGTH_SHORT).show();
-        } catch(StringIndexOutOfBoundsException e){
+        }  catch(StringIndexOutOfBoundsException e){
             Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
         }
     }

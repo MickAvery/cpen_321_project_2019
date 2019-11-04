@@ -82,13 +82,15 @@
             android:paddingTop="12dp"
             android:text="Max Radius (km)"/>
 
-        <EditText
+        <Spinner
             android:id="@+id/radius_pref"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="32dp"
-            android:layout_marginLeft="32dp"
-            android:paddingTop="8dp"/>
+            android:background="@android:drawable/btn_dropdown"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="8dp"
+            android:spinnerMode="dropdown"/>
 
         <Button
             android:id="@+id/save_button"
