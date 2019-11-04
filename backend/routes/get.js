@@ -23,7 +23,7 @@ async function getAllRequestsFromLatLong(temp) {
     ).toArray();
     var radiusPref = (radius.length > 0)? ((radius[0].radius_preference)? radius[0].radius_preference : 0) : 0;
     var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
-    var longRange = Number(radiusPref) * (Number(1) / (Number(111.320) * Math.cos(temp.lat)));
+    var longRange = Number(radiusPref) * (Number(1) / (Number(111.32) * Math.cos(temp.lat)));
 
     const result = await dbObj.collection("requests").find({
         lat: { $gt: (Number(temp.lat)-Number(latRange)), $lt: (Number(temp.lat)+Number(latRange))},
@@ -67,23 +67,25 @@ router.post("/createRequest", (req, res) => {
         };
 
         /* gotta check if any of the fields are falsey */
-        if(!newReq.name ||
-            !newReq.description ||
-            !newReq.lat ||
-            !newReq.long ||
-            !newReq.userId) {
+        if(newReq.name &&
+           newReq.description &&
+           newReq.lat &&
+           newReq.long &&
+           newReq.userId) {
 
-            res.json({"createRequestResponse": false});
-        } else {
             dbObj.collection("requests").insertOne(newReq, function(err,res) {
                 if(err) {
                     res.json({"createRequestResponse": false});
                     throw err;
-                } else {
-                    res.json({"createRequestResponse": true});
                 }
+
+                res.json({"createRequestResponse": true});
             });
+
+            return;
         }
+
+        res.json({"createRequestResponse": false});
     } catch (err) {
         res.status(500).end();
     }
