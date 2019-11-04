@@ -139,8 +139,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
 
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         // TODO: handle case if they say no
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
