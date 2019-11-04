@@ -4,7 +4,6 @@ var mongo          = require('mongodb');
 var gcm            = require('node-gcm');
 var firebaseAdmin  = require('firebase-admin');
 var serviceAccount = require("./serviceAccountKey.json");
-var bcrypt         = require('bcrypt');
 
 /*********************************************************************
  * MODULE SETUP
