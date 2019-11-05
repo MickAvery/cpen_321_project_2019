@@ -15,6 +15,7 @@ router.get('/getAllRequests', (req, res) => {
             res.json(result);
         });
     } catch (err) {
+        throw err;
     }
 });
 
@@ -23,8 +24,7 @@ async function getAllRequestsFromLatLong(temp) {
         {email: temp.email},
         {projection: {radius_preference: 1}}
     ).toArray();
-
-    var radiusPref = radius[0].radius_preference;
+    var radiusPref = (radius.length > 0)? ((radius[0].radius_preference)? radius[0].radius_preference : 0) : 0;
     var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
     var longRange = Number(radiusPref) * (Number(1) / (Number(111.320) * Math.cos(temp.lat)));
 
