@@ -6,6 +6,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONException;
@@ -22,26 +23,30 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         String url = getString(R.string.server_url) + getString(R.string.save_fcm_tok_put);
 
         JSONObject putparams = new JSONObject();
-        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        try {
-            putparams.put("email", email);
-            putparams.put("token", token);
+        if(user != null) {
+            String email = user.getEmail();
 
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.PUT, url, putparams,
-                    (JSONObject response) -> {
-                        Log.println(Log.DEBUG, "resp", "success");
-                    },
+            try {
+                putparams.put("email", email);
+                putparams.put("token", token);
 
-                    (VolleyError error) -> {
-                        Log.println(Log.DEBUG, "resp", "error");
-                    }
-            );
+                JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.PUT, url, putparams,
+                        (JSONObject response) -> {
+                            Log.println(Log.DEBUG, "resp", "success");
+                        },
 
-            GlobalRequestQueue reqQueue = GlobalRequestQueue.getInstance();
-            reqQueue.addToRequestQueue(jsonObjReq, "put");
-        } catch(JSONException jsonEx) {
+                        (VolleyError error) -> {
+                            Log.println(Log.DEBUG, "resp", "error");
+                        }
+                );
 
+                GlobalRequestQueue reqQueue = GlobalRequestQueue.getInstance();
+                reqQueue.addToRequestQueue(jsonObjReq, "put");
+            } catch (JSONException jsonEx) {
+
+            }
         }
     }
 
