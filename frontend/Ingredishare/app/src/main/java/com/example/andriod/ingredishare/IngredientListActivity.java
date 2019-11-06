@@ -30,6 +30,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +45,7 @@ public class IngredientListActivity extends AppCompatActivity {
     private EventAdapter mEventAdapter;
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
+    private FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class IngredientListActivity extends AppCompatActivity {
 
 //        RecyclerView.LayoutManager lManager;
 //        Button postButton;
+
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         setContentView(R.layout.newsfeed);
         mContext = this;
@@ -147,7 +151,7 @@ public class IngredientListActivity extends AppCompatActivity {
                 + getString(R.string.get_all_requests_lat_long)
                 + "?lat=" + latitude
                 + "&long=" + longitude
-                + "&email=" + MyApplication.getUserEmail();
+                + "&email=" + mUser.getEmail();
 
         JSONObject paramObj = new JSONObject();
         JSONArray paramArray = new JSONArray();
@@ -156,7 +160,7 @@ public class IngredientListActivity extends AppCompatActivity {
 
             paramObj.put(getString(R.string.lat), String.format("%f", latitude));
             paramObj.put("long", String.format("%f", longitude));
-            paramObj.put(getString(R.string.email), MyApplication.getUserEmail());
+            paramObj.put(getString(R.string.email), mUser.getEmail());
             paramArray.put(paramObj);
 
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
