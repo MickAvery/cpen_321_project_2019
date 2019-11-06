@@ -57,7 +57,7 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
 function requestIsValid(newRequest) {
     var ret = true;
 
-    for(field in newRequest) {
+    for(var field in newRequest) {
         if(!newRequest[field]) {
             ret = false;
             break;
