@@ -57,12 +57,12 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
 function requestIsValid(newRequest) {
     var ret = true;
 
-    for(var field in newRequest) {
-        if(!newRequest[field]) {
+    Object.values(newReq).forEach(function(value, index) {
+        if(!value) {
             ret = false;
             break;
         }
-    }
+    });
 
     return ret;
 }
