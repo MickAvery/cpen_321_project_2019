@@ -1,9 +1,11 @@
 # Backend server code
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9df8a17484c449fda448f8fd8e478437)](https://www.codacy.com/manual/MickAvery/cpen_321_project_2019?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MickAvery/cpen_321_project_2019&amp;utm_campaign=Badge_Grade)
+
 ## Prerequisites and Setup
 
-* [Node JS](https://nodejs.org/en/download/)
-* [Azure Command Line Interface (CLI)](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+  * [Node JS](https://nodejs.org/en/download/)
+  * [Azure Command Line Interface (CLI)](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 
 After installing the Azure CLI, login with the command:
 

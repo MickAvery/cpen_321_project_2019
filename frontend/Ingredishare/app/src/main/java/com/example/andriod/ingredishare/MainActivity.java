@@ -51,16 +51,11 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, FirebaseAuth.AuthStateListener {
-
-    private View mSignUp;
-    private View mSignIn;
-    private View mGoogleSignIn;
     private TextView mInvalidEmailView;
     private EditText mEmail;
     private EditText mPassword;
 
     private FirebaseAuth mFirebaseAuth;
-    private LoginButton fbLoginButton;
     private CallbackManager mFacebookCallbackManager;
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
@@ -72,6 +67,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        View mSignUp;
+        View mSignIn;
+        View mGoogleSignIn;
+        LoginButton fbLoginButton;
+
 
         mReqQueue = GlobalRequestQueue.getInstance();
         mSignUp = findViewById(R.id.sign_up_button);
@@ -137,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
 
+//        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
         // TODO: handle case if they say no
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -198,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 attemptEmailSignUp(email, password);
                 break;
             }
+            
             default: {
                 break;
             }

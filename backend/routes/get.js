@@ -1,52 +1,48 @@
-const express = require('express');
-const router = express.Router();
+const express = require("express");
+const router  = new express.Router();
+var mainMod   = require("../index.js");
 
 const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
 
 async function getAllRequests() {
-    const result = await dbIngrediShare.collection("requests").find({}).toArray();
+    var dbObj = mainMod.getDb();
+    const result = await dbObj.collection("requests").find({}).toArray();
     return result;
 }
 
-router.get('/getAllRequests', (req, res) => {
-    try {
-        getAllRequests().then((result) => {
-            res.json(result);
-        });
-    } catch (err) {
-        throw err;
-    }
+router.get("/getAllRequests", (req, res) => {
+    getAllRequests().then((result) => {
+        res.json(result);
+    });
 });
 
 async function getAllRequestsFromLatLong(temp) {
-    const radius = await dbIngrediShare.collection("users").find(
-        {email: temp.email},
-        {projection: {radius_preference: 1}}
-    ).toArray();
-    var radiusPref = (radius.length > 0)? ((radius[0].radius_preference)? radius[0].radius_preference : 0) : 0;
-    var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
-    var longRange = Number(radiusPref) * (Number(1) / (Number(111.320) * Math.cos(temp.lat)));
+    var dbObj = mainMod.getDb();
 
-    const result = await dbIngrediShare.collection("requests").find({
+    const user = await dbObj.collection("users").findOne(
+        {email : temp.email},
+        {radiusPreference : 1}
+    );
+
+    var radiusPref = user.radiusPreference;
+    var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
+    var longRange = Number(radiusPref) * (Number(1) / (Number(111.32) * Math.cos(temp.lat)));
+
+    const result = await dbObj.collection("requests").find({
         lat: { $gt: (Number(temp.lat)-Number(latRange)), $lt: (Number(temp.lat)+Number(latRange))},
-        long: { $gt: (Number(temp.long)-Number(longRange)), $lt: (Number(temp.long)+Number(longRange))},
-        userId: temp.email
+        long: { $gt: (Number(temp.long)-Number(longRange)), $lt: (Number(temp.long)+Number(longRange))}
     }).toArray();
 
     return result;
 }
 
-router.get('/getAllRequestsFromLatLong', (req, res) => {
-    let requestURL = req.url;
-
-    const currentURL = new URL(azureServerURL + requestURL);
-    const searchParams = currentURL.searchParams;
+router.get("/getAllRequestsFromLatLong", (req, res) => {
 
     var temp = {
-        lat: searchParams.get('lat'),
-        long: searchParams.get('long'),
-        email: searchParams.get('email')
+        lat: req.query.lat,
+        long: req.query.long,
+        email: req.query.email
     };
 
     try {
@@ -54,53 +50,78 @@ router.get('/getAllRequestsFromLatLong', (req, res) => {
             res.json(result);
         });
     } catch (err) {
-        throw err;
+        res.status(500).end();
     }
 });
 
-router.post('/createRequest', (req, res) => {
+function requestIsValid(newRequest) {
+    var ret = true;
+
+    Object.values(newReq).forEach(function(value, index) {
+        if(!value) {
+            ret = false;
+            break;
+        }
+    });
+
+    return ret;
+}
+
+router.post("/createRequest", (req, res) => {
     try {
+        var dbObj = mainMod.getDb();
+
         var newReq = {
-            name: req.body.name, 
-            description: req.body.description, 
-            lat: req.body.lat, 
+            name: req.body.name,
+            description: req.body.description,
+            lat: req.body.lat,
             long: req.body.long,
-            userId: req.body.userId,
             type: req.body.type
         };
-        if(newReq.name === undefined || 
-            newReq.description === undefined ||
-            newReq.lat === undefined ||
-            newReq.long === undefined ||
-            newReq.userId === undefined){
-                res.json({"createRequestResponse": false}); return;
-            }
-        dbIngrediShare.collection("requests").insertOne(newReq, function(err,res) {
-            if(err){
-                res.json({"createRequestResponse": false});
-                throw err;
-            } 
-        });
-        res.json({"createRequestResponse": true});
-    } catch (err){}
+
+        /* gotta check if any of the fields are falsey */
+        if(requestIsValid(newReq)) {
+
+            dbObj.collection("requests").insertOne(newReq, function(err,res) {
+                if(err) {
+                    res.json({"createRequestResponse": false});
+                } else {
+                    res.json({"createRequestResponse": true});
+                }
+            });
+
+            return;
+        }
+
+        res.json({"createRequestResponse": false});
+    } catch (err) {
+        res.status(500).end();
+    }
 });
 
-router.get('/isExistingUser', (req, res) => {
+router.get("/isExistingUser", (req, res) => {
+    var dbObj = mainMod.getDb();
+
     var userEmail = req.body.email;
 
-    var query = dbIngrediShare.collection("users").find({email:userEmail}).toArray(function(err, result) {
-        if(err) throw err;
+    var query = dbObj.collection("users").find({email:userEmail}).toArray(function(err, result) {
+        if(err) {
 
-        if(typeof result !== 'undefined' && result.length > 0) {
+            res.send(500).end();
+
+        } else if(typeof result !== "undefined" && result.length > 0) {
+
             res.json({"pre_existing_user" : true});
+
         } else {
+
             res.json({"pre_existing_user" : false});
 
             var newUser = {email : userEmail};
-            dbIngrediShare.collection("users").insertOne(newUser, function(err, res) {
+            dbObj.collection("users").insertOne(newUser, function(err, res) {
                 if(err) {
-                    throw err;
-                };
+                    res.status(500).end();
+                }
             });
         }
     });

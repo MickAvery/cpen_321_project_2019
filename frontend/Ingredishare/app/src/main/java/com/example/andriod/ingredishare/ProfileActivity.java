@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,9 +29,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText mBioEditText;
     private EditText mPrefEditText;
     private Spinner mRadiusPref;
-    private View mSaveButton;
-    private View mBackButton;
-    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mUser;
     private GlobalRequestQueue mReqQueue;
 
     private Boolean mProfileUpdatedFlag;
@@ -40,7 +39,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_layout);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
+        View mSaveButton;
+        View mBackButton;
+
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         mNameEditText = findViewById(R.id.name_edit_text);
         mBioEditText = findViewById(R.id.bio_edit_text);
@@ -81,7 +83,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void getProfileInfoFromBackend(){
         String url = getString(R.string.server_url) + getString(R.string.get_profile_info)
-                + "?email=" + mFirebaseAuth.getCurrentUser().getEmail();
+                + "?email=" + mUser.getEmail();
 
         try {
 
@@ -131,7 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
         String display_name = mNameEditText.getText().toString();
         String bio = mBioEditText.getText().toString();
         String preferences = mPrefEditText.getText().toString();
-        String email = MyApplication.getUserEmail();
+        String email = mUser.getEmail();
 
         int rad = mRadiusPref.getSelectedItemPosition() + 1;
 
@@ -140,10 +142,11 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         try {
-            if(display_name.isEmpty() || bio.isEmpty() || preferences.isEmpty()){
+            if("".equals(display_name) ||
+                    "".equals(bio) ||
+                    "".equals(preferences)){
                 throw new StringIndexOutOfBoundsException();
             }
-
 
             String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
 
