@@ -58,7 +58,7 @@ mongoClient.connect(mongoProdUri,
 );
 
 module.exports = {
-    getDb: function() {
+    getDb() {
         return dbObj;
     }
 };
