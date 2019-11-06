@@ -41,17 +41,27 @@ const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.n
 var dbObj;
 
 /* <-- Connection for PROD. COMMENT THIS SECTION IF CONNECTING TO LOCAL [START HERE]*/
-mongoClient.connect((mongoProdUri), function(err, db) {
-    if(err) {
-        throw err;
+mongoClient.connect(mongoProdUri,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    },
+    function(err, db) {
+        if(err) {
+            throw err;
+        }
+
+        dbObj = db.db("ingrediShare");
+        
+        // console.log("connected to MongoDB!");
     }
+);
 
-    dbObj = db.db("ingrediShare");
-    
-    // console.log("connected to MongoDB!");
-});
-
-module.exports = dbObj;
+module.exports = {
+    getDb: function() {
+        return dbObj;
+    }
+};
 
 /*Connection for PROD [END HERE] --> */
 

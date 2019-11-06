@@ -1,11 +1,12 @@
 const express = require("express");
 const router  = new express.Router();
-const dbObj   = require("../index.js");
+var mainMod   = require("../index.js");
 
 const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
 
 async function getAllRequests() {
+    var dbObj = mainMod.getDb();
     const result = await dbObj.collection("requests").find({}).toArray();
     return result;
 }
@@ -17,34 +18,31 @@ router.get("/getAllRequests", (req, res) => {
 });
 
 async function getAllRequestsFromLatLong(temp) {
-    const radius = await dbObj.collection("users").find(
-        {email: temp.email},
-        {radiusPreference: 1}
-    ).toArray();
+    var dbObj = mainMod.getDb();
 
-    var radiusPref = (radius.length > 0)? ((radius[0].radius_preference)? radius[0].radius_preference : 0) : 0;
+    const user = await dbObj.collection("users").findOne(
+        {email : temp.email},
+        {radiusPreference : 1}
+    );
+
+    var radiusPref = user.radiusPreference;
     var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
     var longRange = Number(radiusPref) * (Number(1) / (Number(111.32) * Math.cos(temp.lat)));
 
     const result = await dbObj.collection("requests").find({
         lat: { $gt: (Number(temp.lat)-Number(latRange)), $lt: (Number(temp.lat)+Number(latRange))},
-        long: { $gt: (Number(temp.long)-Number(longRange)), $lt: (Number(temp.long)+Number(longRange))},
-        userId: temp.email
+        long: { $gt: (Number(temp.long)-Number(longRange)), $lt: (Number(temp.long)+Number(longRange))}
     }).toArray();
 
     return result;
 }
 
 router.get("/getAllRequestsFromLatLong", (req, res) => {
-    let requestURL = req.url;
-
-    const currentURL = new URL(azureServerURL + requestURL);
-    const searchParams = currentURL.searchParams;
 
     var temp = {
-        lat: searchParams.get("lat"),
-        long: searchParams.get("long"),
-        email: searchParams.get("email")
+        lat: req.query.lat,
+        long: req.query.long,
+        email: req.query.email
     };
 
     try {
@@ -58,6 +56,8 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
 
 router.post("/createRequest", (req, res) => {
     try {
+        var dbObj = mainMod.getDb();
+
         var newReq = {
             name: req.body.name,
             description: req.body.description,
@@ -92,6 +92,8 @@ router.post("/createRequest", (req, res) => {
 });
 
 router.get("/isExistingUser", (req, res) => {
+    var dbObj = mainMod.getDb();
+
     var userEmail = req.body.email;
 
     var query = dbObj.collection("users").find({email:userEmail}).toArray(function(err, result) {
