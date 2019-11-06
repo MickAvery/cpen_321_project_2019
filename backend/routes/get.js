@@ -55,21 +55,13 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
 });
 
 function requestIsValid(newRequest) {
-    var ret = false;
+    var ret = true;
 
-    /* TODO: there's gotta be a better way to do this... */
-
-    if(!newRequest.name) {
-    }
-    else if(!newRequest.description) {
-    }
-    else if(!newRequest.lat) {
-    }
-    else if(!newRequest.long) {
-    }
-    else if(!newRequest.type) {
-    } else {
-        ret = true;
+    for(field in newRequest) {
+        if(!newRequest[field]) {
+            ret = false;
+            break;
+        }
     }
 
     return ret;
