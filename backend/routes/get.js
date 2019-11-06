@@ -54,6 +54,27 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
     }
 });
 
+function requestIsValid(newRequest) {
+    var ret = false;
+
+    /* TODO: there's gotta be a better way to do this... */
+
+    if(!newRequest.name) {
+    }
+    else if(!newRequest.description) {
+    }
+    else if(!newRequest.lat) {
+    }
+    else if(!newRequest.long) {
+    }
+    else if(!newRequest.type) {
+    } else {
+        ret = true;
+    }
+
+    return ret;
+}
+
 router.post("/createRequest", (req, res) => {
     try {
         var dbObj = mainMod.getDb();
@@ -63,16 +84,11 @@ router.post("/createRequest", (req, res) => {
             description: req.body.description,
             lat: req.body.lat,
             long: req.body.long,
-            userId: req.body.userId,
             type: req.body.type
         };
 
         /* gotta check if any of the fields are falsey */
-        if(newReq.name &&
-           newReq.description &&
-           newReq.lat &&
-           newReq.long &&
-           newReq.userId) {
+        if(requestIsValid(newReq)) {
 
             dbObj.collection("requests").insertOne(newReq, function(err,res) {
                 if(err) {
