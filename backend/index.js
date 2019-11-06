@@ -163,7 +163,7 @@ app.post("/notif_test", function(req, res) {
         var regTokens = [];
 
         result.forEach(function(item, index) {
-            regTokens.push(item["fcmTok"]);
+            regTokens.push(item["fcmToken"]);
         });
 
         sender.send(message, {registrationTokens : regTokens}, function(err, resp) {

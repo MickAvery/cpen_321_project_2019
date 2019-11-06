@@ -19,8 +19,9 @@ router.get("/getAllRequests", (req, res) => {
 async function getAllRequestsFromLatLong(temp) {
     const radius = await dbObj.collection("users").find(
         {email: temp.email},
-        {radius_preference: 1}
+        {radiusPreference: 1}
     ).toArray();
+
     var radiusPref = (radius.length > 0)? ((radius[0].radius_preference)? radius[0].radius_preference : 0) : 0;
     var latRange = Number(radiusPref) * (Number(1) / Number(110.574));
     var longRange = Number(radiusPref) * (Number(1) / (Number(111.32) * Math.cos(temp.lat)));
