@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONException;
@@ -21,9 +22,7 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
         String url = getString(R.string.server_url) + getString(R.string.save_fcm_tok_put);
 
         JSONObject putparams = new JSONObject();
-        String email = MyApplication.getUserEmail();
-
-        MyApplication.setUserEmail(email);
+        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
         try {
             putparams.put("email", email);

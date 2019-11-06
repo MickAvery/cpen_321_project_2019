@@ -18,6 +18,8 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +28,14 @@ public class NewIngrediPostActivity extends AppCompatActivity {
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
     private String mType;
+    private FirebaseUser mUser;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ingredipost_layout);
         mContext = this;
+
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Button mBackbutton;
         Button mPostButton;
@@ -67,7 +72,7 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         try {
             postparams.put(getString(R.string.name), mName.getText());
             postparams.put(getString(R.string.description), mDescription.getText());
-            postparams.put(getString(R.string.userId), MyApplication.getUserEmail());
+            postparams.put(getString(R.string.userId), mUser.getEmail());
             postparams.put(getString(R.string.type), mType);
 
             Double[] loc = getLocation();
