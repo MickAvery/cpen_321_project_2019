@@ -35,7 +35,6 @@ public class DataManager {
     public void postJSONObject(String request_url, JSONObject postparams,
                                Response.Listener<JSONObject> listener,
                                Response.ErrorListener errorListener){
-        //  AtomicReference<Boolean> success = new AtomicReference<>();
 
         try {
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(request_url, postparams, listener,
