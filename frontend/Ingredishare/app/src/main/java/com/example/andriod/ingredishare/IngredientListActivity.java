@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,12 +41,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class IngredientListActivity extends AppCompatActivity {
+public class IngredientListActivity extends AppCompatActivity implements IngredientListView{
 
     private EventAdapter mEventAdapter;
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
     private FirebaseUser mUser;
+    private IngredientListPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +75,11 @@ public class IngredientListActivity extends AppCompatActivity {
         mEventAdapter = new EventAdapter(eventList);
         recycler.setAdapter(mEventAdapter);
 
-        getEventsFromBackend();
+        presenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
+                mEventAdapter);
+        presenter.getEvents();
+
+        //getEventsFromBackend();
         ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
 
         mPostButton = findViewById(R.id.post_ingredient_button);
@@ -122,9 +128,38 @@ public class IngredientListActivity extends AppCompatActivity {
         return true;
     }
 
+    public List<Double> getLocation(){
+
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // TODO: handle case if they say no
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+        }
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double longitude;
+        double latitude;
+        if (location != null) {
+            longitude = location.getLongitude();
+            latitude = location.getLatitude();
+        } else {
+            longitude = 1;
+            latitude = 1;
+        }
+
+        List<Double> loc = new ArrayList<Double>();
+        loc.add(latitude);
+        loc.add(longitude);
+
+        return loc;
+    }
+
     /*
       Grabs events from the backend and adds them to the mEventAdapter
-     */
+
     public void getEventsFromBackend(){
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -163,7 +198,49 @@ public class IngredientListActivity extends AppCompatActivity {
             paramObj.put(getString(R.string.email), mUser.getEmail());
             paramArray.put(paramObj);
 
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
+            Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
+                public void onResponse(JSONArray json_events_array) {
+                    try {
+                        Log.e(this.getClass().toString(), "inside loop");
+
+                        for (int i = 0; i < json_events_array.length(); i++) {
+                            JSONObject json_data = json_events_array.getJSONObject(i);
+
+                            String name = json_data.getString(getString(R.string.name));
+                            String description = json_data.getString(getString(R.string.description));
+                            String userid = "none";
+                            String type = "Post";
+                            if(json_data.has(getString(R.string.userId))) {
+                                userid = json_data.getString(getString(R.string.userId));
+                            }
+                            if(json_data.has(getString(R.string.type))){
+                                type = json_data.getString(getString(R.string.type));
+                            }
+                            // Float x = Float.parseFloat(json_data.getString("lat"));
+                            //Float y = Float.parseFloat(json_data.getString("long"));
+                            Double x = 1.0;
+                            Double y = 1.0;
+
+                            Event event = new Event(userid, name, description, x, y, type);
+                            mEventAdapter.addEvent(event);
+
+                        }
+
+                    } catch (JSONException jsonEx) {
+                        Log.e(this.getClass().toString(), jsonEx.toString());
+                    }
+                }
+            };
+
+            Response.ErrorListener errorListener = new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("POST Request Error", error.toString());
+                }
+            };
+
+            MyApplication.getDataManager().getJSONArray(url, paramArray, listener, errorListener);
+         /*   JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
                     url,
                     null,
                     (JSONArray json_events_array) -> {
@@ -208,7 +285,7 @@ public class IngredientListActivity extends AppCompatActivity {
         } catch(Exception e) {
 
         }
-    }
+    } */
 
     private void showClickableToast() {
 
@@ -238,5 +315,10 @@ public class IngredientListActivity extends AppCompatActivity {
         });
 
         alertDialog.show();
+    }
+
+    @Override
+    public void updateUI(){
+
     }
 }
