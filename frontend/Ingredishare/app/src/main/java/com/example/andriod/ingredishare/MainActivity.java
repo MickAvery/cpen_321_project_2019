@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private GlobalRequestQueue mReqQueue;
+    private DataManager mDataManager;
+
 
     private String mFirebaseCloudMsgRegistrationToken;
 
@@ -93,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fbLoginButton.setPermissions(Arrays.asList("email", "public_profile"));
 
         mFacebookCallbackManager = CallbackManager.Factory.create();
+
+        mDataManager = new DataManager(this);
+        MyApplication.setDataManager(mDataManager);
 
         fbLoginButton.registerCallback(mFacebookCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
