@@ -41,7 +41,7 @@
     <string name="display_name">displayName</string>
     <string name="bio">bio</string>
     <string name="food_preferences">preferences</string>
-    <string name="radius_preference">radius_preference</string>
+    <string name="radius_preference">radiusPreference</string>
 
     <string name="request_or_offer">request_or_offer</string>
     <string name="type">type</string>
