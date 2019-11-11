@@ -11,19 +11,23 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 /**
  * Created by Brandon on 2019-10-08.
  */
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ProfileView {
 
     private EditText mNameEditText;
     private EditText mBioEditText;
@@ -31,8 +35,11 @@ public class ProfileActivity extends AppCompatActivity {
     private Spinner mRadiusPref;
     private FirebaseUser mUser;
     private GlobalRequestQueue mReqQueue;
-
+    private ProfilePresenter presenter;
     private Boolean mProfileUpdatedFlag;
+
+    private DataManager mDataManager;
+    private View mBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -40,9 +47,10 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.profile_layout);
 
         View mSaveButton;
-        View mBackButton;
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        presenter = new ProfilePresenter(MyApplication.getDataManager(), this);
 
         mNameEditText = findViewById(R.id.name_edit_text);
         mBioEditText = findViewById(R.id.bio_edit_text);
@@ -50,6 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
         mRadiusPref = findViewById(R.id.radius_pref);
         mBackButton = findViewById(R.id.back_button);
         mSaveButton = findViewById(R.id.save_button);
+        mDataManager = MyApplication.getDataManager();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item,
@@ -60,134 +69,57 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Checks if user is a new user
         boolean newUser =  myIntent.getBooleanExtra(getString(R.string.newUser), false);
+        presenter.setNewUser(newUser);
 
-        // True if profile has been updated at least once in this intent
-        mProfileUpdatedFlag = false;
-
-
-        getProfileInfoFromBackend();
+        presenter.getProfileInfo();
 
         mBackButton.setOnClickListener(v -> {
-            if(newUser && !mProfileUpdatedFlag){
-                Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent(this, IngredientListActivity.class);
-                startActivity(intent);
-                finish();
-            }
+            presenter.backButtonPressed();
         });
         mSaveButton.setOnClickListener(view -> {
-            updateProfileInfo();
+            HashMap<String, String> profileData = new HashMap<String, String>();
+            profileData.put(getString(R.string.display_name), mNameEditText.getText().toString());
+            profileData.put(getString(R.string.bio), mBioEditText.getText().toString());
+            profileData.put(getString(R.string.food_preferences), mPrefEditText.getText().toString());
+
+            presenter.updateProfileInfo(profileData);
         });
     }
 
-    public void getProfileInfoFromBackend(){
-        String url = getString(R.string.server_url) + getString(R.string.get_profile_info)
-                + "?email=" + mUser.getEmail();
 
-        try {
-
-
-            JsonObjectRequest jsonObjectRequest= new JsonObjectRequest (Request.Method.GET,
-                    url, null,
-                    (JSONObject response) -> {
-                        try {
-                            Log.e(this.getClass().toString(), response.toString());
-
-                            String name = response.getString(getString(R.string.display_name));
-                            String bio = response.getString(getString(R.string.bio));
-                            String preference = response.getString(getString(R.string.food_preferences));
-
-                            // If values are null just leave them empty
-                            if (name != null) {
-                                mNameEditText.setText(name);
-                            }
-                            if (bio != null) {
-                                mBioEditText.setText(bio);
-                            }
-                            if (preference != null) {
-                                mPrefEditText.setText(preference);
-                            }
-
-
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
-
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-            );
-            // Add JsonArrayRequest to the RequestQueue
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonObjectRequest,"get");
-
-        } catch(Exception e) {
-
+    @Override
+    public void updateUI(HashMap<String, String> data){
+        // If values are null just leave them empty
+        if (data.containsKey(getString(R.string.display_name))) {
+            mNameEditText.setText(data.get(getString(R.string.display_name)));
+        }
+        if (data.containsKey(getString(R.string.bio))) {
+            mBioEditText.setText(data.get(getString(R.string.bio)));
+        }
+        if (data.containsKey(getString(R.string.bio))) {
+            mPrefEditText.setText(data.get(getString(R.string.food_preferences)));
         }
     }
 
-    public void updateProfileInfo(){
+    public void displaySavedToast(){
+        Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
+    }
 
+    public void displayInputAllFieldsToast(){
+        Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
+    }
 
-        String display_name = mNameEditText.getText().toString();
-        String bio = mBioEditText.getText().toString();
-        String preferences = mPrefEditText.getText().toString();
-        String email = mUser.getEmail();
+    public void hideBackButton(){
+        mBackButton.setVisibility(View.INVISIBLE);
+    }
 
-        int rad = mRadiusPref.getSelectedItemPosition() + 1;
+    public void displayBackButton(){
+        mBackButton.setVisibility(View.VISIBLE);
+    }
 
-        Log.e(this.getClass().toString(), display_name);
-        Log.e(this.getClass().toString(), bio);
-
-
-        try {
-            if("".equals(display_name) ||
-                    "".equals(bio) ||
-                    "".equals(preferences)){
-                throw new StringIndexOutOfBoundsException();
-            }
-
-            String url = getString(R.string.server_url) + getString(R.string.update_profile_info) ;
-
-            JSONObject postparams = new JSONObject();
-            postparams.put("displayName", display_name);
-            postparams.put(getString(R.string.bio), bio);
-            postparams.put(getString(R.string.food_preferences), preferences);
-            postparams.put("email", email);
-            postparams.put(getString(R.string.radius_preference), rad);
-
-            Log.d(this.getClass().toString(), display_name);
-            Log.d(this.getClass().toString(), bio);
-            Log.d(this.getClass().toString(), preferences);
-
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                    (JSONObject response) -> {
-                        try {
-                            Boolean success_response = response.getBoolean("updateProfileInfo");
-                            if (success_response) {
-                                Log.e(this.getClass().toString(), "updateProfile success");
-                                mProfileUpdatedFlag = true;
-
-
-                                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
-                            }
-
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
-
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-            );
-
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonObjReq, "post");
-        } catch(JSONException jsonEx) {
-
-        }  catch(StringIndexOutOfBoundsException e){
-            Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
-        }
+    public void setIngrediListActivityIntent(){
+        Intent intent = new Intent(this, IngredientListActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
