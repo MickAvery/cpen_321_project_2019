@@ -36,8 +36,10 @@ public class DataManager {
                                Response.Listener<JSONObject> listener,
                                Response.ErrorListener errorListener){
 
+        Log.e(this.getClass().toString(), "inside data manager");
         try {
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(request_url, postparams, listener,
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    request_url, postparams, listener,
                     errorListener);
 
             mReqQueue = GlobalRequestQueue.getInstance();

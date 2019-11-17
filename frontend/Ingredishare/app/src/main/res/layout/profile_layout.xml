@@ -12,7 +12,7 @@
         android:layout_margin="4dp"
         android:background="@color/lightGrey"
         android:visibility="visible"
-        android:text="back button"/>
+        android:text="BACK"/>
 
 
     <LinearLayout

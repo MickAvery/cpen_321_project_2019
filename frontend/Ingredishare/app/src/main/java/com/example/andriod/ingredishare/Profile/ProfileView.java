@@ -10,4 +10,5 @@ interface ProfileView  {
     void hideBackButton();
     void displayBackButton();
     void setIngrediListActivityIntent();
+    void toastError();
 }

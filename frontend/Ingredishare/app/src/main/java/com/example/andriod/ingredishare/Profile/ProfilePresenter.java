@@ -2,6 +2,7 @@ package com.example.andriod.ingredishare.Profile;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -60,6 +61,7 @@ public class ProfilePresenter  {
                 } catch (JSONException jsonEx) {
                     Log.e(this.getClass().toString(), jsonEx.toString());
                     view.displayCouldNotFindProfileInfoToast();
+                    view.hideBackButton();
                 }
             }
         };
@@ -108,8 +110,8 @@ public class ProfilePresenter  {
             postparams.put(mContext.getString(R.string.food_preferences), preferences);
             postparams.put(mContext.getString(R.string.radius_preference), "1");
 
-            String url = MyApplication.getProfileInfoPOSTRequestURL()
-                    + "?email=" + mUser.getEmail();
+            String url = MyApplication.getProfileInfoPOSTRequestURL();
+            Log.e(this.getClass().toString(), postparams.toString());
 
             Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
                 public void onResponse(JSONObject response) {
@@ -119,12 +121,12 @@ public class ProfilePresenter  {
                             Log.e(this.getClass().toString(), "updateProfile success");
 
                             view.displaySavedToast();
+                            view.displayBackButton();
                         }
-
                     } catch (JSONException jsonEx) {
                         Log.e(this.getClass().toString(), jsonEx.toString());
-                        view.displayBackButton();
-                        view.displaySavedToast();
+                        view.hideBackButton();
+                        view.toastError();
                     }
                 }
             };
@@ -133,10 +135,11 @@ public class ProfilePresenter  {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d("POST Request Error", error.toString());
+                    view.toastError();
                 }
             };
 
-            dataManager.postJSONObject(url, null, listener, errorListener);
+            dataManager.postJSONObject(url, postparams, listener, errorListener);
 
         } catch(JSONException e){
 

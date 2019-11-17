@@ -124,4 +124,9 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         startActivity(intent);
         finish();
     }
+
+    public void toastError(){
+        Toast.makeText(this,"Internal Error",
+                Toast.LENGTH_SHORT).show();
+    }
 }
