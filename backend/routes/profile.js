@@ -1,5 +1,6 @@
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
+var mainMod   = require("../index.js");
 
 const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
@@ -9,7 +10,9 @@ router.get('/', (req, res) => {
 });
 
 async function getProfileInfo(obj) {
-    const result = await dbIngrediShare.collection("users").find({email: obj.email}, {projection: {displayName: 1, bio: 1, preferences: 1, radiusPreference: 1}}).toArray();
+    var dbObj = mainMod.getDb();
+
+    const result = await dbObj.collection("users").find({email: obj.email}, {projection: {displayName: 1, bio: 1, preferences: 1, radiusPreference: 1}}).toArray();
     return result;
 }
 
@@ -26,7 +29,9 @@ router.get('/getProfileInfo', (req, res) => {
 });
 
 async function getProfileInfo(email) {
-    const result = await dbIngrediShare.collection("users").findOne({email: email}, {projection: {displayName: 1, bio: 1, preferences: 1}});
+    var dbObj = mainMod.getDb();
+
+    const result = await dbObj.collection("users").findOne({email: email}, {projection: {displayName: 1, bio: 1, preferences: 1}});
     return result;
 }
 
