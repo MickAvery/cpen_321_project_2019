@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.Main;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,6 +21,12 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.andriod.ingredishare.DataManager;
+import com.example.andriod.ingredishare.GlobalRequestQueue;
+import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
+import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.Profile.ProfileActivity;
+import com.example.andriod.ingredishare.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -50,7 +56,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, FirebaseAuth.AuthStateListener {
+public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener, FirebaseAuth.AuthStateListener {
     private TextView mInvalidEmailView;
     private EditText mEmail;
     private EditText mPassword;
@@ -60,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
     private GlobalRequestQueue mReqQueue;
+    private DataManager mDataManager;
+
 
     private String mFirebaseCloudMsgRegistrationToken;
 
@@ -93,6 +101,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fbLoginButton.setPermissions(Arrays.asList("email", "public_profile"));
 
         mFacebookCallbackManager = CallbackManager.Factory.create();
+
+        mDataManager = new DataManager(this);
+        MyApplication.setDataManager(mDataManager);
 
         fbLoginButton.registerCallback(mFacebookCallbackManager, new FacebookCallback<LoginResult>() {
             @Override

@@ -38,7 +38,7 @@ async function getProfileInfo(email) {
 router.post("/updateProfileInfo", (req, res) => {
     var myquery = { email: req.body.email };
     var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio,
-            preferences: req.body.preferences, radiusPreference: req.body.radius_preference} };
+            preferences: req.body.preferences, radiusPreference: req.body.radiusPreference} };
 
     dbObj.collection("users").updateOne(myquery, newvalues, function(err, res) {
         if (err) {
