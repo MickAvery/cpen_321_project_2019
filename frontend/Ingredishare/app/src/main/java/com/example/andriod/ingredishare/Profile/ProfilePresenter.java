@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.Profile;
 
 import android.content.Context;
 import android.util.Log;
@@ -12,6 +12,9 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+import com.example.andriod.ingredishare.DataManager;
+import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

@@ -1,25 +1,22 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.Profile;
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+
+import com.example.andriod.ingredishare.DataManager;
+import com.example.andriod.ingredishare.GlobalRequestQueue;
+import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
+import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 

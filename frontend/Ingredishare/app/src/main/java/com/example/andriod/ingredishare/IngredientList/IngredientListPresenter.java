@@ -1,14 +1,7 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.IngredientList;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.util.Log;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -17,9 +10,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import com.example.andriod.ingredishare.DataManager;
+import com.example.andriod.ingredishare.Event.Event;
+import com.example.andriod.ingredishare.Event.EventAdapter;
+import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

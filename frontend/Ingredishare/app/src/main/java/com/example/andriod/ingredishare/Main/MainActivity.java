@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.Main;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,6 +21,12 @@ import android.widget.TextView;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.andriod.ingredishare.DataManager;
+import com.example.andriod.ingredishare.GlobalRequestQueue;
+import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
+import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.Profile.ProfileActivity;
+import com.example.andriod.ingredishare.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;

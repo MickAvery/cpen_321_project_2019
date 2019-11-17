@@ -13,6 +13,7 @@ public class MyApplication extends Application {
     private static final String profileInfoPOSTRequestURL = serverURL + "/updateProfileInfo";
     private static final String getAllRequestsLatLongGETRequestURL = serverURL +
             "/getAllRequestsFromLatLong";
+    private static final String getCreateRequestString = serverURL + "/createRequest";
 
     @Override
     public void onCreate() {
@@ -54,5 +55,9 @@ public class MyApplication extends Application {
 
     public static String getGetAllRequestsLatLongGETRequestURL(){
         return getAllRequestsLatLongGETRequestURL;
+    }
+
+    public static String urlCreateRequest(){
+        return getCreateRequestString;
     }
 }

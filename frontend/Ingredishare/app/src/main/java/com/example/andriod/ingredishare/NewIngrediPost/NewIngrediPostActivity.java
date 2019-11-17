@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.NewIngrediPost;
 
 import android.Manifest;
 import android.content.Context;
@@ -18,17 +18,23 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.andriod.ingredishare.GlobalRequestQueue;
+import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
+import com.example.andriod.ingredishare.IngredientList.IngredientListPresenter;
+import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class NewIngrediPostActivity extends AppCompatActivity {
+public class NewIngrediPostActivity extends AppCompatActivity implements NewIngrediPostView{
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
     private String mType;
     private FirebaseUser mUser;
+    private NewIngrediPostPresenter presenter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,18 +51,25 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         mBackbutton = findViewById(R.id.back_button);
         mPostButton = findViewById(R.id.postbutton);
 
-        mBackbutton.setOnClickListener(v -> finish());
-        mPostButton.setOnClickListener(v -> {
-            savePost();
-            testNotifications();
-            finish();
-        });
+        presenter = new NewIngrediPostPresenter(MyApplication.getDataManager(), this);
 
         mToolbar.setTitle(getIntent().getStringExtra(getString(R.string.request_or_offer)));
         mType = getIntent().getStringExtra(getString(R.string.request_or_offer));
+
+        mBackbutton.setOnClickListener(v -> finish());
+        mPostButton.setOnClickListener(v -> {
+            EditText mDescription;
+            EditText mName;
+
+            mDescription = findViewById(R.id.description);
+            mName = findViewById(R.id.name);
+            presenter.savePost(mDescription.getText().toString(), mName.getText().toString(), mType);
+            testNotifications();
+            finish();
+        });
     }
 
-    public void savePost() {
+  /*  public void savePost() {
 
         EditText mDescription;
         EditText mName;
@@ -95,7 +108,6 @@ public class NewIngrediPostActivity extends AppCompatActivity {
                                 Intent intent = new Intent(this, IngredientListActivity.class);
                                 startActivity(intent);
                             } else {
-                                /* TODO: new user activity. Get rid of "go to" log after done */
                                 Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(this, IngredientListActivity.class);
                                 startActivity(intent);
@@ -130,7 +142,7 @@ public class NewIngrediPostActivity extends AppCompatActivity {
         mReqQueue = GlobalRequestQueue.getInstance();
         mReqQueue.addToRequestQueue(jsonObjReq, "post");
     }
-
+*/
     public Double[] getLocation() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -172,5 +184,14 @@ public class NewIngrediPostActivity extends AppCompatActivity {
 
         mReqQueue = GlobalRequestQueue.getInstance();
         mReqQueue.addToRequestQueue(jsonObjReq, "post");
+    }
+
+    public void startIngredientListActivity(){
+        Intent intent = new Intent(this, IngredientListActivity.class);
+        startActivity(intent);
+    }
+
+    public void toastCouldNotPost(){
+        Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
     }
 }

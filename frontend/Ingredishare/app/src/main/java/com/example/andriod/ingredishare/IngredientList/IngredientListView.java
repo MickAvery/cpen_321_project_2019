@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.IngredientList;
 
 import java.util.List;
 

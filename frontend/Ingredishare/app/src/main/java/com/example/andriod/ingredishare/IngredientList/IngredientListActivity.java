@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare;
+package com.example.andriod.ingredishare.IngredientList;
 
 import android.Manifest;
 import android.content.Context;
@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,22 +25,22 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.andriod.ingredishare.Event.Event;
+import com.example.andriod.ingredishare.Event.EventAdapter;
+import com.example.andriod.ingredishare.GlobalRequestQueue;
+import com.example.andriod.ingredishare.Main.MainActivity;
+import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
+import com.example.andriod.ingredishare.Profile.ProfileActivity;
+import com.example.andriod.ingredishare.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class IngredientListActivity extends AppCompatActivity implements IngredientListView{
+public class IngredientListActivity extends AppCompatActivity implements IngredientListView {
 
     private EventAdapter mEventAdapter;
     private Context mContext;
