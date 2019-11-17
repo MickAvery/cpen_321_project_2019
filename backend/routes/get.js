@@ -60,7 +60,8 @@ function requestIsValid(newRequest) {
     Object.values(newRequest).forEach(function(value, index) {
         if(!value) {
             ret = false;
-            break;
+            // TODO: 
+            // break;
         }
     });
 
@@ -128,4 +129,7 @@ router.get("/isExistingUser", (req, res) => {
     });
 });
 
-module.exports = router;
+module.exports = {
+    router,
+    getAllRequests
+};
