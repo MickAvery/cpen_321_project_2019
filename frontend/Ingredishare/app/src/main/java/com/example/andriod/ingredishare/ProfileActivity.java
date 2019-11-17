@@ -42,7 +42,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
     private View mBackButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_layout);
 
@@ -68,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         Intent myIntent = getIntent();
 
         // Checks if user is a new user
-        boolean newUser =  myIntent.getBooleanExtra(getString(R.string.newUser), false);
+        boolean newUser = myIntent.getBooleanExtra(getString(R.string.newUser), false);
         presenter.setNewUser(newUser);
 
         presenter.getProfileInfo();
@@ -88,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
 
 
     @Override
-    public void updateUI(HashMap<String, String> data){
+    public void updateUI(HashMap<String, String> data) {
         // If values are null just leave them empty
         if (data.containsKey(getString(R.string.display_name))) {
             mNameEditText.setText(data.get(getString(R.string.display_name)));
@@ -101,20 +101,25 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         }
     }
 
-    public void displaySavedToast(){
+    public void displaySavedToast() {
         Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
     }
 
-    public void displayInputAllFieldsToast(){
+    public void displayInputAllFieldsToast() {
         Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
     }
 
-    public void hideBackButton(){
+    public void hideBackButton() {
         mBackButton.setVisibility(View.INVISIBLE);
     }
 
-    public void displayBackButton(){
+    public void displayBackButton() {
         mBackButton.setVisibility(View.VISIBLE);
+    }
+
+    public void displayCouldNotFindProfileInfoToast() {
+        Toast.makeText(this,"Could not find profile data! Please update profile info.",
+                Toast.LENGTH_SHORT).show();
     }
 
     public void setIngrediListActivityIntent(){

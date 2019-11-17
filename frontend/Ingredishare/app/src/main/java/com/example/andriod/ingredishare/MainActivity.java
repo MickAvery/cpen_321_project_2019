@@ -50,7 +50,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, FirebaseAuth.AuthStateListener {
+public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener, FirebaseAuth.AuthStateListener {
     private TextView mInvalidEmailView;
     private EditText mEmail;
     private EditText mPassword;

@@ -45,21 +45,18 @@ public class ProfilePresenter  {
                     String bio = response.getString(mContext.getString(R.string.bio));
                     String preference = response.getString(mContext.getString(R.string.food_preferences));
                     // If values are null just leave them empty
-                    if (name != null) {
+                    if (name != null && bio != null && preference != null) {
                         profileData.put(mContext.getString(R.string.display_name), name);
-                        //mNameEditText.setText(name);
-                    }
-                    if (bio != null) {
                         profileData.put(mContext.getString(R.string.bio), bio);
-                      //  mBioEditText.setText(bio);
-                    }
-                    if (preference != null) {
                         profileData.put(mContext.getString(R.string.food_preferences), preference);
-                      //  mPrefEditText.setText(preference);
+                    } else{
+                        view.displayCouldNotFindProfileInfoToast();
+                        view.hideBackButton();
                     }
 
                 } catch (JSONException jsonEx) {
                     Log.e(this.getClass().toString(), jsonEx.toString());
+                    view.displayCouldNotFindProfileInfoToast();
                 }
             }
         };
@@ -68,6 +65,7 @@ public class ProfilePresenter  {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("GET Request Error", error.toString());
+                view.displayCouldNotFindProfileInfoToast();
             }
         };
 
