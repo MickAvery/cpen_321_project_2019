@@ -19,6 +19,21 @@ router.get("/getAllRequests", (req, res) => {
 
 async function getAllRequestsFromLatLong(temp) {
     var dbObj = mainMod.getDb();
+    if (dbObj === null) {
+        throw "Could not connect to DB";
+    }
+
+    if (temp.email === undefined) {
+        throw "Req json is missing email field.";
+    }
+
+    if (temp.lat < -90 || temp.lat > 90) {
+        throw "Invalid latitude";
+    }
+
+    if (temp.long < -180 || temp.long > 180) {
+        throw "Invalid longitude";
+    }
 
     const user = await dbObj.collection("users").findOne(
         {email : temp.email},

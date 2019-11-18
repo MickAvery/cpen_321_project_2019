@@ -32,3 +32,25 @@ it('Queries database with correct params', async () => {
 		}
 	);
 });
+
+it('getProfileInfo throws error when fail to connect to DB', async () => {
+	mainMod.getDb.mockImplementation(() => null);
+
+	const email = "test_email@gmail.com";
+	expect(profile.getProfileInfo(email))
+		.rejects.toEqual("Could not connect to DB");
+});
+
+it('getProfileInfo throws error when email is undefined', async () => {
+	mainMod.getDb.mockImplementation(() => getProfileInfoMocks);
+
+	expect(profile.getProfileInfo(undefined))
+		.rejects.toEqual("Undefined email");
+});
+
+it('getProfileInfo throws error when email is empty', async () => {
+	mainMod.getDb.mockImplementation(() => getProfileInfoMocks);
+
+	expect(profile.getProfileInfo(''))
+		.rejects.toEqual("Empty email address");
+});

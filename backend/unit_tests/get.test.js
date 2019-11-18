@@ -95,6 +95,37 @@ it('Returns all requests with Lat+Long as expected', async () => {
     expect(data).toEqual(requestArray);
 });
 
+it('throws error when getAllRequestsFromLatLong fail to connect to DB ', async () => {
+	mainMod.getDb.mockImplementation(() => null);
+	expect(get.getAllRequestsFromLatLong({email:"test_email@google.com"}))
+		.rejects.toEqual("Could not connect to DB");
+});
+
+it('throws error when getAllRequestsFromLatLong req json is missing email field ', async () => {
+	mainMod.getDb.mockImplementation(() => getAllReqLatLongMocks);
+	expect(get.getAllRequestsFromLatLong({invalid_param:"invalid@gmail.com"}))
+		.rejects.toEqual("Req json is missing email field.");
+});
+
+it('getAllRequestsFromLatLong invalid param: latitude', async () => {
+	mainMod.getDb.mockImplementation(() => getAllReqLatLongMocks);
+	expect(get.getAllRequestsFromLatLong({
+		email:"test_email@google.com",
+		lat: -100
+	}))
+		.rejects.toEqual("Invalid latitude");
+});
+
+it('getAllRequestsFromLatLong invalid param: longitude', async () => {
+	mainMod.getDb.mockImplementation(() => getAllReqLatLongMocks);
+	expect(get.getAllRequestsFromLatLong({
+		email:"test_email@google.com",
+		lat: 20,
+		long: 270
+	}))
+		.rejects.toEqual("Invalid longitude");
+});
+
 /**
  * requestIsValid() tests
  */

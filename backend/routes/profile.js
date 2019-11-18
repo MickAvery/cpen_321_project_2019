@@ -23,6 +23,17 @@ router.get('/getProfileInfo', (req, res) => {
 
 async function getProfileInfo(email) {
     var dbObj = mainMod.getDb();
+    if (dbObj === null) {
+        throw "Could not connect to DB";
+    }
+
+    if (email === undefined) {
+        throw "Undefined email";
+    }
+
+    if (email === '') {
+        throw "Empty email address";
+    }
 
     const result = await dbObj.collection("users").findOne({email: email}, {projection: {displayName: 1, bio: 1, preferences: 1}});
     return result;
