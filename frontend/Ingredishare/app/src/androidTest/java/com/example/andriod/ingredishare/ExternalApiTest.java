@@ -36,7 +36,7 @@ public class ExternalApiTest {
             = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void testFacebookActivityLaunched() throws InterruptedException {
+    public void testFacebookActivityLaunched() {
         Intents.init();
         onView(withId(R.id.fb_login_button)).perform(click());
         intended(hasComponent(FacebookActivity.class.getName()), times(1));
@@ -46,7 +46,7 @@ public class ExternalApiTest {
 
     // Has to be the last test or it will break
     @Test
-    public void testGoogleActivityLaunched() throws InterruptedException {
+    public void testGoogleActivityLaunched() {
         Intents.init();
         onView(withId(R.id.google_sign_in_button)).perform(click());
         intended(hasPackage("com.google.android.gms"));
