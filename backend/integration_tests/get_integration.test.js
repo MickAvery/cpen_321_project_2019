@@ -40,3 +40,52 @@ describe('getAllRequests', () => {
       expect(jsonData).toContain("\"name\":\"testReq\",\"description\":\"one\",\"lat\":1,\"long\":1,\"userId\":\"test@gmail.com\"");
   });
 });
+
+describe('getAllRequestsFromLatLong', () => {
+    let connection;
+    let db;
+    const userEmail = 'user@gmail.com';
+    const testUser = {email: userEmail, radiusPreference: 1};
+  
+    beforeAll(async () => {
+      connection = await MongoClient.connect(mongoProdUri, {
+        useNewUrlParser: true,
+      });
+      db = await connection.db("ingrediShareTest");
+  
+      const users = db.collection("users");
+      await users.insertOne(testUser);
+
+      const requests = db.collection("requests");
+      const testRequest = {name: "testReq", description:"one", lat:1, long:1, userId: userEmail};
+      await requests.insertOne(testRequest);
+    });
+  
+    afterAll(async () => {
+      db.collection("requests").deleteOne({name: "testReq"}, function(err,obj){
+          if(err){
+              throw err;
+          }
+          console.log("deleted request inserted as test successfully")
+      })
+      db.collection("users").deleteOne(testUser, function(err,obj){
+        if(err){
+            throw err;
+        }
+        console.log("deleted user inserted as test successfully")
+    })
+      await connection.close();
+      await db.close();
+    });
+  
+    it('Returns request as expected', async () => {
+        mainMod.getDb.mockImplementation(() => db);
+        const data = await get.getAllRequestsFromLatLong({
+            email: userEmail,
+            lat: 1,
+            long: 1
+        });
+        const jsonData = JSON.stringify(data);
+        expect(jsonData).toContain("\"name\":\"testReq\",\"description\":\"one\",\"lat\":1,\"long\":1,\"userId\":\"user@gmail.com\"");
+    });
+  });
