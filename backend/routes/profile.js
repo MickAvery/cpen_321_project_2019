@@ -42,7 +42,7 @@ router.post("/updateProfileInfo", (req, res) => {
     var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio,
             preferences: req.body.preferences, radiusPreference: req.body.radiusPreference} };
 
-    dbObj.collection("users").updateOne(myquery, newvalues, function(err, res) {
+    dbObj.collection("users").updateOne(myquery, newvalues, {upsert : true}, function(err, res) {
         if (err) {
             throw err
         };

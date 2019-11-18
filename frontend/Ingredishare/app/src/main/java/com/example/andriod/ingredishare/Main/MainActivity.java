@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     private static final int RC_SIGN_IN = 9001;
     private GlobalRequestQueue mReqQueue;
     private DataManager mDataManager;
+    private MainActivityPresenter presenter;
 
 
     private String mFirebaseCloudMsgRegistrationToken;
@@ -105,20 +106,26 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         mDataManager = new DataManager(this);
         MyApplication.setDataManager(mDataManager);
 
+        presenter = new MainActivityPresenter(mDataManager, this);
+
         fbLoginButton.registerCallback(mFacebookCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
+                presenter.facebookCallbackResponse("success", loginResult, null);
                 // Retrieving access token using the LoginResult
-                AccessToken accessToken = loginResult.getAccessToken();
-                attemptFirebaseAuthWithFacebook(accessToken);
+             //   AccessToken accessToken = loginResult.getAccessToken();
+              //  attemptFirebaseAuthWithFacebook(accessToken);
             }
             @Override
             public void onCancel() {
-                Log.e(this.getClass().toString(), "facebook signin cancel");
+                presenter.facebookCallbackResponse("cancel", null, null);
+                //Log.e(this.getClass().toString(), "facebook signin cancel");
             }
             @Override
             public void onError(FacebookException error) {
-                Log.e(this.getClass().toString(), "facebook signin error ", error);
+                presenter.facebookCallbackResponse("error", null, error);
+                //Log.e(this.getClass().toString(), "facebook signin error ", error);
             }
         });
 
@@ -188,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
 
     @Override
     public void onClick(View v) {
+
         switch (v.getId()) {
             case R.id.google_sign_in_button:
                 /* start new intent for Google Signin */
@@ -322,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
                 });
     }
 
-    private void attemptFirebaseAuthWithFacebook(AccessToken token) {
+    public void attemptFirebaseAuthWithFacebook(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
 
         mFirebaseAuth.signInWithCredential(credential)

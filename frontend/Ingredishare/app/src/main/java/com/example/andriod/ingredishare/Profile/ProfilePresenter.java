@@ -53,11 +53,12 @@ public class ProfilePresenter  {
                         profileData.put(mContext.getString(R.string.display_name), name);
                         profileData.put(mContext.getString(R.string.bio), bio);
                         profileData.put(mContext.getString(R.string.food_preferences), preference);
+
+                        view.updateUI(profileData);
                     } else{
                         view.displayCouldNotFindProfileInfoToast();
                         view.hideBackButton();
                     }
-
                 } catch (JSONException jsonEx) {
                     Log.e(this.getClass().toString(), jsonEx.toString());
                     view.displayCouldNotFindProfileInfoToast();
@@ -75,8 +76,6 @@ public class ProfilePresenter  {
         };
 
         dataManager.getJSONObject(url, null, listener, errorListener);
-
-        view.updateUI(profileData);
     }
 
     public void updateProfileInfo(HashMap<String, String> newProfileData){
@@ -105,10 +104,12 @@ public class ProfilePresenter  {
                 throw new StringIndexOutOfBoundsException();
             }
 
+            postparams.put(mContext.getString(R.string.email), mUser.getEmail());
             postparams.put(mContext.getString(R.string.display_name), displayName);
             postparams.put(mContext.getString(R.string.bio), bio);
             postparams.put(mContext.getString(R.string.food_preferences), preferences);
             postparams.put(mContext.getString(R.string.radius_preference), "1");
+
 
             String url = MyApplication.getProfileInfoPOSTRequestURL();
             Log.e(this.getClass().toString(), postparams.toString());
@@ -122,6 +123,7 @@ public class ProfilePresenter  {
 
                             view.displaySavedToast();
                             view.displayBackButton();
+                            view.setIngrediListActivityIntent();
                         }
                     } catch (JSONException jsonEx) {
                         Log.e(this.getClass().toString(), jsonEx.toString());
