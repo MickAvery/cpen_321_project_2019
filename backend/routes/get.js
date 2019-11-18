@@ -132,5 +132,6 @@ router.get("/isExistingUser", (req, res) => {
 module.exports = {
     router: router,
     getAllRequests: getAllRequests,
-    getAllRequestsFromLatLong: getAllRequestsFromLatLong
+    getAllRequestsFromLatLong: getAllRequestsFromLatLong,
+    requestIsValid: requestIsValid
 };

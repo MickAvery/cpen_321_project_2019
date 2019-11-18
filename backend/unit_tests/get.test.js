@@ -7,7 +7,7 @@ const mainMod = require('../index.js');
 const get = require('../routes/get.js');
 
 /**
- *
+ * getAllRequests() tests
  */
 
 var requestArray = [
@@ -51,7 +51,7 @@ it('Returns all requests as expected', async () => {
 });
 
 /**
- *
+ * getAllRequestsFromLatLong() tests
  */
 
 var requestArray = [
@@ -93,4 +93,29 @@ it('Returns all requests with Lat+Long as expected', async () => {
 
     var data = await get.getAllRequestsFromLatLong({email:"test_email@google.com"});
     expect(data).toEqual(requestArray);
+});
+
+/**
+ * requestIsValid() tests
+ */
+
+var request = {
+    userId: "test_email@gmail.com",
+    name: "test body",
+    description: "test description",
+    lat: "5",
+    long: "5",
+    type: "Request type"
+}
+
+it('Invalidates an incomplete request', async () => {
+	for(var key in request) {
+		var tempReq = Object.assign({}, request); /* copy request json */
+		tempReq[key] = null;
+		expect(get.requestIsValid(tempReq)).toBe(false);
+	}
+});
+
+it('Validates a complete request', async () => {
+	expect(get.requestIsValid(request)).toBe(true);
 });
