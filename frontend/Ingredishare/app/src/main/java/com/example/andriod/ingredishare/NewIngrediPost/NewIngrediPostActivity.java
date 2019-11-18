@@ -63,7 +63,11 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
 
             mDescription = findViewById(R.id.description);
             mName = findViewById(R.id.name);
-            presenter.savePost(mDescription.getText().toString(), mName.getText().toString(), mType);
+            if (presenter != null && MyApplication.getDataManager() != null) {
+                presenter.savePost(mDescription.getText().toString(), mName.getText().toString(), mType);
+            } else {
+                finish();
+            }
             testNotifications();
             finish();
         });
