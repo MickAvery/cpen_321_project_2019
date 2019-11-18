@@ -60,8 +60,8 @@ function requestIsValid(newRequest) {
     Object.values(newRequest).forEach(function(value, index) {
         if(!value) {
             ret = false;
-            // TODO: 
-            // break;
+            /* TODO: calling break here throws an "Unsyntactic break" */
+            /*       I FUCKING HATE JAVASCRIPT */
         }
     });
 
@@ -130,6 +130,7 @@ router.get("/isExistingUser", (req, res) => {
 });
 
 module.exports = {
-    router,
-    getAllRequests
+    router: router,
+    getAllRequests: getAllRequests,
+    getAllRequestsFromLatLong: getAllRequestsFromLatLong
 };
