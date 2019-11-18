@@ -68,13 +68,15 @@ module.exports = {
 /**
  * Setup server
  */
-const port = process.env.PORT || 1337;
-var server = app.listen(port, function() {
-    var host = server.address().address;
-    var port = server.address().port;
+if (process.env.NODE_ENV !== 'test') {
+    const port = process.env.PORT || 1337;
+    var server = app.listen(port, function() {
+        var host = server.address().address;
+        var port = server.address().port;
 
-    // console.log("Example app listening at http://%s:%s", host, port);
-});
+        // console.log("Example app listening at http://%s:%s", host, port);
+    });
+}
 
 /*********************************************************************
  * RESTFUL SERVICES
