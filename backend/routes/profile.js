@@ -44,4 +44,7 @@ router.post("/updateProfileInfo", (req, res) => {
     res.json({"updateProfileInfo": true});
 });
 
-module.exports = router;
+module.exports = {
+    router: router,
+    getProfileInfo: getProfileInfo
+}

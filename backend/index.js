@@ -84,7 +84,7 @@ const routerGet = require("../backend/routes/get");
 const routerProfile = require("../backend/routes/profile");
 const url = require("url");
 app.use(routerGet.router);
-app.use(routerProfile);
+app.use(routerProfile.router);
 
 app.put("/saveFcmToken", function(req, res) {
 
