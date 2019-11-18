@@ -57,7 +57,7 @@ router.get("/getAllRequestsFromLatLong", (req, res) => {
 function requestIsValid(newRequest) {
     var ret = true;
 
-    Object.values(newReq).forEach(function(value, index) {
+    Object.values(newRequest).forEach(function(value, index) {
         if(!value) {
             ret = false;
             break;
@@ -72,6 +72,7 @@ router.post("/createRequest", (req, res) => {
         var dbObj = mainMod.getDb();
 
         var newReq = {
+            userId: req.body.userId,
             name: req.body.name,
             description: req.body.description,
             lat: req.body.lat,
@@ -82,7 +83,7 @@ router.post("/createRequest", (req, res) => {
         /* gotta check if any of the fields are falsey */
         if(requestIsValid(newReq)) {
 
-            dbObj.collection("requests").insertOne(newReq, function(err,res) {
+            dbObj.collection("requests").insertOne(newReq, function(err,dbRes) {
                 if(err) {
                     res.json({"createRequestResponse": false});
                 } else {
