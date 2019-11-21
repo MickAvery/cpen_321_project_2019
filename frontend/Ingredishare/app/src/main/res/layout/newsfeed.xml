@@ -37,6 +37,4 @@
         android:paddingRight="24dp"
         android:background="@color/lightGrey"
         android:text="New Post" />
-
-
 </RelativeLayout>

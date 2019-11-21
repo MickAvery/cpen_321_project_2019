@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
                 android:paddingTop="250dp"
+                android:maxLength="25"
                 android:hint="@string/ingredient_name"/>
 
             <EditText
@@ -38,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
+                android:maxLength="100"
                 android:hint="@string/ingredient_description" />
 
         </LinearLayout>
