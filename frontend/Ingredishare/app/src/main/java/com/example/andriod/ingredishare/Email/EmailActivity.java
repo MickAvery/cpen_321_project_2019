@@ -25,7 +25,7 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
     private FirebaseUser mUser;
     private EmailPresenter presenter;
     private String emailToSendTo;
-
+    private String subjectLine;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.email_layout);
@@ -34,6 +34,10 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
         emailToSendTo = getIntent().getStringExtra(getString(R.string.email));
         TextView mEmailTextView = findViewById(R.id.send_email_to);
         mEmailTextView.setText(emailToSendTo);
+
+        subjectLine = getIntent().getStringExtra(getString(R.string.email_subject));
+        EditText subject = findViewById(R.id.email_subject);
+        subject.setText(subjectLine);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 

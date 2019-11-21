@@ -52,6 +52,8 @@
     <string name="ingredient_description">Ingredient Description</string>
     <string name="displayName">displayName</string>
 
+    <string name="email_subject">email_subject</string>
+
     <string-array name="km_radius_pref">
         <item>1</item>
         <item>2</item>
