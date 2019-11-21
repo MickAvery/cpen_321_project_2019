@@ -35,13 +35,22 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Data"
-            android:id="@+id/data"
-            android:textSize="15dp"
+            android:text="Email"
+            android:id="@+id/email"
+            android:textSize="20dp"
             android:layout_below="@+id/event"
             android:textAlignment="center"
-            android:layout_marginEnd="150dp"
-            android:layout_marginTop="8dp" />
+            android:layout_marginEnd="150dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data"
+            android:id="@+id/data"
+            android:textSize="20dp"
+            android:layout_below="@+id/email"
+            android:textAlignment="center"
+            android:layout_marginEnd="150dp" />
 
         <Button
             android:id="@+id/email_button"
