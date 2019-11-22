@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -33,6 +34,7 @@ import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
 import com.example.andriod.ingredishare.Profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -81,14 +83,35 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         //getEventsFromBackend();
         ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
 
-        mPostButton = findViewById(R.id.post_ingredient_button);
-
-        mPostButton.setOnClickListener(v -> {
-            showClickableToast();
-        });
-
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent newIntent;
+                switch (item.getItemId()) {
+                    case R.id.action_home:
+                        newIntent = new Intent(IngredientListActivity.this,
+                                IngredientListActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_profile:
+                        newIntent = new Intent(IngredientListActivity.this,
+                                ProfileActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_new_post:
+                        newIntent = new Intent(IngredientListActivity.this,
+                                NewIngrediPostActivity.class);
+                        startActivity(newIntent);
+                        break;
+
+                }
+                return true;
+            }
+        });
 
     }
 

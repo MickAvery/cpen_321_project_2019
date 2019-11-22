@@ -1,19 +1,26 @@
 package com.example.andriod.ingredishare.Email;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.andriod.ingredishare.GlobalRequestQueue;
+import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostPresenter;
+import com.example.andriod.ingredishare.Profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -61,10 +68,37 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
 
             mSubject = findViewById(R.id.email_subject);
             mMessage = findViewById(R.id.email_message);
-            
+
             presenter.sendEmail(emailToSendTo, mSubject.getText().toString(),
                     mMessage.getText().toString());
             finish();
+        });
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent newIntent;
+                switch (item.getItemId()) {
+                    case R.id.action_home:
+                        newIntent = new Intent(EmailActivity.this,
+                                IngredientListActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_profile:
+                        newIntent = new Intent(EmailActivity.this,
+                                ProfileActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_new_post:
+                        newIntent = new Intent(EmailActivity.this,
+                                NewIngrediPostActivity.class);
+                        startActivity(newIntent);
+                        break;
+
+                }
+                return true;
+            }
         });
     }
 

@@ -7,13 +7,18 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.Toolbar;
 import com.android.volley.VolleyError;
@@ -22,7 +27,9 @@ import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.IngredientList.IngredientListPresenter;
 import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.Profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -45,16 +52,29 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
 
         Button mBackbutton;
         Button mPostButton;
-        Toolbar mToolbar;
 
-        mToolbar = findViewById(R.id.toolbar);
         mBackbutton = findViewById(R.id.back_button);
         mPostButton = findViewById(R.id.postbutton);
 
         presenter = new NewIngrediPostPresenter(MyApplication.getDataManager(), this);
 
-        mToolbar.setTitle(getIntent().getStringExtra(getString(R.string.request_or_offer)));
         mType = getIntent().getStringExtra(getString(R.string.request_or_offer));
+
+        Switch mySwitch = (Switch) findViewById(R.id.simpleSwitch);
+
+        mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                if(isChecked){
+                    mySwitch.setText(getString(R.string.request_ingredient));
+                    mType = getString(R.string.request_ingredient);
+                } else{
+                    mySwitch.setText(getString(R.string.offer_ingredient));
+                    mType = getString(R.string.offer_ingredient);
+                }
+            }
+        });
 
         mBackbutton.setOnClickListener(v -> finish());
         mPostButton.setOnClickListener(v -> {
@@ -66,6 +86,33 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
             presenter.savePost(mDescription.getText().toString(), mName.getText().toString(), mType);
             testNotifications();
             finish();
+        });
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent newIntent;
+                switch (item.getItemId()) {
+                    case R.id.action_home:
+                        newIntent = new Intent(NewIngrediPostActivity.this,
+                                IngredientListActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_profile:
+                        newIntent = new Intent(NewIngrediPostActivity.this,
+                                ProfileActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_new_post:
+                        newIntent = new Intent(NewIngrediPostActivity.this,
+                                NewIngrediPostActivity.class);
+                        startActivity(newIntent);
+                        break;
+
+                }
+                return true;
+            }
         });
     }
 
