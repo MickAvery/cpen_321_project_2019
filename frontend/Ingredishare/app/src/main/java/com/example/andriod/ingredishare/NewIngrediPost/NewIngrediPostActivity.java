@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -50,7 +51,7 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        Button mBackbutton;
+        View mBackbutton;
         Button mPostButton;
 
         mBackbutton = findViewById(R.id.back_button);
@@ -58,9 +59,9 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
 
         presenter = new NewIngrediPostPresenter(MyApplication.getDataManager(), this);
 
-        mType = getIntent().getStringExtra(getString(R.string.request_or_offer));
-
         Switch mySwitch = (Switch) findViewById(R.id.simpleSwitch);
+        mySwitch.setText(getString(R.string.request_ingredient));
+        mType = getString(R.string.request_ingredient);
 
         mySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -85,7 +86,6 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
             mName = findViewById(R.id.name);
             presenter.savePost(mDescription.getText().toString(), mName.getText().toString(), mType);
             testNotifications();
-            finish();
         });
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -240,5 +240,9 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
 
     public void toastCouldNotPost(){
         Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void displayInputAllFieldsToast() {
+        Toast.makeText(this, "Please fill in all fields!", Toast.LENGTH_SHORT).show();
     }
 }

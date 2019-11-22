@@ -44,6 +44,12 @@ public class NewIngrediPostPresenter {
 
         JSONObject postparams = new JSONObject();
 
+        if(description.equals("") ||
+           name.equals("")) {
+            view.displayInputAllFieldsToast();
+            return;
+        }
+
         try {
             postparams.put(mContext.getString(R.string.name), name);
             postparams.put(mContext.getString(R.string.description), description);

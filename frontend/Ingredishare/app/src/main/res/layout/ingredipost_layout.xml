@@ -8,15 +8,16 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/lightGrey">
+        android:background="@color/white">
 
-        <Button
+        <TextView
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:layout_margin="4dp"
-            android:background="@color/lightGrey"
+            android:background="@color/white"
+            android:textColor="@color/colorPrimaryDark"
             android:visibility="visible"
             android:text="CANCEL"/>
 
@@ -30,9 +31,9 @@
                 android:id="@+id/simpleSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="200dp"
+                android:switchPadding="10dp"
                 android:text="@string/request_ingredient"
                 android:textSize="20dp"
                 android:checked="true"/>
@@ -78,9 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_gravity="bottom"
-                app:itemBackground="@color/colorPrimary"
-                app:itemIconTint="@android:color/white"
-                app:itemTextColor="@android:color/white"
+                app:itemBackground="@color/lightGrey"
                 app:menu="@menu/bottom_nav_menu" />
 
         </LinearLayout>

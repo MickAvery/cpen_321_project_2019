@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/black">
+    android:background="@color/colorPrimary">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -32,7 +32,7 @@
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_nav_menu"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@android:color/white"
-        app:itemTextColor="@android:color/white"/>
+        app:itemBackground="@color/lightGrey"
+        app:itemIconTint="@drawable/bottom_nav_colours"
+        app:itemTextColor="@drawable/bottom_nav_colours"/>
 </RelativeLayout>

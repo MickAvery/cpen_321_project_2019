@@ -118,9 +118,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_gravity="bottom"
-                    app:itemBackground="@color/colorPrimary"
-                    app:itemIconTint="@android:color/white"
-                    app:itemTextColor="@android:color/white"
+                    app:itemBackground="@color/lightGrey"
                     app:menu="@menu/bottom_nav_menu" />
 
             </LinearLayout>
