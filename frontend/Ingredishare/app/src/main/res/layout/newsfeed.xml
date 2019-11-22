@@ -35,7 +35,7 @@
         android:layout_marginTop="0dp"
         android:paddingBottom="50dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginBottom="100px"
+        android:layout_marginBottom="0dp"
         android:scrollbars="vertical" />
 
     <LinearLayout
