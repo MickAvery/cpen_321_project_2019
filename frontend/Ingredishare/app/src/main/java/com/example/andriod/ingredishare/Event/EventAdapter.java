@@ -26,7 +26,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public TextView event;
         public TextView id;
         public TextView data;
-        public Button sendButton;
+        public View sendButton;
         public TextView email;
 
         public EventViewHolder(View view) {
@@ -35,7 +35,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             event = (TextView) view.findViewById(R.id.event);
             id = (TextView) view.findViewById(R.id.id);
             data = (TextView) view.findViewById(R.id.data);
-            sendButton = (Button) view.findViewById(R.id.email_button);
+            sendButton = (View) view.findViewById(R.id.email_button);
 
             sendButton.setOnClickListener(v -> {
                 EditText mDescription;
