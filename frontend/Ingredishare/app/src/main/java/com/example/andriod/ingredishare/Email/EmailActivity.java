@@ -61,6 +61,7 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
 
             mSubject = findViewById(R.id.email_subject);
             mMessage = findViewById(R.id.email_message);
+            
             presenter.sendEmail(emailToSendTo, mSubject.getText().toString(),
                     mMessage.getText().toString());
             finish();
@@ -72,7 +73,6 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
     }
 
     public void toastSuccess(){
-        Toast.makeText(this, "Email Sent!", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

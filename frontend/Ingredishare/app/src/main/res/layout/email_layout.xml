@@ -40,14 +40,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="24dp"
                     android:layout_marginRight="24dp"
-                    android:layout_marginTop="10dp"
                     android:textSize="20dp"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="24dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginRight="24dp"
                     android:textSize="25dp"
                     android:text="Subject:"/>
@@ -58,7 +56,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="24dp"
                     android:layout_marginRight="24dp"
-                    android:layout_marginTop="10dp"
                     android:maxLength="100"
                     android:hint="Subject"/>
 
@@ -66,7 +63,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="24dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginRight="24dp"
                     android:textSize="25dp"
                     android:text="Message:"/>
@@ -76,10 +72,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="24dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginRight="24dp"
                     android:maxLength="200"
-                    android:hint="Hi there! I would like your ingredient." />
+                    android:text="Hi there! I would like your ingredient." />
 
             </LinearLayout>
 
