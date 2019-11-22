@@ -87,6 +87,7 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         setSupportActionBar(myToolbar);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -148,6 +149,13 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         }
 
         return true;
+    }
+
+    @Override
+    protected void onStart() {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.action_home);
+        super.onStart();
     }
 
     public List<Double> getLocation(){

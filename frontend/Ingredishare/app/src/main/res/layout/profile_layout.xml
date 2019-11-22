@@ -116,8 +116,6 @@
             android:layout_height="56dp"
             android:layout_gravity="bottom"
             app:itemBackground="@color/lightGrey"
-            app:itemIconTint="@drawable/bottom_nav_colours"
-            app:itemTextColor="@drawable/bottom_nav_colours"
             app:menu="@menu/bottom_nav_menu" />
 
     </LinearLayout>
