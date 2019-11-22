@@ -5,22 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.andriod.ingredishare.Main.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
-    <TextView
-        android:id="@+id/ingrediShare"
-        android:paddingTop="120dp"
-        android:textSize="50dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:paddingTop="100dp"
         android:layout_gravity="center"
-        android:text="ingrediShare"
-        android:visibility="visible"
-        android:textColor="@color/black"/>
+        android:id="@+id/logo"
+        android:src="@drawable/ingredishare_logo_white"/>
 
     <TextView
         android:id="@+id/invalid_email"
-        android:paddingTop="40dp"
+        android:paddingTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
