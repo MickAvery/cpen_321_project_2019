@@ -9,13 +9,6 @@ router.get('/', (req, res) => {
     res.send("Hello world!");
 });
 
-async function getProfileInfo(obj) {
-    var dbObj = mainMod.getDb();
-
-    const result = await dbObj.collection("users").find({email: obj.email}, {projection: {displayName: 1, bio: 1, preferences: 1, radiusPreference: 1}}).toArray();
-    return result;
-}
-
 router.get('/getProfileInfo', (req, res) => {
     var email = req.query.email;
 
@@ -30,6 +23,17 @@ router.get('/getProfileInfo', (req, res) => {
 
 async function getProfileInfo(email) {
     var dbObj = mainMod.getDb();
+    if (dbObj === null) {
+        throw "Could not connect to DB";
+    }
+
+    if (email === undefined) {
+        throw "Undefined email";
+    }
+
+    if (email === '') {
+        throw "Empty email address";
+    }
 
     const result = await dbObj.collection("users").findOne({email: email}, {projection: {displayName: 1, bio: 1, preferences: 1}});
     return result;
@@ -51,4 +55,7 @@ router.post("/updateProfileInfo", (req, res) => {
     res.json({"updateProfileInfo": true});
 });
 
-module.exports = router;
+module.exports = {
+    router: router,
+    getProfileInfo: getProfileInfo
+}
