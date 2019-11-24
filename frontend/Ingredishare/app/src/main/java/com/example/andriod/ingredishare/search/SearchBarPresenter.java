@@ -28,11 +28,11 @@ public class SearchBarPresenter {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void getEventsFromQuery(String query){
+    public void getEventsFromQuery(String query, EventAdapter mEventAdapter){
         List<Event> queryList = MyApplication.getEventAdapter().getEventWithSpecificName(query);
 
         for(int i=0; i<queryList.size();i++){
-            localEventAdapter.addEvent(queryList.get(i));
+            mEventAdapter.addEvent(queryList.get(i));
             Log.e(this.getClass().toString(), queryList.get(i).getUserId());
         }
 

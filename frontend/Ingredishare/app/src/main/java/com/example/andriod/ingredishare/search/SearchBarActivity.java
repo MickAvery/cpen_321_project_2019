@@ -2,6 +2,8 @@ package com.example.andriod.ingredishare.search;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,11 +67,23 @@ public class SearchBarActivity extends AppCompatActivity implements SearchBarVie
 
         ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
 
-        Button searchButton = findViewById(R.id.search_bar_button);
-        searchButton.setOnClickListener(v -> {
-            EditText text = findViewById(R.id.search_bar);
-            Log.e(this.getClass().toString(), "query " + text.getText().toString());
-            presenter.getEventsFromQuery(text.getText().toString());
+        EditText query = findViewById(R.id.search_bar);
+        query.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {}
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                Log.e(this.getClass().toString(), "query " + s);
+                eventList = new ArrayList<>();
+                mEventAdapter = new EventAdapter(eventList);
+                recycler.setAdapter(mEventAdapter);
+                presenter.getEventsFromQuery(s.toString(), mEventAdapter);
+            }
         });
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
