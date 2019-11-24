@@ -9,9 +9,10 @@ public class Event {
     private double longitude;
     private String type;
     private String email;
+    private Long date;
 
     public Event(String userid, String name, String description, double latitude,
-                 double longitude, String type) {
+                 double longitude, String type, Long date) {
         this.userid = userid;
         this.name = name;
         this.type = type;
@@ -19,6 +20,7 @@ public class Event {
         this.latitude = latitude;
         this.longitude = longitude;
         this.email = userid;
+        this.date = date;
     }
 
 
@@ -51,4 +53,6 @@ public class Event {
     }
 
     public String getEmail() { return email; }
+
+    public Long getDate(){ return date; }
 }

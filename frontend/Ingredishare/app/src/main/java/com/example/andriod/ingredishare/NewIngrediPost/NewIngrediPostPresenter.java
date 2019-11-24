@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
 public class NewIngrediPostPresenter {
 
 
@@ -62,8 +64,13 @@ public class NewIngrediPostPresenter {
                 postparams.put("lat", null);
                 postparams.put("long", null);
             }
+            postparams.put(mContext.getString(R.string.date),
+                    Long.toString(System.currentTimeMillis()));
+
             Log.d("latitude", loc[0].toString());
             Log.d("longitude", loc[1].toString());
+
+            Log.e("CREATE REQUEST", postparams.toString());
 
             Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
                 public void onResponse(JSONObject response) {

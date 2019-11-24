@@ -97,18 +97,24 @@ public class IngredientListPresenter {
                             String description = json_data.getString(mContext.getString(R.string.description));
                             String userid = "none";
                             String type = "Post";
+                            Long date = System.currentTimeMillis() - 10;
                             if(json_data.has(mContext.getString(R.string.userId))) {
                                 userid = json_data.getString(mContext.getString(R.string.userId));
                             }
                             if(json_data.has(mContext.getString(R.string.type))){
                                 type = json_data.getString(mContext.getString(R.string.type));
                             }
+
+                            if(json_data.has(mContext.getString(R.string.date))){
+                                date = Long.parseLong(
+                                        json_data.getString(mContext.getString(R.string.date)));
+                            }
                             Double x = Double.parseDouble(json_data.getString("lat"));
                             Double y = Double.parseDouble(json_data.getString("long"));
                           //  Double x = 1.0;
                           //  Double y = 1.0;
 
-                            Event event = new Event(userid, name, description, x, y, type);
+                            Event event = new Event(userid, name, description, x, y, type, date);
                             eventAdapter.addEvent(event);
 
                             /* scroll to top */

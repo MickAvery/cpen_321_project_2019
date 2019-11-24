@@ -93,14 +93,18 @@ router.post("/createRequest", (req, res) => {
             description: req.body.description,
             lat: req.body.lat,
             long: req.body.long,
-            type: req.body.type
+            type: req.body.type,
+            date: req.body.date
         };
+
+        console.log(newReq);
 
         /* gotta check if any of the fields are falsey */
         if(requestIsValid(newReq)) {
 
             dbObj.collection("requests").insertOne(newReq, function(err,dbRes) {
                 if(err) {
+                    console.log(err);
                     res.json({"createRequestResponse": false});
                 } else {
                     res.json({"createRequestResponse": true});
