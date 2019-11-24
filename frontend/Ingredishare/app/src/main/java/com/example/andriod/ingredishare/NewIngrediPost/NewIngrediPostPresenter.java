@@ -1,11 +1,15 @@
 package com.example.andriod.ingredishare.NewIngrediPost;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.andriod.ingredishare.DataManager;
+import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,8 +93,32 @@ public class NewIngrediPostPresenter {
 
             dataManager.postJSONObject(url, postparams, listener, errorListener);
 
+            notifyAfterPost(mUser.getEmail(), name, description, type);
+
         } catch(JSONException e){
             view.toastCouldNotPost();
         }
+    }
+
+    private void notifyAfterPost(String userId, String name, String description, String type) {
+        String url = MyApplication.getServerURL();
+
+        Uri uriQuery = Uri.parse(url)
+                .buildUpon()
+                .appendPath("notifyOtherUsers")
+                .appendQueryParameter(mContext.getString(R.string.userId), userId)
+                .appendQueryParameter(mContext.getString(R.string.name), name)
+                .appendQueryParameter(mContext.getString(R.string.description), description)
+                .appendQueryParameter(mContext.getString(R.string.type), type)
+                .build();
+
+        StringRequest req = new StringRequest(Request.Method.POST, uriQuery.toString(),
+                (String response) -> {
+                },
+
+                (VolleyError error) -> {
+                });
+
+        GlobalRequestQueue.getInstance().addToRequestQueue(req, "TAG");
     }
 }
