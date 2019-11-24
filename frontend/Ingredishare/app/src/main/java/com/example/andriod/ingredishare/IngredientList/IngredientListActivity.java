@@ -123,20 +123,6 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
 
         mNotifImage = findViewById(R.id.notif_dot);
         MyApplication.setNotificationImageView(mNotifImage);
-
-        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    if (!recyclerView.canScrollVertically(-1)) {
-//                        presenter.getEvents();
-                        mNotifImage.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-        });
     }
 
     @Override
