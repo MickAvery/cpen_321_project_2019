@@ -144,29 +144,28 @@ app.post("/firebaseVerifyIdToken", function(req, res) {
         });
 });
 
-app.post("/notif_test", function(req, res) {
-    // console.log("/notif_test GET");
+app.post("/notifyOtherUsers", function(req, res) {
+    // console.log("/notifyOtherUsers POST");
 
     var newReq = {
-        name: req.body.name,
-        description: req.body.description,
-        lat: req.body.lat,
-        long: req.body.long,
-        userId: req.body.userId
+        userId: req.query.userId,
+        name: req.query.name,
+        description: req.query.description,
+        type: (req.query.type === "Request Ingredient") ? "requested" : "offered"
     };
 
     /* prepare message */
     var message = new gcm.Message({
         data : {key1 : "mgs1"},
         notification: {
-            title: newReq.userId + " requested " + newReq.name,
+            title: newReq.userId + " " + newReq.type + " " + newReq.name,
             icon: "ic_launcher",
             body: newReq.description
         }
     });
 
     /* notify all users */
-    var query = dbObj.collection("users").find().toArray(function(err, result) {
+    var query = dbObj.collection("users").find({"email": {$ne:newReq.userId}}).toArray(function(err, result) {
         if(err) {
             throw err;
         }
@@ -184,5 +183,7 @@ app.post("/notif_test", function(req, res) {
                 throw err;
             }
         });
+
+        res.status(200).end();
     });
 });
