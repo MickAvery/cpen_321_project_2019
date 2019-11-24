@@ -47,12 +47,11 @@ async function getAllRequestsFromLatLong(temp) {
     var expirationDate = new Date();
     // subtract expiration date
     expirationDate.setDate(expirationDate.getDate() - 5);
-    console.log(expirationDate.getTime());
 
     const result = await dbObj.collection("requests").find({
         lat: { $gt: (Number(temp.lat)-Number(latRange)), $lt: (Number(temp.lat)+Number(latRange))},
         long: { $gt: (Number(temp.long)-Number(longRange)), $lt: (Number(temp.long)+Number(longRange))},
-        date: { $gt: expirationDate.getMilliseconds()}
+        date: { $gt: expirationDate.getTime()}
     }).toArray();
 
     return result;
