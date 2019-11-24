@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -77,6 +78,19 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         List<Event> eventList = new ArrayList<>();
         mEventAdapter = new EventAdapter(eventList);
         recycler.setAdapter(mEventAdapter);
+
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (!recyclerView.canScrollVertically(-1)) {
+                        Log.d("tag", "msg");
+                    }
+                }
+            }
+        });
 
         presenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
                 mEventAdapter);
