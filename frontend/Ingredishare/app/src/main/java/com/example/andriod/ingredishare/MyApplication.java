@@ -2,10 +2,13 @@ package com.example.andriod.ingredishare;
 
 import android.app.Application;
 
+import com.example.andriod.ingredishare.event.EventAdapter;
+
 public class MyApplication extends Application {
     private static MyApplication mContext;
     private static String mUserEmail;
     private static DataManager mDataManager;
+    private static EventAdapter mEventAdapter;
 
     private static final String serverURL = "http://10.0.2.2:1337";
 
@@ -59,5 +62,13 @@ public class MyApplication extends Application {
 
     public static String urlCreateRequest(){
         return getCreateRequestString;
+    }
+
+    public static void setEventAdapter(EventAdapter eventAdapter){
+        mEventAdapter = eventAdapter;
+    }
+
+    public static EventAdapter getEventAdapter(){
+        return mEventAdapter;
     }
 }

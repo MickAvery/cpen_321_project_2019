@@ -45,6 +45,10 @@
         <activity android:name=".email.EmailActivity"
             android:noHistory="true"/>
 
+        <activity android:name=".search.SearchBarActivity"
+            android:noHistory="true"/>
+
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

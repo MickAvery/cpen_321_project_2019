@@ -32,8 +32,10 @@ import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.main.MainActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
+import com.example.andriod.ingredishare.search.SearchBarActivity;
 import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
+import com.example.andriod.ingredishare.search.SearchBarActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -76,6 +78,8 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         mEventAdapter = new EventAdapter(eventList);
         recycler.setAdapter(mEventAdapter);
 
+        MyApplication.setEventAdapter(mEventAdapter);
+
         presenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
                 mEventAdapter);
         presenter.getEvents();
@@ -108,6 +112,13 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
                         newIntent = new Intent(IngredientListActivity.this,
                                 NewIngrediPostActivity.class);
                         startActivity(newIntent);
+                        break;
+                    case R.id.search:
+                        newIntent = new Intent(IngredientListActivity.class,
+                                SearchBarActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    default:
                         break;
 
                 }
