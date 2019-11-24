@@ -91,7 +91,9 @@ public class NewIngrediPostPresenter {
                 }
             };
 
-            dataManager.postJSONObject(url, postparams, listener, errorListener);
+            if (dataManager != null) {
+                dataManager.postJSONObject(url, postparams, listener, errorListener);
+            }
 
             notifyAfterPost(mUser.getEmail(), name, description, type);
 
