@@ -79,19 +79,6 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         mEventAdapter = new EventAdapter(eventList);
         recycler.setAdapter(mEventAdapter);
 
-        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    if (!recyclerView.canScrollVertically(-1)) {
-                        Log.d("tag", "msg");
-                    }
-                }
-            }
-        });
-
         presenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
                 mEventAdapter);
         presenter.getEvents();
@@ -133,6 +120,20 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
 
         mNotifImage = findViewById(R.id.notif_dot);
         MyApplication.setNotificationImageView(mNotifImage);
+
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (!recyclerView.canScrollVertically(-1)) {
+//                        presenter.getEvents();
+                        mNotifImage.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
     }
 
     @Override
