@@ -50,7 +50,7 @@ public class ExternalApiTest {
         Intents.init();
         onView(withId(R.id.google_sign_in_button)).perform(click());
         intended(hasPackage("com.google.android.gms"));
-        Intents.release();
         UiDevice.getInstance(getInstrumentation()).pressBack();
+        Intents.release();
     }
 }
