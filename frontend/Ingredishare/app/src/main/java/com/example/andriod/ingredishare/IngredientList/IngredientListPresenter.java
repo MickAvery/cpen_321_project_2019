@@ -135,5 +135,7 @@ public class IngredientListPresenter {
         } catch(Exception e) {
 
         }
+
+        view.updateUI();
     }
 }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -366,8 +367,8 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         alertDialog.show();
     }
 
-    @Override
     public void updateUI(){
-
+        Log.e(this.getClass().toString(), "updateUI");
+        mEventAdapter.notifyDataSetChanged();
     }
 }
