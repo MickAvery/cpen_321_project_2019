@@ -33,8 +33,10 @@ import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.main.MainActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
+import com.example.andriod.ingredishare.search.SearchBarActivity;
 import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
+import com.example.andriod.ingredishare.search.SearchBarActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -85,6 +87,8 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         mPresenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
                 mEventAdapter, mRecycler, mNotifImage);
         mPresenter.getEvents();
+        MyApplication.setEventAdapter(mEventAdapter);
+
 
         //getEventsFromBackend();
         ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
@@ -114,6 +118,13 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
                         newIntent = new Intent(IngredientListActivity.this,
                                 NewIngrediPostActivity.class);
                         startActivity(newIntent);
+                        break;
+                    case R.id.search:
+                        newIntent = new Intent(IngredientListActivity.this,
+                                SearchBarActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    default:
                         break;
 
                 }
@@ -150,7 +161,6 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
                 Intent intent = new Intent(this, ProfileActivity.class);
                 startActivity(intent);
                 break;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

@@ -29,6 +29,7 @@ import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
+import com.example.andriod.ingredishare.search.SearchBarActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -106,6 +107,11 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
                     case R.id.action_new_post:
                         newIntent = new Intent(NewIngrediPostActivity.this,
                                 NewIngrediPostActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.search:
+                        newIntent = new Intent(NewIngrediPostActivity.this,
+                                SearchBarActivity.class);
                         startActivity(newIntent);
                         break;
 
