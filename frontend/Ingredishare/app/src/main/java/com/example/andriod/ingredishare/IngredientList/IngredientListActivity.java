@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,7 +49,8 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
     private FirebaseUser mUser;
-    private IngredientListPresenter presenter;
+    private IngredientListPresenter mPresenter;
+    private RecyclerView mRecycler;
     private ImageView mNotifImage;
 
     @Override
@@ -69,19 +69,22 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         mContext = this;
         mReqQueue = GlobalRequestQueue.getInstance();
         // Get the RecyclerView
-        RecyclerView recycler = findViewById(R.id.recycler_view);
+        mRecycler = findViewById(R.id.recycler_view);
 
         mLayoutManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(mLayoutManager);
+        mRecycler.setLayoutManager(mLayoutManager);
 
         // Set the custom mEventAdapter
         List<Event> eventList = new ArrayList<>();
         mEventAdapter = new EventAdapter(eventList);
-        recycler.setAdapter(mEventAdapter);
+        mRecycler.setAdapter(mEventAdapter);
 
-        presenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
-                mEventAdapter);
-        presenter.getEvents();
+        mNotifImage = findViewById(R.id.notif_dot);
+        MyApplication.setNotificationImageView(mNotifImage);
+
+        mPresenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
+                mEventAdapter, mRecycler, mNotifImage);
+        mPresenter.getEvents();
 
         //getEventsFromBackend();
         ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
@@ -121,7 +124,7 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         mNotifImage = findViewById(R.id.notif_dot);
         MyApplication.setNotificationImageView(mNotifImage);
 
-        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);

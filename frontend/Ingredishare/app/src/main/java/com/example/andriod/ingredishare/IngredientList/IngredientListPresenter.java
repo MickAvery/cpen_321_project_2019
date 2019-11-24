@@ -2,6 +2,11 @@ package com.example.andriod.ingredishare.IngredientList;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,14 +34,31 @@ public class IngredientListPresenter {
     private Context mContext;
     private Boolean newUser;
     private EventAdapter eventAdapter;
+    private RecyclerView mRecycler;
+    private ImageView mNotificationImage;
 
     public IngredientListPresenter(DataManager dataManager, IngredientListView view,
-                                   EventAdapter eventAdapter) {
+                                   EventAdapter eventAdapter, RecyclerView recycler, ImageView notificationImage) {
         this.dataManager = dataManager;
         this.view = view;
         this.eventAdapter = eventAdapter;
-        mContext = MyApplication.getContext();
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.mContext = MyApplication.getContext();
+        this.mUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.mRecycler = recycler;
+        this.mNotificationImage = notificationImage;
+
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (!recyclerView.canScrollVertically(-1)) {
+                        getEvents();
+                    }
+                }
+            }
+        });
     }
 
     /*
@@ -89,6 +111,11 @@ public class IngredientListPresenter {
                             Event event = new Event(userid, name, description, x, y, type);
                             eventAdapter.addEvent(event);
 
+                            /* scroll to top */
+                            mRecycler.scrollToPosition(0);
+
+                            /* set notification dot invisible */
+                            mNotificationImage.setVisibility(View.INVISIBLE);
                         }
 
                     } catch (JSONException jsonEx) {
