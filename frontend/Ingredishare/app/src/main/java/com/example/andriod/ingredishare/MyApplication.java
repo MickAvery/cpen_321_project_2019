@@ -1,6 +1,7 @@
 package com.example.andriod.ingredishare;
 
 import android.app.Application;
+import android.widget.ImageView;
 
 public class MyApplication extends Application {
     private static MyApplication mContext;
@@ -14,6 +15,8 @@ public class MyApplication extends Application {
     private static final String getAllRequestsLatLongGETRequestURL = serverURL +
             "/getAllRequestsFromLatLong";
     private static final String getCreateRequestString = serverURL + "/createRequest";
+
+    private static ImageView mNotificationImage;
 
     @Override
     public void onCreate() {
@@ -59,5 +62,13 @@ public class MyApplication extends Application {
 
     public static String urlCreateRequest(){
         return getCreateRequestString;
+    }
+
+    public static ImageView getNotificationImageView() {
+        return mNotificationImage;
+    }
+
+    public static void setNotificationImageView(ImageView view) {
+        mNotificationImage = view;
     }
 }

@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.andriod.ingredishare.event.Event;
@@ -49,6 +50,7 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
     private GlobalRequestQueue mReqQueue;
     private FirebaseUser mUser;
     private IngredientListPresenter presenter;
+    private ImageView mNotifImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +117,8 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
             }
         });
 
+        mNotifImage = findViewById(R.id.notif_dot);
+        MyApplication.setNotificationImageView(mNotifImage);
     }
 
     @Override
