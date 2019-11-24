@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import com.example.andriod.ingredishare.DataManager;
@@ -115,9 +117,15 @@ public class IngredientListPresenter {
                           //  Double x = 1.0;
                           //  Double y = 1.0;
 
-                            Event event = new Event(userid, name, description, x, y, type, date);
-                            eventAdapter.addEvent(event);
+                            Date today = new Date(System.currentTimeMillis());
+                            Date postDate = new Date(date);
 
+                            int diffInDays = (int)( (today.getTime() - postDate.getTime())
+                                    / (1000 * 60 * 60 * 24) );
+                            if(diffInDays < MyApplication.getExpirationDate()) {
+                                Event event = new Event(userid, name, description, x, y, type, date);
+                                eventAdapter.addEvent(event);
+                            }
                             /* scroll to top */
                             mRecycler.scrollToPosition(0);
 
