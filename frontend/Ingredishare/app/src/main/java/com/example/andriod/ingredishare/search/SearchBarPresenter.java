@@ -1,6 +1,7 @@
 package com.example.andriod.ingredishare.search;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.andriod.ingredishare.DataManager;
 import com.example.andriod.ingredishare.MyApplication;
@@ -18,20 +19,24 @@ public class SearchBarPresenter {
     private FirebaseUser mUser;
     private Context mContext;
     private Boolean newUser;
-    private EventAdapter eventAdapter;
+    private EventAdapter localEventAdapter;
 
-    public SearchBarPresenter(SearchBarView view,
-                                   EventAdapter eventAdapter) {
+    public SearchBarPresenter(SearchBarView view, EventAdapter eventAdapter) {
         this.view = view;
-        this.eventAdapter = eventAdapter;
+        this.localEventAdapter = eventAdapter;
         mContext = MyApplication.getContext();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     public void getEventsFromQuery(String query){
-        List<Event> queryList = eventAdapter.getEventWithID(query);
+        List<Event> queryList = MyApplication.getEventAdapter().getEventWithSpecificName(query);
 
-        EventAdapter localEventAdapter = new EventAdapter(queryList);
-        view.setActivityEventAdapter(localEventAdapter);
+        for(int i=0; i<queryList.size();i++){
+            localEventAdapter.addEvent(queryList.get(i));
+            Log.e(this.getClass().toString(), queryList.get(i).getUserId());
+        }
+
+
+        view.updateUI();
     }
 }

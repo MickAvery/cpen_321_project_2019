@@ -114,7 +114,7 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
                         startActivity(newIntent);
                         break;
                     case R.id.search:
-                        newIntent = new Intent(IngredientListActivity.class,
+                        newIntent = new Intent(IngredientListActivity.this,
                                 SearchBarActivity.class);
                         startActivity(newIntent);
                         break;
@@ -153,7 +153,6 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
                 Intent intent = new Intent(this, ProfileActivity.class);
                 startActivity(intent);
                 break;
-
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.

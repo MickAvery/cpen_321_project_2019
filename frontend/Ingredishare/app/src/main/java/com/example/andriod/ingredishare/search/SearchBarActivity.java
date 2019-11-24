@@ -2,9 +2,12 @@ package com.example.andriod.ingredishare.search;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +21,7 @@ import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
 import com.example.andriod.ingredishare.R;
 import com.example.andriod.ingredishare.event.Event;
 import com.example.andriod.ingredishare.event.EventAdapter;
+import com.example.andriod.ingredishare.main.MainActivity;
 import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,39 +32,43 @@ import java.util.List;
 
 public class SearchBarActivity extends AppCompatActivity implements SearchBarView  {
 
-    EditText searchQuery;
     private FirebaseUser mUser;
     EventAdapter mEventAdapter;
     SearchBarPresenter presenter;
     private List<Event> eventList;
     RecyclerView recycler;
+    RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.e(this.getClass().toString(), "onCreate inside");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_bar_layout);
 
-        RecyclerView.LayoutManager mLayoutManager;
-        recycler = findViewById(R.id.recycler_view);
+        Log.e(this.getClass().toString(), "content view set");
+
+        recycler = findViewById(R.id.recycler_view2);
         mLayoutManager = new LinearLayoutManager(this);
         recycler.setLayoutManager(mLayoutManager);
 
-        searchQuery = findViewById(R.id.search_bar);
 
-        mEventAdapter = MyApplication.getEventAdapter();
+        eventList = new ArrayList<>();
+        mEventAdapter = new EventAdapter(eventList);
+        recycler.setAdapter(mEventAdapter);
 
         presenter = new SearchBarPresenter(this,
                 mEventAdapter);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
+        Log.e(this.getClass().toString(), "midway");
 
-        eventList = new ArrayList<>();
+        ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
 
         Button searchButton = findViewById(R.id.search_bar_button);
         searchButton.setOnClickListener(v -> {
             EditText text = findViewById(R.id.search_bar);
+            Log.e(this.getClass().toString(), "query " + text.getText().toString());
             presenter.getEventsFromQuery(text.getText().toString());
         });
 
@@ -86,11 +94,6 @@ public class SearchBarActivity extends AppCompatActivity implements SearchBarVie
                                 NewIngrediPostActivity.class);
                         startActivity(newIntent);
                         break;
-                    case R.id.search:
-                        newIntent = new Intent(SearchBarActivity.class,
-                                SearchBarActivity.class);
-                        startActivity(newIntent);
-                        break;
                     default:
                         break;
 
@@ -98,10 +101,55 @@ public class SearchBarActivity extends AppCompatActivity implements SearchBarVie
                 return true;
             }
         });
+
+        Log.e(this.getClass().toString(), "onCreate out");
     }
 
-    public void setActivityEventAdapter(EventAdapter e){
-        recycler.setAdapter(e);
+    @Override
+    protected void onStart() {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.search);
+        super.onStart();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.log_out:
+                FirebaseAuth.getInstance().signOut();
+
+                Intent mainActivity = new Intent(this, MainActivity.class);
+                startActivity(mainActivity);
+                break;
+
+            case R.id.action_profile:
+                Intent intent = new Intent(this, ProfileActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
+    }
+
+    public void updateUI(){
+        Log.e(this.getClass().toString(), "updateUI");
+        mEventAdapter.notifyDataSetChanged();
     }
 
 }

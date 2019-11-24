@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,11 +85,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         viewHolder.email.setText(event.getEmail());
     }
 
-    public List<Event> getEventWithID(String mID){
+    public List<Event> getEventWithSpecificName(String mID){
         List<Event> queriedList = new ArrayList<Event>();
         for(int i=0; i<items.size();i++){
             Event next = items.get(i);
-            if(next.getUserId() == mID){
+            if(next.getName().contains(mID)){
+                Log.e("EVENTADAPTER", items.get(i).getName());
                 queriedList.add(next);
             }
         }

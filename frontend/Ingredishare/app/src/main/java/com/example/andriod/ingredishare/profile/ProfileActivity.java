@@ -19,6 +19,7 @@ import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
 import com.example.andriod.ingredishare.R;
+import com.example.andriod.ingredishare.search.SearchBarActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -107,6 +108,11 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
                     case R.id.action_new_post:
                         newIntent = new Intent(ProfileActivity.this,
                                 NewIngrediPostActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.search:
+                        newIntent = new Intent(ProfileActivity.this,
+                                SearchBarActivity.class);
                         startActivity(newIntent);
                         break;
 
