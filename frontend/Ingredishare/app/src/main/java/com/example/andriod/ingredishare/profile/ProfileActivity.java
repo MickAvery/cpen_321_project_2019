@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
 import com.example.andriod.ingredishare.R;
+import com.example.andriod.ingredishare.main.MainActivity;
 import com.example.andriod.ingredishare.search.SearchBarActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -168,4 +170,5 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         Toast.makeText(this,"Internal Error",
                 Toast.LENGTH_SHORT).show();
     }
+
 }

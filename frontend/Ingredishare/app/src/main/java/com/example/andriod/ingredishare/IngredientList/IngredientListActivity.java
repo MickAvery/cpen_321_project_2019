@@ -147,20 +147,12 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
-                break;
 
             case R.id.log_out:
                 FirebaseAuth.getInstance().signOut();
 
                 Intent mainActivity = new Intent(this, MainActivity.class);
                 startActivity(mainActivity);
-                break;
-
-            case R.id.action_profile:
-                Intent intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
                 break;
             default:
                 // If we got here, the user's action was not recognized.
@@ -207,135 +199,6 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         return loc;
     }
 
-    /*
-      Grabs events from the backend and adds them to the mEventAdapter
-
-    public void getEventsFromBackend(){
-
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        // TODO: handle case if they say no
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    0);
-        }
-
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double longitude;
-        double latitude;
-        if (location != null) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-        } else {
-            longitude = 1;
-            latitude = 1;
-        }
-        String url = getString(R.string.server_url)
-                + getString(R.string.get_all_requests_lat_long)
-                + "?lat=" + latitude
-                + "&long=" + longitude
-                + "&email=" + mUser.getEmail();
-
-        JSONObject paramObj = new JSONObject();
-        JSONArray paramArray = new JSONArray();
-
-        try {
-
-            paramObj.put(getString(R.string.lat), String.format("%f", latitude));
-            paramObj.put("long", String.format("%f", longitude));
-            paramObj.put(getString(R.string.email), mUser.getEmail());
-            paramArray.put(paramObj);
-
-            Response.Listener<JSONArray> listener = new Response.Listener<JSONArray>() {
-                public void onResponse(JSONArray json_events_array) {
-                    try {
-                        Log.e(this.getClass().toString(), "inside loop");
-
-                        for (int i = 0; i < json_events_array.length(); i++) {
-                            JSONObject json_data = json_events_array.getJSONObject(i);
-
-                            String name = json_data.getString(getString(R.string.name));
-                            String description = json_data.getString(getString(R.string.description));
-                            String userid = "none";
-                            String type = "Post";
-                            if(json_data.has(getString(R.string.userId))) {
-                                userid = json_data.getString(getString(R.string.userId));
-                            }
-                            if(json_data.has(getString(R.string.type))){
-                                type = json_data.getString(getString(R.string.type));
-                            }
-                            // Float x = Float.parseFloat(json_data.getString("lat"));
-                            //Float y = Float.parseFloat(json_data.getString("long"));
-                            Double x = 1.0;
-                            Double y = 1.0;
-
-                            Event event = new Event(userid, name, description, x, y, type);
-                            mEventAdapter.addEvent(event);
-
-                        }
-
-                    } catch (JSONException jsonEx) {
-                        Log.e(this.getClass().toString(), jsonEx.toString());
-                    }
-                }
-            };
-
-            Response.ErrorListener errorListener = new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d("POST Request Error", error.toString());
-                }
-            };
-
-            MyApplication.getDataManager().getJSONArray(url, paramArray, listener, errorListener);
-         /*   JsonArrayRequest jsonArrayRequest = new JsonArrayRequest (Request.Method.GET,
-                    url,
-                    null,
-                    (JSONArray json_events_array) -> {
-                        try {
-                            Log.e(this.getClass().toString(), "inside loop");
-
-                            for (int i = 0; i < json_events_array.length(); i++) {
-                                JSONObject json_data = json_events_array.getJSONObject(i);
-
-                                String name = json_data.getString(getString(R.string.name));
-                                String description = json_data.getString(getString(R.string.description));
-                                String userid = "none";
-                                String type = "Post";
-                                if(json_data.has(getString(R.string.userId))) {
-                                    userid = json_data.getString(getString(R.string.userId));
-                                }
-                                if(json_data.has(getString(R.string.type))){
-                                    type = json_data.getString(getString(R.string.type));
-                                }
-                               // Float x = Float.parseFloat(json_data.getString("lat"));
-                                //Float y = Float.parseFloat(json_data.getString("long"));
-                                Double x = 1.0;
-                                Double y = 1.0;
-
-                                Event event = new Event(userid, name, description, x, y, type);
-                                mEventAdapter.addEvent(event);
-
-                            }
-
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
-
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError",  error)
-            );
-            // Add JsonArrayRequest to the RequestQueue
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonArrayRequest,"get");
-
-        } catch(Exception e) {
-
-        }
-    } */
 
     private void showClickableToast() {
 

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.app.ActivityCompat;
 
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.main.MainActivity;
 import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
 import com.example.andriod.ingredishare.search.SearchBarActivity;
@@ -121,80 +123,6 @@ public class NewIngrediPostActivity extends AppCompatActivity implements NewIngr
         });
     }
 
-  /*  public void savePost() {
-
-        EditText mDescription;
-        EditText mName;
-
-        mDescription = findViewById(R.id.description);
-        mName = findViewById(R.id.name);
-
-        // TODO(developer): send ID Token to server and validate
-        String url = getString(R.string.server_url) + getString(R.string.createRequest);
-
-        JSONObject postparams = new JSONObject();
-
-        try {
-            postparams.put(getString(R.string.name), mName.getText());
-            postparams.put(getString(R.string.description), mDescription.getText());
-            postparams.put(getString(R.string.userId), mUser.getEmail());
-            postparams.put(getString(R.string.type), mType);
-
-            Double[] loc = getLocation();
-            if(loc.length > 0) {
-                postparams.put("lat", loc[0]);
-                postparams.put("long", loc[1]);
-            } else{
-                postparams.put("lat", null);
-                postparams.put("long", null);
-            }
-            Log.d("latitude", loc[0].toString());
-            Log.d("longitude", loc[1].toString());
-            JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                    (JSONObject response) -> {
-                        try {
-                            Boolean success_response = response.getBoolean("createRequestResponse");
-
-                            if (success_response) {
-                                Log.d("resp", "Sent to backend successfully");
-                                Intent intent = new Intent(this, IngredientListActivity.class);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(mContext, "Could not post!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(this, IngredientListActivity.class);
-                                startActivity(intent);
-                            }
-
-                        } catch (JSONException jsonEx) {
-                            Log.e(this.getClass().toString(), jsonEx.toString());
-                        }
-
-                    },
-
-                    (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
-            );
-
-            mReqQueue = GlobalRequestQueue.getInstance();
-            mReqQueue.addToRequestQueue(jsonObjReq, "post");
-
-        } catch (JSONException jsonEx) {
-
-        }
-
-        url = getString(R.string.server_url) + "/notif_test";
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(url, postparams,
-                (JSONObject response) -> {
-
-                },
-
-                (VolleyError error) -> Log.e(this.getClass().toString(), "VolleyError", error)
-        );
-
-        mReqQueue = GlobalRequestQueue.getInstance();
-        mReqQueue.addToRequestQueue(jsonObjReq, "post");
-    }
-*/
     public Double[] getLocation() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 

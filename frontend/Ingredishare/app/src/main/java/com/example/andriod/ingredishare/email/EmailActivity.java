@@ -3,6 +3,7 @@ package com.example.andriod.ingredishare.email;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
+import com.example.andriod.ingredishare.main.MainActivity;
 import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -103,5 +105,30 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
 
     public void toastSuccess(){
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.log_out:
+                FirebaseAuth.getInstance().signOut();
+
+                Intent mainActivity = new Intent(this, MainActivity.class);
+                startActivity(mainActivity);
+                break;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+        }
+
+        return true;
     }
 }

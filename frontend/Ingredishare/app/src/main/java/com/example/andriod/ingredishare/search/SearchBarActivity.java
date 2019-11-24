@@ -126,41 +126,6 @@ public class SearchBarActivity extends AppCompatActivity implements SearchBarVie
         super.onStart();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.action_bar, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.log_out:
-                FirebaseAuth.getInstance().signOut();
-
-                Intent mainActivity = new Intent(this, MainActivity.class);
-                startActivity(mainActivity);
-                break;
-
-            case R.id.action_profile:
-                Intent intent = new Intent(this, ProfileActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-        }
-
-        return true;
-    }
-
     public void updateUI(){
         Log.e(this.getClass().toString(), "updateUI");
         mEventAdapter.notifyDataSetChanged();
