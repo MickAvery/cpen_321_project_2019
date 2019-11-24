@@ -2,8 +2,11 @@ package com.example.andriod.ingredishare.Profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -14,7 +17,9 @@ import com.example.andriod.ingredishare.DataManager;
 import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
+import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
 import com.example.andriod.ingredishare.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -80,6 +85,34 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
             profileData.put(getString(R.string.food_preferences), mPrefEditText.getText().toString());
 
             presenter.updateProfileInfo(profileData);
+        });
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.action_profile);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent newIntent;
+                switch (item.getItemId()) {
+                    case R.id.action_home:
+                        newIntent = new Intent(ProfileActivity.this,
+                                IngredientListActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_profile:
+                        newIntent = new Intent(ProfileActivity.this,
+                                ProfileActivity.class);
+                        startActivity(newIntent);
+                        break;
+                    case R.id.action_new_post:
+                        newIntent = new Intent(ProfileActivity.this,
+                                NewIngrediPostActivity.class);
+                        startActivity(newIntent);
+                        break;
+
+                }
+                return true;
+            }
         });
     }
 

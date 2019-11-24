@@ -44,6 +44,12 @@ public class NewIngrediPostPresenter {
 
         JSONObject postparams = new JSONObject();
 
+        if(description.equals("") ||
+           name.equals("")) {
+            view.displayInputAllFieldsToast();
+            return;
+        }
+
         try {
             postparams.put(mContext.getString(R.string.name), name);
             postparams.put(mContext.getString(R.string.description), description);
@@ -74,6 +80,7 @@ public class NewIngrediPostPresenter {
                             view.toastCouldNotPost();
                         }
                     } catch (JSONException jsonEx) {
+                        view.toastCouldNotPost();
                         Log.e(this.getClass().toString(), jsonEx.toString());
                     }
                 }
@@ -83,13 +90,14 @@ public class NewIngrediPostPresenter {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d("POST Request Error", error.toString());
+                    view.toastCouldNotPost();
                 }
             };
 
             dataManager.postJSONObject(url, postparams, listener, errorListener);
 
         } catch(JSONException e){
-
+            view.toastCouldNotPost();
         }
     }
 }

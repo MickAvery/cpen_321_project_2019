@@ -4,4 +4,5 @@ public interface NewIngrediPostView {
     Double[] getLocation();
     void startIngredientListActivity();
     void toastCouldNotPost();
+    void displayInputAllFieldsToast();
 }

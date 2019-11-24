@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -409,4 +411,11 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
                     }
                 });
     }
+
+   /* @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.bottom_nav_menu, menu);
+        return true;
+    }*/
 }

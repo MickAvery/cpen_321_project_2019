@@ -8,14 +8,17 @@ public class Event {
     private double latitude;
     private double longitude;
     private String type;
+    private String email;
 
-    public Event(String userid, String name, String description, double latitude, double longitude, String type) {
+    public Event(String userid, String name, String description, double latitude,
+                 double longitude, String type) {
         this.userid = userid;
         this.name = name;
         this.type = type;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.email = userid;
     }
 
 
@@ -46,4 +49,6 @@ public class Event {
     public String getType(){
         return type;
     }
+
+    public String getEmail() { return email; }
 }

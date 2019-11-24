@@ -2,11 +2,18 @@ package com.example.andriod.ingredishare.Event;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.andriod.ingredishare.Email.EmailActivity;
+import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
+import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.R;
 
 import java.util.List;
@@ -19,12 +26,28 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public TextView event;
         public TextView id;
         public TextView data;
+        public View sendButton;
+        public TextView email;
 
-        public EventViewHolder(View v) {
-            super(v);
-            event = (TextView) v.findViewById(R.id.event);
-            id = (TextView) v.findViewById(R.id.id);
-            data = (TextView) v.findViewById(R.id.data);
+        public EventViewHolder(View view) {
+            super(view);
+            email = (TextView) view.findViewById(R.id.email);
+            event = (TextView) view.findViewById(R.id.event);
+            id = (TextView) view.findViewById(R.id.id);
+            data = (TextView) view.findViewById(R.id.data);
+            sendButton = (View) view.findViewById(R.id.email_button);
+
+            sendButton.setOnClickListener(v -> {
+                EditText mDescription;
+                EditText mName;
+
+                Context mContext = MyApplication.getContext();
+                Intent intent = new Intent(mContext, EmailActivity.class);
+                intent.putExtra(mContext.getString(R.string.email),email.getText().toString());
+                intent.putExtra(mContext.getString(R.string.email_subject),
+                        "ingrediShare Post Response: " + id.getText().toString());
+                mContext.startActivity(intent);
+            });
         }
     }
 
@@ -56,8 +79,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(EventViewHolder viewHolder, int i) {
         Event event = items.get(i);
 
-        viewHolder.event.setText(event.getType() + " from " + event.getUserId());
+        viewHolder.event.setText(event.getType());
         viewHolder.id.setText(event.getName());
         viewHolder.data.setText(event.getDescription());
+        viewHolder.email.setText(event.getEmail());
     }
 }
