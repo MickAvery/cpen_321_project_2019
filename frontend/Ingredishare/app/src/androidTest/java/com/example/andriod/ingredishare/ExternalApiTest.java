@@ -1,6 +1,6 @@
 package com.example.andriod.ingredishare;
 
-import com.example.andriod.ingredishare.Main.MainActivity;
+import com.example.andriod.ingredishare.main.MainActivity;
 import com.facebook.FacebookActivity;
 
 import androidx.test.espresso.intent.Intents;
