@@ -97,7 +97,8 @@ public class IngredientListPresenter {
                             String description = json_data.getString(mContext.getString(R.string.description));
                             String userid = "none";
                             String type = "Post";
-                            Long date = System.currentTimeMillis() - 10;
+                            // Subtracting 10 days from todays date if it doesnt have it
+                            Long date = System.currentTimeMillis() - 10 * 24 * 60 * 60 * 1000;
                             if(json_data.has(mContext.getString(R.string.userId))) {
                                 userid = json_data.getString(mContext.getString(R.string.userId));
                             }
