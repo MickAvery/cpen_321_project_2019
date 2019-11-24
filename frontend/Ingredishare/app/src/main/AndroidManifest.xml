@@ -23,7 +23,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".Main.MainActivity">
+        <activity android:name=".main.MainActivity">
 <!--            android:noHistory="true">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
         </activity>
         <activity android:name=".IngredientList.IngredientListActivity"
             android:launchMode="singleTask"/>
-        <activity android:name=".Profile.ProfileActivity" />
+        <activity android:name=".profile.ProfileActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -42,7 +42,7 @@
         <activity android:name=".NewIngrediPost.NewIngrediPostActivity"
             android:noHistory="true"/>
 
-        <activity android:name=".Email.EmailActivity"
+        <activity android:name=".email.EmailActivity"
             android:noHistory="true"/>
 
         <activity

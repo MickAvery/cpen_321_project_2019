@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Profile;
+package com.example.andriod.ingredishare.profile;
 
 import android.content.Intent;
 import android.os.Bundle;

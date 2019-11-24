@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Email;
+package com.example.andriod.ingredishare.email;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,10 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
-import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
-import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostPresenter;
-import com.example.andriod.ingredishare.Profile.ProfileActivity;
+import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,27 +24,22 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class EmailActivity extends AppCompatActivity implements EmailView {
 
-    private Context mContext;
-    private GlobalRequestQueue mReqQueue;
-    private String mType;
-    private FirebaseUser mUser;
     private EmailPresenter presenter;
     private String emailToSendTo;
-    private String subjectLine;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.email_layout);
-        mContext = this;
 
         emailToSendTo = getIntent().getStringExtra(getString(R.string.email));
         TextView mEmailTextView = findViewById(R.id.send_email_to);
         mEmailTextView.setText(emailToSendTo);
 
-        subjectLine = getIntent().getStringExtra(getString(R.string.email_subject));
+        String subjectLine = getIntent().getStringExtra(getString(R.string.email_subject));
         EditText subject = findViewById(R.id.email_subject);
         subject.setText(subjectLine);
 
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
+       // FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Button mBackbutton;
         Button mSendButton;
@@ -59,7 +52,7 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
         presenter = new EmailPresenter(this);
 
         mToolbar.setTitle(getIntent().getStringExtra(getString(R.string.request_or_offer)));
-        mType = getIntent().getStringExtra(getString(R.string.request_or_offer));
+      //  String mType = getIntent().getStringExtra(getString(R.string.request_or_offer));
 
         mBackbutton.setOnClickListener(v -> finish());
         mSendButton.setOnClickListener(v -> {
@@ -94,6 +87,8 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
                         newIntent = new Intent(EmailActivity.this,
                                 NewIngrediPostActivity.class);
                         startActivity(newIntent);
+                        break;
+                    default:
                         break;
 
                 }

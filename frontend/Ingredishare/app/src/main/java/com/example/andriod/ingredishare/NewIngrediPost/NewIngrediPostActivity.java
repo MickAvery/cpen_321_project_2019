@@ -1,7 +1,6 @@
 package com.example.andriod.ingredishare.NewIngrediPost;
 
 import android.Manifest;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,20 +21,18 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
-import android.widget.Toolbar;
+
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
-import com.example.andriod.ingredishare.IngredientList.IngredientListPresenter;
 import com.example.andriod.ingredishare.MyApplication;
-import com.example.andriod.ingredishare.Profile.ProfileActivity;
+import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class NewIngrediPostActivity extends AppCompatActivity implements NewIngrediPostView{

@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Event;
+package com.example.andriod.ingredishare.event;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -7,12 +7,10 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.andriod.ingredishare.Email.EmailActivity;
-import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
+import com.example.andriod.ingredishare.email.EmailActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.R;
 

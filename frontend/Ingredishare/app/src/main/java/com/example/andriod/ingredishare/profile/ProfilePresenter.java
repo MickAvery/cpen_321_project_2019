@@ -1,9 +1,7 @@
-package com.example.andriod.ingredishare.Profile;
+package com.example.andriod.ingredishare.profile;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;

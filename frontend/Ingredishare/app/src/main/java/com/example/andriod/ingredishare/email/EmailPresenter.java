@@ -1,12 +1,10 @@
-package com.example.andriod.ingredishare.Email;
+package com.example.andriod.ingredishare.email;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.example.andriod.ingredishare.Main.MainActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -14,13 +12,11 @@ import com.google.firebase.auth.FirebaseUser;
 public class EmailPresenter {
 
     private EmailView view;
-    private FirebaseUser mUser;
     private Context mContext;
 
     public EmailPresenter(EmailView view) {
         this.view = view;
         mContext = MyApplication.getContext();
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     public void sendEmail(String email, String subject, String message){

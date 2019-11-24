@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Profile;
+package com.example.andriod.ingredishare.profile;
 
 import java.util.HashMap;
 

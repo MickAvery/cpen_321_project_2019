@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Event;
+package com.example.andriod.ingredishare.event;
 
 public class Event {
 

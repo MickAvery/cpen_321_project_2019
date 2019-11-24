@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Email;
+package com.example.andriod.ingredishare.email;
 
 interface EmailView {
     void toastCouldNotSend();

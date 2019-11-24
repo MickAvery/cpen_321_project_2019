@@ -1,18 +1,11 @@
 package com.example.andriod.ingredishare.NewIngrediPost;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.andriod.ingredishare.DataManager;
-import com.example.andriod.ingredishare.Event.EventAdapter;
-import com.example.andriod.ingredishare.GlobalRequestQueue;
-import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.R;
 import com.google.firebase.auth.FirebaseAuth;

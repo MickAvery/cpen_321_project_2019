@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Main;
+package com.example.andriod.ingredishare.main;
 
 import com.facebook.AccessToken;
 

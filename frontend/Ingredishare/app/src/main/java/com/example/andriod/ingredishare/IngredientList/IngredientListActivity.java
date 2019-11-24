@@ -26,13 +26,13 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.andriod.ingredishare.Event.Event;
-import com.example.andriod.ingredishare.Event.EventAdapter;
+import com.example.andriod.ingredishare.event.Event;
+import com.example.andriod.ingredishare.event.EventAdapter;
 import com.example.andriod.ingredishare.GlobalRequestQueue;
-import com.example.andriod.ingredishare.Main.MainActivity;
+import com.example.andriod.ingredishare.main.MainActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.NewIngrediPost.NewIngrediPostActivity;
-import com.example.andriod.ingredishare.Profile.ProfileActivity;
+import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;

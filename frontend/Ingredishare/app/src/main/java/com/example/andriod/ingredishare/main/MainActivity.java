@@ -1,4 +1,4 @@
-package com.example.andriod.ingredishare.Main;
+package com.example.andriod.ingredishare.main;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,9 +13,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,7 +24,7 @@ import com.example.andriod.ingredishare.DataManager;
 import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
 import com.example.andriod.ingredishare.MyApplication;
-import com.example.andriod.ingredishare.Profile.ProfileActivity;
+import com.example.andriod.ingredishare.profile.ProfileActivity;
 import com.example.andriod.ingredishare.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
