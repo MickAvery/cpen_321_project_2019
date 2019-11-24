@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.andriod.ingredishare.event.Event;
@@ -48,7 +49,9 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
     private Context mContext;
     private GlobalRequestQueue mReqQueue;
     private FirebaseUser mUser;
-    private IngredientListPresenter presenter;
+    private IngredientListPresenter mPresenter;
+    private RecyclerView mRecycler;
+    private ImageView mNotifImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,19 +69,22 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
         mContext = this;
         mReqQueue = GlobalRequestQueue.getInstance();
         // Get the RecyclerView
-        RecyclerView recycler = findViewById(R.id.recycler_view);
+        mRecycler = findViewById(R.id.recycler_view);
 
         mLayoutManager = new LinearLayoutManager(this);
-        recycler.setLayoutManager(mLayoutManager);
+        mRecycler.setLayoutManager(mLayoutManager);
 
         // Set the custom mEventAdapter
         List<Event> eventList = new ArrayList<>();
         mEventAdapter = new EventAdapter(eventList);
-        recycler.setAdapter(mEventAdapter);
+        mRecycler.setAdapter(mEventAdapter);
 
-        presenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
-                mEventAdapter);
-        presenter.getEvents();
+        mNotifImage = findViewById(R.id.notif_dot);
+        MyApplication.setNotificationImageView(mNotifImage);
+
+        mPresenter = new IngredientListPresenter(MyApplication.getDataManager(), this,
+                mEventAdapter, mRecycler, mNotifImage);
+        mPresenter.getEvents();
 
         //getEventsFromBackend();
         ((LinearLayoutManager) mLayoutManager).scrollToPositionWithOffset(0, 0);
@@ -115,6 +121,8 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
             }
         });
 
+        mNotifImage = findViewById(R.id.notif_dot);
+        MyApplication.setNotificationImageView(mNotifImage);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.example.andriod.ingredishare;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -52,7 +54,10 @@ public class MyFirebaseMessagingService extends com.google.firebase.messaging.Fi
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-//        super.onMessageReceived(remoteMessage);
+        super.onMessageReceived(remoteMessage);
+
+        ImageView notificationImage = MyApplication.getNotificationImageView();
+        notificationImage.setVisibility(View.VISIBLE);
 
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
