@@ -64,8 +64,7 @@ public class NewIngrediPostPresenter {
                 postparams.put("lat", null);
                 postparams.put("long", null);
             }
-            postparams.put(mContext.getString(R.string.date),
-                    Long.toString(System.currentTimeMillis()));
+            postparams.put(mContext.getString(R.string.date), System.currentTimeMillis());
 
             Log.d("latitude", loc[0].toString());
             Log.d("longitude", loc[1].toString());

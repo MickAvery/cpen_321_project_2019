@@ -93,7 +93,7 @@ public class IngredientListPresenter {
                 public void onResponse(JSONArray json_events_array) {
                     try {
                         Log.e(this.getClass().toString(), "inside loop");
-
+                        Log.e("OUT", json_events_array.toString());
                         for (int i = 0; i < json_events_array.length(); i++) {
                             JSONObject json_data = json_events_array.getJSONObject(i);
 
@@ -121,12 +121,13 @@ public class IngredientListPresenter {
                             Date today = new Date(System.currentTimeMillis());
                             Date postDate = new Date(date);
 
-                            int diffInDays = (int)( (today.getTime() - postDate.getTime())
+                         /*   int diffInDays = (int)( (today.getTime() - postDate.getTime())
                                     / dateMultiplier );
                             if(diffInDays < MyApplication.getExpirationDate()) {
-                                Event event = new Event(userid, name, description, x, y, type, date);
-                                eventAdapter.addEvent(event);
-                            }
+
+                            }*/
+                            Event event = new Event(userid, name, description, x, y, type, date);
+                            eventAdapter.addEvent(event);
                             /* scroll to top */
                             mRecycler.scrollToPosition(0);
 
