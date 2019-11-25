@@ -1,8 +1,8 @@
 'use strict';
 
-jest.mock('../index.js');
-const mainMod = require('../index.js');
-const get = require('../routes/get.js');
+jest.mock('../../index')
+const mainMod = require('../../index');
+const get = require('../../routes/get.js');
 
 const {MongoClient} = require("mongodb");
 const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
@@ -32,12 +32,17 @@ describe('getAllRequests', () => {
     await connection.close();
     await db.close();
   });
-
+  
   it('Returns all requests as expected', async () => {
       mainMod.getDb.mockImplementation(() => db);
       const data = await get.getAllRequests();
       const jsonData = JSON.stringify(data);
       expect(jsonData).toContain("\"name\":\"testReq\",\"description\":\"one\",\"lat\":1,\"long\":1,\"userId\":\"test@gmail.com\"");
+  });
+
+  it('Throws error when could not connect to DB', async () => {
+    mainMod.getDb.mockImplementation(() => null);
+    expect(get.getAllRequests()).rejects.toEqual("Could not connect to DB");
   });
 });
 
@@ -87,5 +92,25 @@ describe('getAllRequestsFromLatLong', () => {
         });
         const jsonData = JSON.stringify(data);
         expect(jsonData).toContain("\"name\":\"testReq\",\"description\":\"one\",\"lat\":1,\"long\":1,\"userId\":\"user@gmail.com\"");
+    });
+
+    it('Returns empty result', async () => {
+      mainMod.getDb.mockImplementation(() => db);
+      const data = await get.getAllRequestsFromLatLong({
+          email: userEmail,
+          lat: 2,
+          long: 1
+      });
+      const jsonData = JSON.stringify(data);
+      expect(jsonData).toContain("[]");
+    });
+
+    it('Throws error when could not connect to DB', async () => {
+      mainMod.getDb.mockImplementation(() => null);
+      expect(get.getAllRequestsFromLatLong({
+        email: userEmail,
+        lat: 1,
+        long: 1
+      })).rejects.toEqual("Could not connect to DB");
     });
   });

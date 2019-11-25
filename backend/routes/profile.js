@@ -5,10 +5,6 @@ var mainMod   = require("../index.js");
 const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
 
-router.get('/', (req, res) => {
-    res.send("Hello world!");
-});
-
 router.get('/getProfileInfo', (req, res) => {
     var email = req.query.email;
 

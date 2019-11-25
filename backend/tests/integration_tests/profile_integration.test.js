@@ -1,8 +1,8 @@
 'use strict';
 
-jest.mock('../index.js');
-const mainMod = require('../index.js');
-const profile = require('../routes/profile.js');
+jest.mock('../../index.js');
+const mainMod = require('../../index');
+const profile = require('../../routes/profile');
 
 const {MongoClient} = require("mongodb");
 const mongoProdUri = "mongodb+srv://dbrui:cpen321@cluster0-mfvd7.azure.mongodb.net/admin?retryWrites=true&w=majority";
@@ -35,7 +35,7 @@ describe('getProfileInfo', () => {
             throw err;
         }
         console.log("deleted user inserted as test successfully")
-    })
+    })                                            
       await connection.close();
       await db.close();
     });
@@ -45,5 +45,15 @@ describe('getProfileInfo', () => {
         const data = await profile.getProfileInfo(userEmail);
         const jsonData = JSON.stringify(data);
         expect(jsonData).toContain("\"displayName\":\"testUser\",\"bio\":\"my bio\",\"preferences\":\"my preferences\"}");
+    });
+
+    it('Throws error when could not connect to DB', async () => {
+      mainMod.getDb.mockImplementation(() => null);
+      expect(profile.getProfileInfo(userEmail)).rejects.toEqual("Could not connect to DB");
+    });
+
+    it('Returns null when the email address is invalid', async () => {
+      mainMod.getDb.mockImplementation(() => db);
+      expect(await profile.getProfileInfo("non-existing-email-address")).toEqual(null);
     });
   });

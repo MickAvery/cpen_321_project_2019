@@ -1,10 +1,10 @@
 'use strict';
 
 /* mock db calls */
-jest.mock('../index.js');
-const mainMod = require('../index.js');
+jest.mock('../../index.js');
+const mainMod = require('../../index.js');
 
-const profile = require('../routes/profile.js');
+const profile = require('../../routes/profile.js');
 
 var profileInfo = {
 	bio:"wow",

@@ -7,6 +7,9 @@ const localServerURL = "http://localhost:1337";
 
 async function getAllRequests() {
     var dbObj = mainMod.getDb();
+    if (dbObj === null) {
+        throw "Could not connect to DB";
+    }
     const result = await dbObj.collection("requests").find({}).toArray();
     return result;
 }
@@ -114,34 +117,6 @@ router.post("/createRequest", (req, res) => {
     } catch (err) {
         res.status(500).end();
     }
-});
-
-router.get("/isExistingUser", (req, res) => {
-    var dbObj = mainMod.getDb();
-
-    var userEmail = req.body.email;
-
-    var query = dbObj.collection("users").find({email:userEmail}).toArray(function(err, result) {
-        if(err) {
-
-            res.send(500).end();
-
-        } else if(typeof result !== "undefined" && result.length > 0) {
-
-            res.json({"pre_existing_user" : true});
-
-        } else {
-
-            res.json({"pre_existing_user" : false});
-
-            var newUser = {email : userEmail};
-            dbObj.collection("users").insertOne(newUser, function(err, res) {
-                if(err) {
-                    res.status(500).end();
-                }
-            });
-        }
-    });
 });
 
 module.exports = {
