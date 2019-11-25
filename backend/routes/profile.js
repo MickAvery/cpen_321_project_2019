@@ -6,6 +6,10 @@ const azureServerURL = "https://ingredishare-backend.azurewebsites.net";
 const localServerURL = "http://localhost:1337";
 
 router.get('/getProfileInfo', (req, res) => {
+    getProfile(req, res);
+});
+
+async function getProfile(req, res) {
     var email = req.query.email;
 
     try {
@@ -15,7 +19,7 @@ router.get('/getProfileInfo', (req, res) => {
     } catch (err) {
         throw err;
     }
-});
+}
 
 async function getProfileInfo(email) {
     var dbObj = mainMod.getDb();
@@ -35,8 +39,20 @@ async function getProfileInfo(email) {
     return result;
 }
 
-router.post("/updateProfileInfo", (req, res) => {
+async function updateProfileInfo(req, res) {
     var dbObj = mainMod.getDb();
+
+    if (dbObj === null) {
+        throw "Could not connect to DB";
+    }
+
+    if (req.body === undefined) {
+        throw "Request body is undefined";
+    }
+
+    if (req.body.email === null || req.body.email === "") {
+        throw "Email is null or empty";
+    }
 
     var myquery = { email: req.body.email };
     var newvalues = { $set: {displayName: req.body.displayName, bio: req.body.bio,
@@ -49,9 +65,15 @@ router.post("/updateProfileInfo", (req, res) => {
     });
 
     res.json({"updateProfileInfo": true});
+}
+
+router.post("/updateProfileInfo", (req, res) => {
+    updateProfileInfo(req, res);
 });
 
 module.exports = {
     router: router,
-    getProfileInfo: getProfileInfo
+    getProfileInfo: getProfileInfo,
+    updateProfileInfo: updateProfileInfo,
+    getProfile: getProfile,
 }
