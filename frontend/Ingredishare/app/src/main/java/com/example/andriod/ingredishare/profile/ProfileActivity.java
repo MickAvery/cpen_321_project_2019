@@ -65,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         mSaveButton = findViewById(R.id.save_button);
         mDataManager = MyApplication.getDataManager();
 
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 getResources().getStringArray(R.array.km_radius_pref));
@@ -76,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         boolean newUser = myIntent.getBooleanExtra(getString(R.string.newUser), false);
         presenter.setNewUser(newUser);
 
-        presenter.getProfileInfo();
+        presenter.getProfileInfo(new DataManager(this));
 
         mBackButton.setOnClickListener(v -> {
             presenter.backButtonPressed();

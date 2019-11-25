@@ -2,7 +2,9 @@ package com.example.andriod.ingredishare.email;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -13,6 +15,7 @@ import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
 
 import com.example.andriod.ingredishare.GlobalRequestQueue;
 import com.example.andriod.ingredishare.IngredientList.IngredientListActivity;
@@ -64,9 +67,30 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
             mSubject = findViewById(R.id.email_subject);
             mMessage = findViewById(R.id.email_message);
 
-            presenter.sendEmail(emailToSendTo, mSubject.getText().toString(),
-                    mMessage.getText().toString());
-            finish();
+            ShareCompat.IntentBuilder.from(this)
+                    .setType("message/rfc822")
+                    .addEmailTo(emailToSendTo)
+                    .setSubject(mSubject.getText().toString())
+                    .setText(mMessage.getText().toString())
+                    //.setHtmlText(body) //If you are using HTML in your body text
+                    .setChooserTitle("Emailing")
+                    .startChooser();
+
+//            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+//
+//            emailIntent.setType("*/*");
+//            emailIntent.setData(Uri.parse(".mailto:"));
+//            emailIntent.putExtra(Intent.EXTRA_EMAIL, emailToSendTo);
+//            emailIntent.putExtra(Intent.EXTRA_SUBJECT, mSubject.getText().toString());
+//            emailIntent.putExtra(Intent.EXTRA_TEXT, mMessage.getText().toString());
+//
+//            try {
+//                startNewActivity(Intent.createChooser(emailIntent, "Chooser Title"));
+//                //toastSuccess();
+//            } catch (android.content.ActivityNotFoundException ex) {
+//                toastCouldNotSend();
+//            }
+//            //finish();
         });
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -105,6 +129,11 @@ public class EmailActivity extends AppCompatActivity implements EmailView {
 
     public void toastSuccess(){
         finish();
+    }
+
+    @Override
+    public void startNewActivity(Intent intent) {
+        startActivity(Intent.createChooser(intent, "Send mail..."));
     }
 
     @Override

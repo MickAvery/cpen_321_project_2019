@@ -50,6 +50,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 intent.putExtra(mContext.getString(R.string.email),email);
                 intent.putExtra(mContext.getString(R.string.email_subject),
                         "ingrediShare Post Response: " + id.getText().toString());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent);
             });
         }

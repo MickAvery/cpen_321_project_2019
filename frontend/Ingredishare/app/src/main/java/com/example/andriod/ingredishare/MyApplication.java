@@ -11,9 +11,7 @@ public class MyApplication extends Application {
     private static DataManager mDataManager;
     private static EventAdapter mEventAdapter;
 
-    //http://10.0.2.2:1337
-    //http://52.228.30.248:1337
-    private static final String serverURL = "http://10.0.2.2:1337";
+    private static final String serverURL = "http://52.228.30.248:1337";
 
     private static final String profileInfoGETRequestURL = serverURL + "/getProfileInfo";
     private static final String profileInfoPOSTRequestURL = serverURL + "/updateProfileInfo";

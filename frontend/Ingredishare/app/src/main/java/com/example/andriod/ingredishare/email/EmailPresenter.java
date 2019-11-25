@@ -21,14 +21,15 @@ public class EmailPresenter {
 
     public void sendEmail(String email, String subject, String message){
 
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto",email, null));
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
 
+        emailIntent.setType("*/*");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, email);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         emailIntent.putExtra(Intent.EXTRA_TEXT, message);
 
         try {
-            mContext.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            view.startNewActivity(emailIntent);
             Log.i("Finished sending email...", "");
             view.toastSuccess();
         } catch (android.content.ActivityNotFoundException ex) {

@@ -32,7 +32,8 @@ public class ProfilePresenter  {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    public void getProfileInfo(){
+    public void getProfileInfo(DataManager dataManager){
+        this.dataManager = dataManager;
 
         HashMap<String, String> profileData = new HashMap<String,String>();
         String url = MyApplication.getURL_profileInfoGET()

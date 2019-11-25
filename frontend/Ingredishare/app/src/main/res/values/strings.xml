@@ -7,7 +7,7 @@
     <!-- change to
      http://10.0.2.2:1337
      http://localhost:1337 for testing maybe -->
-    <string name="server_url">http://10.0.2.2:1337</string>
+    <string name="server_url">http://52.228.30.248:1337</string>
     <string name="tok_signin_put">/tokensignin</string>
     <string name="is_existing_user_get">/isExistingUser</string>
     <string name="save_fcm_tok_put">/saveFcmToken</string>
