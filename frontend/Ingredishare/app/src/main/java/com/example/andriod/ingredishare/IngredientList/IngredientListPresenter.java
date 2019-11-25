@@ -54,7 +54,7 @@ public class IngredientListPresenter {
 
                 if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     if (!recyclerView.canScrollVertically(-1)) {
-                        getEvents();
+                       // getEvents();
                     }
                 }
             }
