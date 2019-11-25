@@ -46,11 +46,13 @@ public class ProfilePresenter  {
                     String name = response.getString(mContext.getString(R.string.display_name));
                     String bio = response.getString(mContext.getString(R.string.bio));
                     String preference = response.getString(mContext.getString(R.string.food_preferences));
+                    String radius = response.getString(mContext.getString(R.string.radius_preference));
                     // If values are null just leave them empty
-                    if (name != null && bio != null && preference != null) {
+                    if (name != null && bio != null && preference != null && radius != null) {
                         profileData.put(mContext.getString(R.string.display_name), name);
                         profileData.put(mContext.getString(R.string.bio), bio);
                         profileData.put(mContext.getString(R.string.food_preferences), preference);
+                        profileData.put(mContext.getString(R.string.radius_preference), radius);
 
                         view.updateUI(profileData);
                     } else{
@@ -96,6 +98,10 @@ public class ProfilePresenter  {
                 preferences = newProfileData.get(mContext.getString(R.string.food_preferences));
             }
 
+            if(newProfileData.containsKey(mContext.getString(R.string.radius_preference))){
+                radius = newProfileData.get(mContext.getString(R.string.radius_preference));
+            }
+
             if("".equals(displayName) ||
                     "".equals(bio) ||
                     "".equals(preferences)){
@@ -106,7 +112,7 @@ public class ProfilePresenter  {
             postparams.put(mContext.getString(R.string.display_name), displayName);
             postparams.put(mContext.getString(R.string.bio), bio);
             postparams.put(mContext.getString(R.string.food_preferences), preferences);
-            postparams.put(mContext.getString(R.string.radius_preference), "1");
+            postparams.put(mContext.getString(R.string.radius_preference), radius);
 
 
             String url = MyApplication.getProfileInfoPOSTRequestURL();

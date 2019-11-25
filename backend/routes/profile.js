@@ -35,7 +35,7 @@ async function getProfileInfo(email) {
         throw "Empty email address";
     }
 
-    const result = await dbObj.collection("users").findOne({email: email}, {projection: {displayName: 1, bio: 1, preferences: 1}});
+    const result = await dbObj.collection("users").findOne({email: email}, {projection: {displayName: 1, bio: 1, preferences: 1, radiusPreference:1}});
     return result;
 }
 

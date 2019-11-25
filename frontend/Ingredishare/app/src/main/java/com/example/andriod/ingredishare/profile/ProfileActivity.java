@@ -86,6 +86,7 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
             profileData.put(getString(R.string.display_name), mNameEditText.getText().toString());
             profileData.put(getString(R.string.bio), mBioEditText.getText().toString());
             profileData.put(getString(R.string.food_preferences), mPrefEditText.getText().toString());
+            profileData.put(getString(R.string.radius_preference),(((Integer) (mRadiusPref.getSelectedItemPosition() + 1)).toString()));
 
             presenter.updateProfileInfo(profileData);
         });
@@ -137,6 +138,11 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
         if (data.containsKey(getString(R.string.bio))) {
             mPrefEditText.setText(data.get(getString(R.string.food_preferences)));
         }
+        if(data.containsKey(getString(R.string.radius_preference))){
+            mRadiusPref.setSelection(
+                    Integer.parseInt(data.get(getString(R.string.radius_preference))) -1);
+        }
+
     }
 
     public void displaySavedToast() {
