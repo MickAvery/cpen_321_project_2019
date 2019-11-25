@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -46,7 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class IngredientListActivity extends AppCompatActivity implements IngredientListView {
+public class IngredientListActivity extends AppCompatActivity implements IngredientListView  {
 
     private EventAdapter mEventAdapter;
     private Context mContext;
@@ -55,6 +56,7 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
     private IngredientListPresenter mPresenter;
     private RecyclerView mRecycler;
     private ImageView mNotifImage;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +137,18 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
 
         mNotifImage = findViewById(R.id.notif_dot);
         MyApplication.setNotificationImageView(mNotifImage);
+
+        mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateUI();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -232,6 +245,7 @@ public class IngredientListActivity extends AppCompatActivity implements Ingredi
 
     public void updateUI(){
         Log.e(this.getClass().toString(), "updateUI");
-        mEventAdapter.notifyDataSetChanged();
+        mEventAdapter.clearAllRequests();
+        mPresenter.getEvents();
     }
 }

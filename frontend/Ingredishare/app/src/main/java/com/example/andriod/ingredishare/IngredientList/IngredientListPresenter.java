@@ -51,7 +51,8 @@ public class IngredientListPresenter {
         this.mRecycler = recycler;
         this.mNotificationImage = notificationImage;
 
-        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+       /*mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int ydy = 0;
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -63,10 +64,14 @@ public class IngredientListPresenter {
                     }
                 }
             }
-        });
+        });*/
     }
 
-    /*
+    public void refresh(){
+
+    }
+
+    /**
       Grabs events from the backend and adds them to the mEventAdapter
      */
     public void getEvents(){
