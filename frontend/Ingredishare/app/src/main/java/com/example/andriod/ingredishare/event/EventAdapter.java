@@ -29,12 +29,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public TextView id;
         public TextView data;
         public View sendButton;
-        public TextView email;
         public TextView date;
+        public String email;
+        public TextView myDate;
 
         public EventViewHolder(View view) {
             super(view);
-            email = (TextView) view.findViewById(R.id.email);
+            myDate = (TextView) view.findViewById(R.id.email);
             event = (TextView) view.findViewById(R.id.event);
             id = (TextView) view.findViewById(R.id.id);
             data = (TextView) view.findViewById(R.id.data);
@@ -46,7 +47,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
                 Context mContext = MyApplication.getContext();
                 Intent intent = new Intent(mContext, EmailActivity.class);
-                intent.putExtra(mContext.getString(R.string.email),email.getText().toString());
+                intent.putExtra(mContext.getString(R.string.email),email);
                 intent.putExtra(mContext.getString(R.string.email_subject),
                         "ingrediShare Post Response: " + id.getText().toString());
                 mContext.startActivity(intent);
@@ -88,8 +89,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date(event.getDate());
-        System.out.println("Date Posted : " + formatter.format(date));
-        viewHolder.email.setText(formatter.format(date));
+        viewHolder.myDate.setText("Date Posted : " + formatter.format(date));
+        viewHolder.email = event.getUserId();
     }
 
     public List<Event> getEventWithSpecificName(String mID){
