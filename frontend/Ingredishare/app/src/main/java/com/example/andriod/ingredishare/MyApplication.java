@@ -20,6 +20,7 @@ public class MyApplication extends Application {
     private static final String getCreateRequestString = serverURL + "/createRequest";
 
     private static ImageView mNotificationImage;
+    private static Integer expirationDate = 5;
 
     @Override
     public void onCreate() {
@@ -79,8 +80,7 @@ public class MyApplication extends Application {
         mEventAdapter = eventAdapter;
     }
 
-    public static EventAdapter getEventAdapter(){
-        return mEventAdapter;
+    public static EventAdapter getEventAdapter(){ return mEventAdapter; }
 
-    }
+    public static Integer getExpirationDate(){ return expirationDate; }
 }

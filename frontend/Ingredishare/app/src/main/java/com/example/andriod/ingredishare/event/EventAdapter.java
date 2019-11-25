@@ -15,7 +15,9 @@ import com.example.andriod.ingredishare.email.EmailActivity;
 import com.example.andriod.ingredishare.MyApplication;
 import com.example.andriod.ingredishare.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
@@ -28,6 +30,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public TextView data;
         public View sendButton;
         public TextView email;
+        public TextView date;
 
         public EventViewHolder(View view) {
             super(view);
@@ -79,10 +82,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public void onBindViewHolder(EventViewHolder viewHolder, int i) {
         Event event = items.get(i);
 
-        viewHolder.event.setText(event.getType());
+        viewHolder.event.setText(event.getType() + " from " + event.getEmail());
         viewHolder.id.setText(event.getName());
         viewHolder.data.setText(event.getDescription());
-        viewHolder.email.setText(event.getEmail());
+
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date(event.getDate());
+        System.out.println("Date Posted : " + formatter.format(date));
+        viewHolder.email.setText(formatter.format(date));
     }
 
     public List<Event> getEventWithSpecificName(String mID){
