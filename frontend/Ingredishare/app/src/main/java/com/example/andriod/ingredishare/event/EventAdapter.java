@@ -117,4 +117,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
         return false;
     }
+
+    public void clearAllRequests(){
+        int size = items.size();
+        items.clear();
+        notifyItemRangeRemoved(0, size);
+    }
 }
