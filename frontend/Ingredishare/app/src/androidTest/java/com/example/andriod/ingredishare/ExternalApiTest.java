@@ -51,6 +51,7 @@ public class ExternalApiTest {
         onView(withId(R.id.google_sign_in_button)).perform(click());
         intended(hasPackage("com.google.android.gms"));
         UiDevice.getInstance(getInstrumentation()).pressBack();
+        UiDevice.getInstance(getInstrumentation()).pressBack();
         Intents.release();
     }
 }
