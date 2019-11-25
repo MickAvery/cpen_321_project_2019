@@ -150,3 +150,55 @@ it('Invalidates an incomplete request', async () => {
 it('Validates a complete request', async () => {
 	expect(get.requestIsValid(request)).toBe(true);
 });
+
+/**
+ * createRequest
+ */
+var request = {
+	body: {
+		userId: "test_email@gmail.com",
+		name: "test body",
+		description: "test description",
+		lat: "5",
+		long: "5",
+		type: "Request type"
+	}
+}
+
+var invalidRequest = {
+	body: {
+		userId: "",
+		name: "test body",
+		description: "test description",
+		lat: "5",
+		long: "5",
+		type: "Request type"
+	}
+}
+
+var end = {
+	end: jest.fn().mockImplementation(() => null)
+};
+
+var createRequestMocks = {
+	collection: jest.fn().mockImplementation(() => createRequestMocks),
+	insertOne: jest.fn().mockImplementation(() => null),
+}
+
+var resMockWithJson = {
+	json: jest.fn().mockImplementation(() => null)
+}
+
+var resMockWithErrorCode500 = {
+	status: jest.fn().mockImplementation(() => end)
+}
+
+it('fails with error code 500 when could not connect to DB', async () => {
+	mainMod.getDb.mockImplementation(() => null);
+    await get.createRequest(request, resMockWithErrorCode500);
+});
+
+it('succeeds with createRequestResponse = false when the request is invalid', async () => {
+	mainMod.getDb.mockImplementation(() => createRequestMocks);
+    await get.createRequest(invalidRequest, resMockWithJson);
+});

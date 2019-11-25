@@ -87,8 +87,16 @@ function requestIsValid(newRequest) {
 }
 
 router.post("/createRequest", (req, res) => {
+    createRequest(req, res);
+});
+
+async function createRequest(req, res) {
     try {
         var dbObj = mainMod.getDb();
+
+        if (dbObj === null) {
+            throw "Could not connect to DB";
+        }
 
         var newReq = {
             userId: req.body.userId,
@@ -101,7 +109,6 @@ router.post("/createRequest", (req, res) => {
 
         /* gotta check if any of the fields are falsey */
         if(requestIsValid(newReq)) {
-
             dbObj.collection("requests").insertOne(newReq, function(err,dbRes) {
                 if(err) {
                     res.json({"createRequestResponse": false});
@@ -109,7 +116,6 @@ router.post("/createRequest", (req, res) => {
                     res.json({"createRequestResponse": true});
                 }
             });
-
             return;
         }
 
@@ -117,11 +123,12 @@ router.post("/createRequest", (req, res) => {
     } catch (err) {
         res.status(500).end();
     }
-});
+}
 
 module.exports = {
     router: router,
     getAllRequests: getAllRequests,
     getAllRequestsFromLatLong: getAllRequestsFromLatLong,
-    requestIsValid: requestIsValid
+    requestIsValid: requestIsValid,
+    createRequest: createRequest,
 };
