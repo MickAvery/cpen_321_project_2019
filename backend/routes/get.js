@@ -90,6 +90,14 @@ router.post("/createRequest", (req, res) => {
     createRequest(req, res);
 });
 
+function handleResponse(err, res) {
+    if(err) {
+        res.json({"createRequestResponse": false});
+    } else {
+        res.json({"createRequestResponse": true});
+    }
+}
+
 async function createRequest(req, res) {
     try {
         var dbObj = mainMod.getDb();
@@ -110,11 +118,7 @@ async function createRequest(req, res) {
         /* gotta check if any of the fields are falsey */
         if(requestIsValid(newReq)) {
             dbObj.collection("requests").insertOne(newReq, function(err,dbRes) {
-                if(err) {
-                    res.json({"createRequestResponse": false});
-                } else {
-                    res.json({"createRequestResponse": true});
-                }
+                handleResponse(err, res);
             });
             return;
         }
@@ -131,4 +135,5 @@ module.exports = {
     getAllRequestsFromLatLong: getAllRequestsFromLatLong,
     requestIsValid: requestIsValid,
     createRequest: createRequest,
+    handleResponse: handleResponse,
 };

@@ -152,6 +152,29 @@ it('Validates a complete request', async () => {
 });
 
 /**
+ * handleResponse() tests
+ */
+var resMockWithCreateRequestResponseTrue = {
+	json: jest.fn().mockImplementation((input) => {
+		expect(input.createRequestResponse).toBe(true);
+	})
+}
+
+var resMockWithCreateRequestResponseFalse = {
+	json: jest.fn().mockImplementation((input) => {
+		expect(input.createRequestResponse).toBe(false);
+	})
+}
+
+it('HandleResponse returns createRequestResponse = false when API has error', async () => {
+	expect(get.handleResponse(true, resMockWithCreateRequestResponseFalse));
+});
+
+it('HandleResponse returns createRequestResponse = true when API has error', async () => {
+	expect(get.handleResponse(false, resMockWithCreateRequestResponseTrue));
+});
+
+/**
  * createRequest
  */
 var request = {
@@ -185,10 +208,6 @@ var createRequestMocks = {
 	insertOne: jest.fn().mockImplementation(() => null),
 }
 
-var resMockWithJson = {
-	json: jest.fn().mockImplementation(() => null)
-}
-
 var resMockWithErrorCode500 = {
 	status: jest.fn().mockImplementation(() => end)
 }
@@ -200,5 +219,5 @@ it('fails with error code 500 when could not connect to DB', async () => {
 
 it('succeeds with createRequestResponse = false when the request is invalid', async () => {
 	mainMod.getDb.mockImplementation(() => createRequestMocks);
-    await get.createRequest(invalidRequest, resMockWithJson);
+    await get.createRequest(invalidRequest, resMockWithCreateRequestResponseFalse);
 });
