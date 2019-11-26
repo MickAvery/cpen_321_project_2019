@@ -178,4 +178,36 @@ public class ProfileActivity extends AppCompatActivity implements ProfileView {
                 Toast.LENGTH_SHORT).show();
     }
 
+    private String isNull(String in) {
+        if (in.equals("")) {
+            return "--";
+        }
+
+        return in;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        String preName = mNameEditText.getText().toString();
+        String name = isNull(preName);
+        String prePref = mPrefEditText.getText().toString();
+        String pref = isNull(prePref);
+        String preBio = mBioEditText.getText().toString();
+        String bio = isNull(preBio);
+        String preRad = (((Integer) (mRadiusPref.getSelectedItemPosition() + 1)).toString());
+        String rad = isNull(preRad);
+
+        if(preName.equals("") || prePref.equals("") || preBio.equals("") || preRad.equals("")){
+
+            HashMap<String, String> profileData = new HashMap<String, String>();
+            profileData.put(getString(R.string.display_name), name);
+            profileData.put(getString(R.string.bio), bio);
+            profileData.put(getString(R.string.food_preferences), pref);
+            profileData.put(getString(R.string.radius_preference), rad);
+
+            presenter.updateProfileInfo(profileData);
+        }
+    }
+
 }

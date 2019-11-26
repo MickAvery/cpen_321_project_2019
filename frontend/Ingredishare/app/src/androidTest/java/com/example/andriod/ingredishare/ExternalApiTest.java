@@ -44,7 +44,6 @@ public class ExternalApiTest {
         Intents.release();
     }
 
-    // Has to be the last test or it will break
     @Test
     public void testGoogleActivityLaunched() {
         Intents.init();
